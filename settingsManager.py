@@ -223,6 +223,10 @@ class settingsManager:
 			self.gui.get_object('combobox_themes').set_active_iter(selected)
 			
 	def updateRecordingsLists(self):
+		if not which.which('ffmpeg'):
+			self.gui.get_object('acodec_combobox').set_sensitive(False)
+			self.gui.get_object('vcodec_combobox').set_sensitive(False)
+			return
 		liststore = self.gui.get_object('acodec_liststore')
 		liststore.clear()
 		acodecs = self.getFFMPEG('acodecs')
@@ -299,6 +303,7 @@ class settingsManager:
 			caps = line[:6]
 			codename = line[8:].split(' ', 1)[0]
 			name = line[8:].split(' ', 1)[1]
+			name = name[:75] + (name[75:] and '...')
 			if what == 'acodecs':
 				if caps[2:4] == 'EA':
 					result[codename] = name.lstrip()
