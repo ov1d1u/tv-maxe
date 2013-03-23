@@ -140,6 +140,44 @@ please make a donation.</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkListStore" id="aspect_ratios">
+    <columns>
+      <!-- column-name Aspect -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Auto</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">1:1</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">3:2</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">4:3</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">5:4</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">14:9</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">14:10</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">16:9</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">16:10</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">2.35:1</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkListStore" id="blackstore">
     <columns>
       <!-- column-name id -->
@@ -180,10 +218,8 @@ please make a donation.</property>
   <object class="GtkMenu" id="guideMenu">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
-    <property name="ubuntu_local">True</property>
     <child>
       <object class="GtkMenuItem" id="menuitem45">
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Schedule this</property>
@@ -267,7 +303,6 @@ please make a donation.</property>
     <child>
       <object class="GtkImageMenuItem" id="menuitem5">
         <property name="label">gtk-media-play</property>
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="use_underline">True</property>
@@ -278,7 +313,6 @@ please make a donation.</property>
     <child>
       <object class="GtkImageMenuItem" id="menuitem40">
         <property name="label" translatable="yes">Select stream</property>
-        <property name="use_action_appearance">False</property>
         <property name="can_focus">False</property>
         <property name="image">image24</property>
         <property name="use_stock">False</property>
@@ -287,7 +321,6 @@ please make a donation.</property>
     <child>
       <object class="GtkImageMenuItem" id="menuitem47">
         <property name="label" translatable="yes">Record stream</property>
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="tooltip_text" translatable="yes">Select a stream to record</property>
@@ -297,14 +330,12 @@ please make a donation.</property>
     </child>
     <child>
       <object class="GtkSeparatorMenuItem" id="menuitem35">
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
       </object>
     </child>
     <child>
       <object class="GtkMenuItem" id="menuitem6">
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="sensitive">False</property>
         <property name="can_focus">False</property>
@@ -315,7 +346,6 @@ please make a donation.</property>
     </child>
     <child>
       <object class="GtkMenuItem" id="menuitem36">
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Channel info</property>
@@ -332,7 +362,6 @@ please make a donation.</property>
     <child>
       <object class="GtkImageMenuItem" id="menuitem20">
         <property name="label" translatable="yes">Remove channel</property>
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="image">image15</property>
@@ -346,7 +375,6 @@ please make a donation.</property>
     <property name="can_focus">False</property>
     <child>
       <object class="GtkCheckMenuItem" id="menuitem9">
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Full screen</property>
@@ -356,7 +384,6 @@ please make a donation.</property>
     </child>
     <child>
       <object class="GtkMenuItem" id="menuitem16">
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Video equalizer</property>
@@ -365,155 +392,7 @@ please make a donation.</property>
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="menuitem10">
-        <property name="use_action_appearance">False</property>
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Aspect ratio</property>
-        <property name="use_underline">True</property>
-        <child type="submenu">
-          <object class="GtkMenu" id="menu6">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <child>
-              <object class="GtkRadioMenuItem" id="radiomenuitem1">
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Auto</property>
-                <property name="use_underline">True</property>
-                <property name="draw_as_radio">True</property>
-                <property name="group">radiomenuitem2</property>
-                <signal name="toggled" handler="aspectRatio" swapped="no"/>
-              </object>
-            </child>
-            <child>
-              <object class="GtkSeparatorMenuItem" id="separatormenuitem5">
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkRadioMenuItem" id="menuitem22">
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">1:1</property>
-                <property name="use_underline">True</property>
-                <property name="draw_as_radio">True</property>
-                <property name="group">radiomenuitem2</property>
-                <signal name="toggled" handler="aspectRatio" swapped="no"/>
-              </object>
-            </child>
-            <child>
-              <object class="GtkRadioMenuItem" id="menuitem23">
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">3:2</property>
-                <property name="use_underline">True</property>
-                <property name="draw_as_radio">True</property>
-                <property name="group">radiomenuitem2</property>
-                <signal name="toggled" handler="aspectRatio" swapped="no"/>
-              </object>
-            </child>
-            <child>
-              <object class="GtkRadioMenuItem" id="radiomenuitem2">
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">4:3</property>
-                <property name="use_underline">True</property>
-                <property name="draw_as_radio">True</property>
-                <signal name="toggled" handler="aspectRatio" swapped="no"/>
-              </object>
-            </child>
-            <child>
-              <object class="GtkRadioMenuItem" id="menuitem24">
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">5:4</property>
-                <property name="use_underline">True</property>
-                <property name="draw_as_radio">True</property>
-                <property name="group">radiomenuitem2</property>
-                <signal name="toggled" handler="aspectRatio" swapped="no"/>
-              </object>
-            </child>
-            <child>
-              <object class="GtkRadioMenuItem" id="menuitem25">
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">14:9</property>
-                <property name="use_underline">True</property>
-                <property name="draw_as_radio">True</property>
-                <property name="group">radiomenuitem2</property>
-                <signal name="toggled" handler="aspectRatio" swapped="no"/>
-              </object>
-            </child>
-            <child>
-              <object class="GtkRadioMenuItem" id="menuitem26">
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">14:10</property>
-                <property name="use_underline">True</property>
-                <property name="draw_as_radio">True</property>
-                <property name="group">radiomenuitem2</property>
-                <signal name="toggled" handler="aspectRatio" swapped="no"/>
-              </object>
-            </child>
-            <child>
-              <object class="GtkRadioMenuItem" id="menuitem11">
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">16:9</property>
-                <property name="use_underline">True</property>
-                <property name="draw_as_radio">True</property>
-                <property name="group">radiomenuitem2</property>
-                <signal name="toggled" handler="aspectRatio" swapped="no"/>
-              </object>
-            </child>
-            <child>
-              <object class="GtkRadioMenuItem" id="menuitem27">
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">16:10</property>
-                <property name="use_underline">True</property>
-                <property name="draw_as_radio">True</property>
-                <property name="group">radiomenuitem2</property>
-                <signal name="toggled" handler="aspectRatio" swapped="no"/>
-              </object>
-            </child>
-            <child>
-              <object class="GtkRadioMenuItem" id="menuitem28">
-                <property name="use_action_appearance">False</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">2.35:1</property>
-                <property name="use_underline">True</property>
-                <property name="draw_as_radio">True</property>
-                <property name="group">radiomenuitem2</property>
-                <signal name="toggled" handler="aspectRatio" swapped="no"/>
-              </object>
-            </child>
-          </object>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="GtkSeparatorMenuItem" id="separatormenuitem4">
-        <property name="use_action_appearance">False</property>
-        <property name="can_focus">False</property>
-      </object>
-    </child>
-    <child>
       <object class="GtkMenuItem" id="menuitem43">
-        <property name="use_action_appearance">False</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Audio tracks</property>
         <property name="use_underline">True</property>
@@ -526,7 +405,6 @@ please make a donation.</property>
     <child>
       <object class="GtkImageMenuItem" id="menuitem12">
         <property name="label">gtk-media-play</property>
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="use_underline">True</property>
@@ -535,7 +413,6 @@ please make a donation.</property>
     </child>
     <child>
       <object class="GtkMenuItem" id="menuitem13">
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Details</property>
@@ -549,7 +426,6 @@ please make a donation.</property>
     <property name="can_focus">False</property>
     <child>
       <object class="GtkMenuItem" id="menuitem39">
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Canale TV</property>
@@ -558,7 +434,6 @@ please make a donation.</property>
     </child>
     <child>
       <object class="GtkMenuItem" id="menuitem38">
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Canale radio</property>
@@ -567,14 +442,12 @@ please make a donation.</property>
     </child>
     <child>
       <object class="GtkSeparatorMenuItem" id="nuconteaza">
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
       </object>
     </child>
     <child>
       <object class="GtkMenuItem" id="menuitem29">
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Hide TV-MAXE</property>
@@ -584,7 +457,6 @@ please make a donation.</property>
     </child>
     <child>
       <object class="GtkMenuItem" id="menuitem30">
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Stop</property>
@@ -594,14 +466,12 @@ please make a donation.</property>
     </child>
     <child>
       <object class="GtkSeparatorMenuItem" id="menuitem31">
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
       </object>
     </child>
     <child>
       <object class="GtkMenuItem" id="menuitem32">
-        <property name="use_action_appearance">False</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Close</property>
@@ -693,7 +563,6 @@ please make a donation.</property>
                     <property name="layout_style">start</property>
                     <child>
                       <object class="GtkButton" id="button58">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -716,7 +585,6 @@ please make a donation.</property>
                     </child>
                     <child>
                       <object class="GtkButton" id="button59">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -738,7 +606,6 @@ please make a donation.</property>
                     </child>
                     <child>
                       <object class="GtkButton" id="button60">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -844,7 +711,6 @@ please make a donation.</property>
                 <child>
                   <object class="GtkButton" id="button57">
                     <property name="label">gtk-close</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -924,7 +790,7 @@ please make a donation.</property>
                   </object>
                   <packing>
                     <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"></property>
+                    <property name="y_options"/>
                   </packing>
                 </child>
                 <child>
@@ -940,7 +806,7 @@ please make a donation.</property>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
-                    <property name="y_options"></property>
+                    <property name="y_options"/>
                     <property name="x_padding">5</property>
                     <property name="y_padding">3</property>
                   </packing>
@@ -956,7 +822,7 @@ please make a donation.</property>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
                     <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"></property>
+                    <property name="y_options"/>
                   </packing>
                 </child>
                 <child>
@@ -970,7 +836,7 @@ please make a donation.</property>
                     <property name="top_attach">2</property>
                     <property name="bottom_attach">3</property>
                     <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"></property>
+                    <property name="y_options"/>
                   </packing>
                 </child>
                 <child>
@@ -1057,7 +923,7 @@ please make a donation.</property>
                     <property name="right_attach">2</property>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
-                    <property name="y_options"></property>
+                    <property name="y_options"/>
                     <property name="x_padding">5</property>
                     <property name="y_padding">2</property>
                   </packing>
@@ -1113,7 +979,6 @@ Also, TV-Maxe daemon must be active.&lt;/b&gt;</property>
                 <child>
                   <object class="GtkButton" id="button55">
                     <property name="label">gtk-cancel</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -1129,7 +994,6 @@ Also, TV-Maxe daemon must be active.&lt;/b&gt;</property>
                 <child>
                   <object class="GtkButton" id="button56">
                     <property name="label">gtk-ok</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -1298,7 +1162,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
             <child>
               <object class="GtkCheckButton" id="shutdown_check">
                 <property name="label" translatable="yes">Also shut down my computer</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="sensitive">False</property>
                 <property name="can_focus">True</property>
@@ -1332,7 +1195,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                 <child>
                   <object class="GtkButton" id="button52">
                     <property name="label">gtk-cancel</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -1348,7 +1210,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                 <child>
                   <object class="GtkButton" id="button53">
                     <property name="label">gtk-ok</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -1439,7 +1300,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
             <property name="can_focus">False</property>
             <child>
               <object class="GtkMenuItem" id="menuitem1">
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_TV-maxe</property>
@@ -1450,7 +1310,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                     <property name="can_focus">False</property>
                     <child>
                       <object class="GtkMenuItem" id="menuitem15">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">List</property>
@@ -1462,7 +1321,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                             <child>
                               <object class="GtkImageMenuItem" id="imagemenuitem1">
                                 <property name="label" translatable="yes">Add a TV channel</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="image">image11</property>
@@ -1473,7 +1331,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                             <child>
                               <object class="GtkImageMenuItem" id="menuitem18">
                                 <property name="label" translatable="yes">Refresh channel list</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="image">image13</property>
@@ -1483,7 +1340,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                             </child>
                             <child>
                               <object class="GtkSeparatorMenuItem" id="separatormenuitem3">
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                               </object>
@@ -1491,7 +1347,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                             <child>
                               <object class="GtkImageMenuItem" id="imagemenuitem6">
                                 <property name="label" translatable="yes">Save current channellist</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="image">image27</property>
@@ -1501,14 +1356,12 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                             </child>
                             <child>
                               <object class="GtkSeparatorMenuItem" id="separatormenuitem2">
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                               </object>
                             </child>
                             <child>
                               <object class="GtkMenuItem" id="menuitem8">
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="label" translatable="yes">Deleted channels...</property>
@@ -1522,7 +1375,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                     </child>
                     <child>
                       <object class="GtkMenuItem" id="menuitem17">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Connect with PBX</property>
@@ -1533,7 +1385,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                     <child>
                       <object class="GtkImageMenuItem" id="menuitem2">
                         <property name="label">gtk-preferences</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
@@ -1549,7 +1400,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                     </child>
                     <child>
                       <object class="GtkMenuItem" id="menuitem46">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Schedule manager...</property>
@@ -1559,7 +1409,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                     </child>
                     <child>
                       <object class="GtkMenuItem" id="menuitem44">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="tooltip_text" translatable="yes">Automatically shut down TV-Maxe after a user-defined time</property>
@@ -1570,7 +1419,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                     </child>
                     <child>
                       <object class="GtkSeparatorMenuItem" id="separatormenuitem6">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
@@ -1578,7 +1426,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                     <child>
                       <object class="GtkImageMenuItem" id="imagemenuitem5">
                         <property name="label">gtk-quit</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
@@ -1592,7 +1439,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
             </child>
             <child>
               <object class="GtkMenuItem" id="menuitem3">
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_View</property>
@@ -1603,7 +1449,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                     <property name="can_focus">False</property>
                     <child>
                       <object class="GtkCheckMenuItem" id="checkmenuitem1">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Full screen</property>
@@ -1613,7 +1458,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                     </child>
                     <child>
                       <object class="GtkCheckMenuItem" id="menuitem7">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Channel list</property>
@@ -1624,14 +1468,12 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                     </child>
                     <child>
                       <object class="GtkSeparatorMenuItem" id="menuitem33">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                       </object>
                     </child>
                     <child>
                       <object class="GtkMenuItem" id="modradiomenu">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="sensitive">False</property>
                         <property name="can_focus">False</property>
@@ -1646,7 +1488,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
             </child>
             <child>
               <object class="GtkMenuItem" id="menuitem4">
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">_Help</property>
@@ -1658,7 +1499,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                     <child>
                       <object class="GtkImageMenuItem" id="imagemenuitem10">
                         <property name="label">gtk-about</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
@@ -1672,7 +1512,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
             </child>
             <child>
               <object class="GtkMenuItem" id="menuitem21">
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Donate!</property>
@@ -1971,7 +1810,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                             <property name="xscale">0</property>
                             <child>
                               <object class="GtkButton" id="button33">
-                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
@@ -2294,7 +2132,6 @@ Thank you</property>
                     <property name="can_focus">False</property>
                     <child>
                       <object class="GtkButton" id="button1">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -2316,7 +2153,6 @@ Thank you</property>
                     </child>
                     <child>
                       <object class="GtkButton" id="button2">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -2338,7 +2174,6 @@ Thank you</property>
                     </child>
                     <child>
                       <object class="GtkButton" id="button61">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -2412,7 +2247,6 @@ Thank you</property>
                     </child>
                     <child>
                       <object class="GtkButton" id="button3">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -2434,7 +2268,6 @@ Thank you</property>
                     </child>
                     <child>
                       <object class="GtkVolumeButton" id="volumebutton1">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -2606,7 +2439,6 @@ audio-volume-medium</property>
                 <child>
                   <object class="GtkButton" id="button51">
                     <property name="label" translatable="yes">...</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -2615,7 +2447,7 @@ audio-volume-medium</property>
                   <packing>
                     <property name="left_attach">2</property>
                     <property name="right_attach">3</property>
-                    <property name="x_options"></property>
+                    <property name="x_options"/>
                   </packing>
                 </child>
               </object>
@@ -2634,7 +2466,6 @@ audio-volume-medium</property>
                 <child>
                   <object class="GtkButton" id="button37">
                     <property name="label">gtk-cancel</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -2650,7 +2481,6 @@ audio-volume-medium</property>
                 <child>
                   <object class="GtkButton" id="button38">
                     <property name="label">gtk-add</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -2763,7 +2593,6 @@ audio-volume-medium</property>
                 <child>
                   <object class="GtkButton" id="button39">
                     <property name="label">gtk-cancel</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -2779,7 +2608,6 @@ audio-volume-medium</property>
                 <child>
                   <object class="GtkButton" id="button40">
                     <property name="label">gtk-save</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -3022,7 +2850,6 @@ audio-volume-medium</property>
                 <child>
                   <object class="GtkButton" id="button43">
                     <property name="label" translatable="yes">TV-Guide</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
@@ -3037,7 +2864,6 @@ audio-volume-medium</property>
                 <child>
                   <object class="GtkButton" id="button42">
                     <property name="label" translatable="yes">Report as broken</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="width_request">145</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -3053,7 +2879,6 @@ audio-volume-medium</property>
                 <child>
                   <object class="GtkButton" id="button41">
                     <property name="label">gtk-close</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -3107,7 +2932,6 @@ audio-volume-medium</property>
                 <property name="can_focus">False</property>
                 <child>
                   <object class="GtkMenuItem" id="menuitem37">
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">TV-MAXE</property>
@@ -3118,7 +2942,6 @@ audio-volume-medium</property>
                         <property name="can_focus">False</property>
                         <child>
                           <object class="GtkMenuItem" id="menuitem34">
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Change to TV Mode</property>
@@ -3129,7 +2952,6 @@ audio-volume-medium</property>
                         <child>
                           <object class="GtkImageMenuItem" id="imagemenuitem2">
                             <property name="label">gtk-preferences</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>
@@ -3139,7 +2961,6 @@ audio-volume-medium</property>
                         </child>
                         <child>
                           <object class="GtkSeparatorMenuItem" id="separatormenuitem1">
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                           </object>
@@ -3147,7 +2968,6 @@ audio-volume-medium</property>
                         <child>
                           <object class="GtkImageMenuItem" id="imagemenuitem3">
                             <property name="label">gtk-quit</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>
@@ -3161,7 +2981,6 @@ audio-volume-medium</property>
                 </child>
                 <child>
                   <object class="GtkMenuItem" id="menuitem41">
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Channels</property>
@@ -3170,7 +2989,6 @@ audio-volume-medium</property>
                 </child>
                 <child>
                   <object class="GtkMenuItem" id="menuitem42">
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Help</property>
@@ -3182,7 +3000,6 @@ audio-volume-medium</property>
                         <child>
                           <object class="GtkImageMenuItem" id="imagemenuitem4">
                             <property name="label">gtk-about</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="use_underline">True</property>
@@ -3279,7 +3096,6 @@ audio-volume-medium</property>
                     </child>
                     <child>
                       <object class="GtkButton" id="button48">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -3314,7 +3130,6 @@ audio-volume-medium</property>
                     <child>
                       <object class="GtkButton" id="button44">
                         <property name="label">gtk-go-back</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -3331,7 +3146,6 @@ audio-volume-medium</property>
                     <child>
                       <object class="GtkButton" id="button45">
                         <property name="label">gtk-media-stop</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -3348,7 +3162,6 @@ audio-volume-medium</property>
                     <child>
                       <object class="GtkButton" id="button46">
                         <property name="label">gtk-media-play</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -3365,7 +3178,6 @@ audio-volume-medium</property>
                     <child>
                       <object class="GtkButton" id="button47">
                         <property name="label">gtk-go-forward</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -3381,7 +3193,6 @@ audio-volume-medium</property>
                     </child>
                     <child>
                       <object class="GtkVolumeButton" id="volumebutton2">
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -3517,7 +3328,6 @@ remove them all from blacklist</property>
                 <child>
                   <object class="GtkButton" id="button20">
                     <property name="label">gtk-remove</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -3533,7 +3343,6 @@ remove them all from blacklist</property>
                 <child>
                   <object class="GtkButton" id="button49">
                     <property name="label">gtk-clear</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -3600,7 +3409,6 @@ remove them all from blacklist</property>
             <child>
               <object class="GtkButton" id="button19">
                 <property name="label">gtk-close</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -3703,7 +3511,6 @@ remove them all from blacklist</property>
                         </child>
                         <child>
                           <object class="GtkCheckButton" id="checkbutton4">
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
@@ -3749,7 +3556,6 @@ remove them all from blacklist</property>
                                 <property name="can_focus">False</property>
                                 <child>
                                   <object class="GtkRadioButton" id="radiobutton1">
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
@@ -3827,7 +3633,6 @@ remove them all from blacklist</property>
                                 </child>
                                 <child>
                                   <object class="GtkRadioButton" id="radiobutton2">
-                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
@@ -4062,7 +3867,6 @@ remove them all from blacklist</property>
                         </child>
                         <child>
                           <object class="GtkCheckButton" id="checkbutton1">
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
@@ -4193,7 +3997,6 @@ remove them all from blacklist</property>
                         </child>
                         <child>
                           <object class="GtkCheckButton" id="checkbutton5">
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
@@ -4268,7 +4071,6 @@ remove them all from blacklist</property>
                         </child>
                         <child>
                           <object class="GtkCheckButton" id="checkbutton2">
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
@@ -4321,7 +4123,7 @@ remove them all from blacklist</property>
                                             <property name="label" translatable="yes">Remote controller function</property>
                                           </object>
                                           <packing>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
@@ -4333,7 +4135,7 @@ remove them all from blacklist</property>
                                           <packing>
                                             <property name="left_attach">1</property>
                                             <property name="right_attach">2</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
@@ -4346,12 +4148,11 @@ remove them all from blacklist</property>
                                           <packing>
                                             <property name="top_attach">1</property>
                                             <property name="bottom_attach">2</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
                                           <object class="GtkButton" id="button6">
-                                            <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
@@ -4362,7 +4163,7 @@ remove them all from blacklist</property>
                                             <property name="right_attach">2</property>
                                             <property name="top_attach">1</property>
                                             <property name="bottom_attach">2</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
@@ -4375,12 +4176,11 @@ remove them all from blacklist</property>
                                           <packing>
                                             <property name="top_attach">2</property>
                                             <property name="bottom_attach">3</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
                                           <object class="GtkButton" id="button7">
-                                            <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
@@ -4391,7 +4191,7 @@ remove them all from blacklist</property>
                                             <property name="right_attach">2</property>
                                             <property name="top_attach">2</property>
                                             <property name="bottom_attach">3</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
@@ -4404,12 +4204,11 @@ remove them all from blacklist</property>
                                           <packing>
                                             <property name="top_attach">3</property>
                                             <property name="bottom_attach">4</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
                                           <object class="GtkButton" id="button8">
-                                            <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
@@ -4420,7 +4219,7 @@ remove them all from blacklist</property>
                                             <property name="right_attach">2</property>
                                             <property name="top_attach">3</property>
                                             <property name="bottom_attach">4</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
@@ -4433,12 +4232,11 @@ remove them all from blacklist</property>
                                           <packing>
                                             <property name="top_attach">4</property>
                                             <property name="bottom_attach">5</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
                                           <object class="GtkButton" id="button9">
-                                            <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
@@ -4449,7 +4247,7 @@ remove them all from blacklist</property>
                                             <property name="right_attach">2</property>
                                             <property name="top_attach">4</property>
                                             <property name="bottom_attach">5</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
@@ -4462,12 +4260,11 @@ remove them all from blacklist</property>
                                           <packing>
                                             <property name="top_attach">5</property>
                                             <property name="bottom_attach">6</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
                                           <object class="GtkButton" id="button10">
-                                            <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
@@ -4478,7 +4275,7 @@ remove them all from blacklist</property>
                                             <property name="right_attach">2</property>
                                             <property name="top_attach">5</property>
                                             <property name="bottom_attach">6</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
@@ -4491,12 +4288,11 @@ remove them all from blacklist</property>
                                           <packing>
                                             <property name="top_attach">6</property>
                                             <property name="bottom_attach">7</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
                                           <object class="GtkButton" id="button11">
-                                            <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
@@ -4507,7 +4303,7 @@ remove them all from blacklist</property>
                                             <property name="right_attach">2</property>
                                             <property name="top_attach">6</property>
                                             <property name="bottom_attach">7</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
@@ -4520,7 +4316,7 @@ remove them all from blacklist</property>
                                           <packing>
                                             <property name="top_attach">7</property>
                                             <property name="bottom_attach">8</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
@@ -4533,7 +4329,7 @@ remove them all from blacklist</property>
                                           <packing>
                                             <property name="top_attach">8</property>
                                             <property name="bottom_attach">9</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
@@ -4546,12 +4342,11 @@ remove them all from blacklist</property>
                                           <packing>
                                             <property name="top_attach">9</property>
                                             <property name="bottom_attach">10</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
                                           <object class="GtkButton" id="button12">
-                                            <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
@@ -4562,12 +4357,11 @@ remove them all from blacklist</property>
                                             <property name="right_attach">2</property>
                                             <property name="top_attach">8</property>
                                             <property name="bottom_attach">9</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
                                           <object class="GtkButton" id="button13">
-                                            <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
@@ -4578,12 +4372,11 @@ remove them all from blacklist</property>
                                             <property name="right_attach">2</property>
                                             <property name="top_attach">7</property>
                                             <property name="bottom_attach">8</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
                                           <object class="GtkButton" id="button14">
-                                            <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
@@ -4594,7 +4387,7 @@ remove them all from blacklist</property>
                                             <property name="right_attach">2</property>
                                             <property name="top_attach">9</property>
                                             <property name="bottom_attach">10</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
@@ -4607,12 +4400,11 @@ remove them all from blacklist</property>
                                           <packing>
                                             <property name="top_attach">10</property>
                                             <property name="bottom_attach">11</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
                                           <object class="GtkButton" id="button16">
-                                            <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
@@ -4623,7 +4415,7 @@ remove them all from blacklist</property>
                                             <property name="right_attach">2</property>
                                             <property name="top_attach">10</property>
                                             <property name="bottom_attach">11</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
@@ -4636,12 +4428,11 @@ remove them all from blacklist</property>
                                           <packing>
                                             <property name="top_attach">11</property>
                                             <property name="bottom_attach">12</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
                                           <object class="GtkButton" id="button21">
-                                            <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
@@ -4652,7 +4443,7 @@ remove them all from blacklist</property>
                                             <property name="right_attach">2</property>
                                             <property name="top_attach">11</property>
                                             <property name="bottom_attach">12</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
@@ -4665,12 +4456,11 @@ remove them all from blacklist</property>
                                           <packing>
                                             <property name="top_attach">12</property>
                                             <property name="bottom_attach">13</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
                                           <object class="GtkButton" id="button22">
-                                            <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
@@ -4681,7 +4471,7 @@ remove them all from blacklist</property>
                                             <property name="right_attach">2</property>
                                             <property name="top_attach">12</property>
                                             <property name="bottom_attach">13</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
@@ -4694,12 +4484,11 @@ remove them all from blacklist</property>
                                           <packing>
                                             <property name="top_attach">13</property>
                                             <property name="bottom_attach">14</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
                                           <object class="GtkButton" id="button23">
-                                            <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
@@ -4710,7 +4499,7 @@ remove them all from blacklist</property>
                                             <property name="right_attach">2</property>
                                             <property name="top_attach">13</property>
                                             <property name="bottom_attach">14</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
@@ -4723,12 +4512,11 @@ remove them all from blacklist</property>
                                           <packing>
                                             <property name="top_attach">14</property>
                                             <property name="bottom_attach">15</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                         <child>
                                           <object class="GtkButton" id="button54">
-                                            <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
@@ -4739,7 +4527,7 @@ remove them all from blacklist</property>
                                             <property name="right_attach">2</property>
                                             <property name="top_attach">14</property>
                                             <property name="bottom_attach">15</property>
-                                            <property name="y_options"></property>
+                                            <property name="y_options"/>
                                           </packing>
                                         </child>
                                       </object>
@@ -4794,7 +4582,7 @@ remove them all from blacklist</property>
                                         <property name="label" translatable="yes">Audio codec:</property>
                                       </object>
                                       <packing>
-                                        <property name="y_options"></property>
+                                        <property name="y_options"/>
                                       </packing>
                                     </child>
                                     <child>
@@ -4807,7 +4595,7 @@ remove them all from blacklist</property>
                                       <packing>
                                         <property name="top_attach">1</property>
                                         <property name="bottom_attach">2</property>
-                                        <property name="y_options"></property>
+                                        <property name="y_options"/>
                                       </packing>
                                     </child>
                                     <child>
@@ -4820,7 +4608,7 @@ remove them all from blacklist</property>
                                       <packing>
                                         <property name="top_attach">2</property>
                                         <property name="bottom_attach">3</property>
-                                        <property name="y_options"></property>
+                                        <property name="y_options"/>
                                       </packing>
                                     </child>
                                     <child>
@@ -4838,7 +4626,7 @@ remove them all from blacklist</property>
                                       <packing>
                                         <property name="left_attach">1</property>
                                         <property name="right_attach">2</property>
-                                        <property name="y_options"></property>
+                                        <property name="y_options"/>
                                         <property name="x_padding">5</property>
                                         <property name="y_padding">2</property>
                                       </packing>
@@ -4860,7 +4648,7 @@ remove them all from blacklist</property>
                                         <property name="right_attach">2</property>
                                         <property name="top_attach">1</property>
                                         <property name="bottom_attach">2</property>
-                                        <property name="y_options"></property>
+                                        <property name="y_options"/>
                                         <property name="x_padding">5</property>
                                         <property name="y_padding">2</property>
                                       </packing>
@@ -4882,7 +4670,7 @@ remove them all from blacklist</property>
                                         <property name="right_attach">2</property>
                                         <property name="top_attach">2</property>
                                         <property name="bottom_attach">3</property>
-                                        <property name="y_options"></property>
+                                        <property name="y_options"/>
                                         <property name="x_padding">5</property>
                                         <property name="y_padding">2</property>
                                       </packing>
@@ -5002,7 +4790,6 @@ remove them all from blacklist</property>
                         <child>
                           <object class="GtkLinkButton" id="linkbutton1">
                             <property name="label" translatable="yes">More subscriptions lists</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -5031,7 +4818,6 @@ remove them all from blacklist</property>
                         <child>
                           <object class="GtkButton" id="button34">
                             <property name="label">gtk-add</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -5047,7 +4833,6 @@ remove them all from blacklist</property>
                         <child>
                           <object class="GtkButton" id="button35">
                             <property name="label">gtk-edit</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -5063,7 +4848,6 @@ remove them all from blacklist</property>
                         <child>
                           <object class="GtkButton" id="button36">
                             <property name="label">gtk-delete</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
@@ -5122,7 +4906,6 @@ remove them all from blacklist</property>
             <child>
               <object class="GtkButton" id="button5">
                 <property name="label">gtk-cancel</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -5138,7 +4921,6 @@ remove them all from blacklist</property>
             <child>
               <object class="GtkButton" id="button4">
                 <property name="label">gtk-save</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -5272,7 +5054,6 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
             <child>
               <object class="GtkButton" id="button15">
                 <property name="label">gtk-cancel</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -5559,7 +5340,6 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                 <child>
                   <object class="GtkButton" id="button17">
                     <property name="label">gtk-close</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -5666,7 +5446,6 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
             <child>
               <object class="GtkButton" id="button18">
                 <property name="label">gtk-close</property>
-                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -5771,7 +5550,6 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                 <child>
                   <object class="GtkButton" id="button24">
                     <property name="label">gtk-close</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -5889,7 +5667,7 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                   </object>
                   <packing>
                     <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"></property>
+                    <property name="y_options"/>
                   </packing>
                 </child>
                 <child>
@@ -5905,7 +5683,7 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                   <packing>
                     <property name="left_attach">1</property>
                     <property name="right_attach">2</property>
-                    <property name="y_options"></property>
+                    <property name="y_options"/>
                   </packing>
                 </child>
                 <child>
@@ -5919,7 +5697,7 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
                     <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"></property>
+                    <property name="y_options"/>
                   </packing>
                 </child>
                 <child>
@@ -5937,7 +5715,7 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                     <property name="right_attach">2</property>
                     <property name="top_attach">1</property>
                     <property name="bottom_attach">2</property>
-                    <property name="y_options"></property>
+                    <property name="y_options"/>
                   </packing>
                 </child>
                 <child>
@@ -5972,7 +5750,6 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                     <child>
                       <object class="GtkButton" id="button50">
                         <property name="label" translatable="yes">Select...</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -5990,7 +5767,7 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                     <property name="right_attach">2</property>
                     <property name="top_attach">3</property>
                     <property name="bottom_attach">4</property>
-                    <property name="y_options"></property>
+                    <property name="y_options"/>
                   </packing>
                 </child>
                 <child>
@@ -6004,7 +5781,7 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                     <property name="top_attach">2</property>
                     <property name="bottom_attach">3</property>
                     <property name="x_options">GTK_FILL</property>
-                    <property name="y_options"></property>
+                    <property name="y_options"/>
                   </packing>
                 </child>
                 <child>
@@ -6023,7 +5800,7 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                     <property name="right_attach">2</property>
                     <property name="top_attach">2</property>
                     <property name="bottom_attach">3</property>
-                    <property name="y_options"></property>
+                    <property name="y_options"/>
                   </packing>
                 </child>
               </object>
@@ -6041,7 +5818,6 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                 <child>
                   <object class="GtkButton" id="button25">
                     <property name="label">gtk-cancel</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -6057,7 +5833,6 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                 <child>
                   <object class="GtkButton" id="button26">
                     <property name="label">gtk-add</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -6143,7 +5918,7 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkVScale" id="vscale1">
+                          <object class="GtkVScale" id="brightness_scale">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="adjustment">adjustment3</property>
@@ -6207,7 +5982,7 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkVScale" id="vscale2">
+                          <object class="GtkVScale" id="contrast_scale">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="adjustment">adjustment4</property>
@@ -6270,7 +6045,7 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkVScale" id="vscale3">
+                          <object class="GtkVScale" id="saturation_scale">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="adjustment">adjustment5</property>
@@ -6310,19 +6085,45 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkButton" id="button30">
-                    <property name="label">gtk-revert-to-saved</property>
-                    <property name="use_action_appearance">False</property>
+                  <object class="GtkHBox" id="hbox14">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
-                    <signal name="clicked" handler="videoEQreset" swapped="no"/>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkLabel" id="label107">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Aspect ratio:</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="padding">5</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkComboBox" id="aspect_ratio_combo">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="model">aspect_ratios</property>
+                        <signal name="changed" handler="setAspectRatio" swapped="no"/>
+                        <child>
+                          <object class="GtkCellRendererText" id="cellrenderer_aspect"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
-                    <property name="padding">25</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -6340,9 +6141,25 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                 <property name="can_focus">False</property>
                 <property name="layout_style">end</property>
                 <child>
+                  <object class="GtkButton" id="eq_revert_btn">
+                    <property name="label">gtk-revert-to-saved</property>
+                    <property name="visible">True</property>
+                    <property name="sensitive">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                    <signal name="clicked" handler="videoEQreset" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="padding">25</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
                   <object class="GtkButton" id="button29">
                     <property name="label">gtk-cancel</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -6352,13 +6169,12 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">0</property>
+                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkButton" id="button27">
                     <property name="label">gtk-ok</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
@@ -6368,7 +6184,7 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
@@ -6528,7 +6344,6 @@ and watch the channels offered by this service directly from TV-MAXE.</property>
                 <child>
                   <object class="GtkCheckButton" id="checkbutton3">
                     <property name="label" translatable="yes">Connect automatically when TV-MAXE starts.</property>
-                    <property name="use_action_appearance">False</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -6563,7 +6378,6 @@ and watch the channels offered by this service directly from TV-MAXE.</property>
                     <child>
                       <object class="GtkButton" id="button31">
                         <property name="label">gtk-cancel</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -6579,7 +6393,6 @@ and watch the channels offered by this service directly from TV-MAXE.</property>
                     <child>
                       <object class="GtkButton" id="button32">
                         <property name="label">gtk-connect</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>

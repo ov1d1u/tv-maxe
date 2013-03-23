@@ -89,7 +89,7 @@ class TVMaxe:
                                   "drawLogo" : self.drawLogo,
                                   "showAbout" : self.showAbout,
                                   "hideAbout" : self.hideAbout,
-                                  "aspectRatio" : self.aspectRatio,
+                                  "setAspectRatio" : self.setAspectRatio,
                                   "mouseRemote" : self.mouseRemote,
                                   "ShowDetails" : self.ShowDetails,
                                   "hideShowDetails" : self.hideShowDetails,
@@ -298,6 +298,7 @@ class TVMaxe:
             loadmod = __import__('external')
             self.mediaPlayer = loadmod.Player(self.playCallback, self.settingsManager.player)
         self.Recorder = Recorder(self.playCallback, xid, copy.copy(self.mediaPlayer), self.settingsManager)
+        self.setAspectRatio()
 
     def initPlayer(self):
         self.isFullscreen = False
@@ -311,39 +312,6 @@ class TVMaxe:
         self.gui.get_object('volumebutton1').set_value(self.settingsManager.volume)
         self.gui.get_object('volumebutton2').set_value(self.settingsManager.volume)
         self.setContrast()
-        self.setupRatio()
-
-    def setupRatio(self):
-        if self.settingsManager.aspectratio == 'Auto':
-            self.gui.get_object('radiomenuitem1').set_active(True)
-            self.aspectRatio(self.gui.get_object('radiomenuitem1'))
-        elif self.settingsManager.aspectratio == '1:1':
-            self.gui.get_object('menuitem22').set_active(True)
-            self.aspectRatio(self.gui.get_object('menuitem22'))
-        elif self.settingsManager.aspectratio == '3:2':
-            self.gui.get_object('menuitem23').set_active(True)
-            self.aspectRatio(self.gui.get_object('menuitem23'))
-        elif self.settingsManager.aspectratio == '4:3':
-            self.gui.get_object('radiomenuitem2').set_active(True)
-            self.aspectRatio(self.gui.get_object('radiomenuitem2'))
-        elif self.settingsManager.aspectratio == '5:4':
-            self.gui.get_object('menuitem24').set_active(True)
-            self.aspectRatio(self.gui.get_object('menuitem24'))
-        elif self.settingsManager.aspectratio == '14:9':
-            self.gui.get_object('menuitem25').set_active(True)
-            self.aspectRatio(self.gui.get_object('menuitem25'))
-        elif self.settingsManager.aspectratio == '14:10':
-            self.gui.get_object('menuitem26').set_active(True)
-            self.aspectRatio(self.gui.get_object('menuitem26'))
-        elif self.settingsManager.aspectratio == '16:9':
-            self.gui.get_object('menuitem11').set_active(True)
-            self.aspectRatio(self.gui.get_object('menuitem11'))
-        elif self.settingsManager.aspectratio == '16:10':
-            self.gui.get_object('menuitem27').set_active(True)
-            self.aspectRatio(self.gui.get_object('menuitem27'))
-        elif self.settingsManager.aspectratio == '2.35:1':
-            self.gui.get_object('menuitem26').set_active(True)
-            self.aspectRatio(self.gui.get_object('menuitem26'))
 
     def drawLogo(self, obj=None, event=None):
         if hasattr(self, 'mediaPlayer'):
@@ -1169,49 +1137,6 @@ class TVMaxe:
             self.gui.get_object('volumebutton1').set_value(value)
             self.gui.get_object('volumebutton2').set_value(value)
 
-    def aspectRatio(self, obj):
-        activ = obj.get_child().get_label()
-        if activ == 'Auto':
-            self.mediaPlayer.setRatio(0)
-            self.gui.get_object('aspectframe1').set(0.5, 0.5, float(gtk.gdk.screen_width()) / float(gtk.gdk.screen_height()), False)
-            self.settingsManager.saveAspect(activ)
-        elif activ == '1:1':
-            self.mediaPlayer.setRatio(1)
-            self.gui.get_object('aspectframe1').set(0.5, 0.5, 1, False)
-            self.settingsManager.saveAspect(activ)
-        elif activ == '3:2':
-            self.mediaPlayer.setRatio(1.5)
-            self.gui.get_object('aspectframe1').set(0.5, 0.5, 1.5, False)
-            self.settingsManager.saveAspect(activ)
-        elif activ == '4:3':
-            self.mediaPlayer.setRatio(1.33)
-            self.gui.get_object('aspectframe1').set(0.5, 0.5, 1.33, False)
-            self.settingsManager.saveAspect(activ)
-        elif activ == '5:4':
-            self.mediaPlayer.setRatio(1.25)
-            self.gui.get_object('aspectframe1').set(0.5, 0.5, 1.25, False)
-            self.settingsManager.saveAspect(activ)
-        elif activ == '14:9':
-            self.mediaPlayer.setRatio(1.55)
-            self.gui.get_object('aspectframe1').set(0.5, 0.5, 1.55, False)
-            self.settingsManager.saveAspect(activ)
-        elif activ == '14:10':
-            self.mediaPlayer.setRatio(1.4)
-            self.gui.get_object('aspectframe1').set(0.5, 0.5, 1.4, False)
-            self.settingsManager.saveAspect(activ)
-        elif activ == '16:9':
-            self.mediaPlayer.setRatio(1.77)
-            self.gui.get_object('aspectframe1').set(0.5, 0.5, 1.77, False)
-            self.settingsManager.saveAspect(activ)
-        elif activ == '16:10':
-            self.mediaPlayer.setRatio(1.6)
-            self.gui.get_object('aspectframe1').set(0.5, 0.5, 1.6, False)
-            self.settingsManager.saveAspect(activ)
-        elif activ == '2.35:1':
-            self.mediaPlayer.setRatio(2.35)
-            self.gui.get_object('aspectframe1').set(0.5, 0.5, 2.35, False)
-            self.settingsManager.saveAspect(activ)
-
     def nextChannel(self, obj=None):
         page = self.gui.get_object('notebook2').get_current_page()
         if page == 0:
@@ -1802,38 +1727,80 @@ class TVMaxe:
         self.gui.get_object('radiostore').clear()
         threading.Thread(target=self.getChannels, args=(self.populateList,)).start()
 
+    def setAspectRatioCombo(self):
+        iter = self.gui.get_object('aspect_ratios').get_iter_root()
+        while iter:
+            if self.gui.get_object('aspect_ratios').get_value(iter, 0) == self.settingsManager.aspectratio:
+                break
+            iter = self.gui.get_object('aspect_ratios').iter_next(iter)
+        if iter == None:
+            iter = self.gui.get_object('aspect_ratios').get_iter_root()
+        self.gui.get_object('aspect_ratio_combo').set_active_iter(iter)
+
     def showVideoEQ(self, obj, event=None):
+        self.setAspectRatioCombo()
+        self.setContrast()
         self.gui.get_object('window8').show()
         self.gui.get_object('window8').present()
+        self.gui.get_object('eq_revert_btn').set_sensitive(False)
 
     def hideVideoEQ(self, obj, event=None):
         self.gui.get_object('window8').hide()
         return True
 
     def videoEQreset(self, obj, event=None):
-        self.gui.get_object('vscale1').set_value(0)
-        self.gui.get_object('vscale2').set_value(0)
-        self.gui.get_object('vscale3').set_value(0)
+        self.gui.get_object('eq_revert_btn').set_sensitive(False)
+        self.showVideoEQ(None)
 
     def applyContrast(self, obj, event=None):
-        b = self.gui.get_object('vscale1').get_value()
-        c = self.gui.get_object('vscale2').get_value()
-        s = self.gui.get_object('vscale3').get_value()
+        self.gui.get_object('eq_revert_btn').set_sensitive(True)
+        b = self.gui.get_object('brightness_scale').get_value()
+        c = self.gui.get_object('contrast_scale').get_value()
+        s = self.gui.get_object('saturation_scale').get_value()
         self.mediaPlayer.adjustImage(b, c, s)
 
     def saveContrast(self, obj, event=None):
-        b = self.gui.get_object('vscale1').get_value()
-        c = self.gui.get_object('vscale2').get_value()
-        s = self.gui.get_object('vscale3').get_value()
+        b = self.gui.get_object('brightness_scale').get_value()
+        c = self.gui.get_object('contrast_scale').get_value()
+        s = self.gui.get_object('saturation_scale').get_value()
         self.mediaPlayer.adjustImage(b, c, s)
         self.settingsManager.saveContrast(b, c, s)
+        self.settingsManager.saveAspect(self.gui.get_object('aspect_ratio_combo').get_active_text())
         self.gui.get_object('window8').hide()
 
     def setContrast(self):
         values = self.settingsManager.getContrast()
-        self.gui.get_object('vscale1').set_value(values['b'])
-        self.gui.get_object('vscale2').set_value(values['c'])
-        self.gui.get_object('vscale3').set_value(values['s'])
+        self.gui.get_object('brightness_scale').set_value(values['b'])
+        self.gui.get_object('contrast_scale').set_value(values['c'])
+        self.gui.get_object('saturation_scale').set_value(values['s'])
+
+    def setAspectRatio(self, obj=None):
+        if obj == None:                 # set aspect ratio on startup
+            self.setAspectRatioCombo()
+        active = self.gui.get_object('aspect_ratio_combo').get_active()
+        self.mediaPlayer.setRatio(active)
+
+        if active == 0:
+            self.gui.get_object('aspectframe1').set(0.5, 0.5, float(gtk.gdk.screen_width()) / float(gtk.gdk.screen_height()), False)
+        elif active == 1:
+            self.gui.get_object('aspectframe1').set(0.5, 0.5, 1, False)
+        elif active == 2:
+            self.gui.get_object('aspectframe1').set(0.5, 0.5, 1.5, False)
+        elif active == 3:
+            self.gui.get_object('aspectframe1').set(0.5, 0.5, 1.33, False)
+        elif active == 4:
+            self.gui.get_object('aspectframe1').set(0.5, 0.5, 1.25, False)
+        elif active == 5:
+            self.gui.get_object('aspectframe1').set(0.5, 0.5, 1.55, False)
+        elif active == 6:
+            self.gui.get_object('aspectframe1').set(0.5, 0.5, 1.4, False)
+        elif active == 7:
+            self.gui.get_object('aspectframe1').set(0.5, 0.5, 1.77, False)
+        elif active == 8:
+            self.gui.get_object('aspectframe1').set(0.5, 0.5, 1.6, False)
+        elif active == 9:
+            self.gui.get_object('aspectframe1').set(0.5, 0.5, 2.35, False)
+        self.gui.get_object('eq_revert_btn').set_sensitive(True)
 
     def showAddStream(self, obj, event=None):
         self.gui.get_object('entry3').set_text('')
