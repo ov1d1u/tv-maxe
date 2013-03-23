@@ -945,7 +945,7 @@ class TVMaxe:
             gobject.source_remove(self.getTime_to)
         self.recordingMode = False
         if errorlevel != 1:                                             # errorlevel == 1 means 'retry channel'
-            self.mediaPlayer.stop()
+            threading.Thread(target=self.mediaPlayer.stop, args=()).start()
             if errorlevel == 0:                                     # errorlevel 0 means that the channel wasn't stopped because of an error
                 self.logo = [0, 'TV-MAXE ' + str(version)]
             if hasattr(self.mediaPlayer, 'recQuality'):             # if we just recorded smth, trim the recording to match the recorded length

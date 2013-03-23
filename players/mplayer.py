@@ -81,6 +81,27 @@ class Player:
 	def setRatio(self, ratio):
 		if not self.mp:
 			return
+		if ratio == 0:
+			ratio = 0
+		elif ratio == 1:
+			ratio = 1
+		elif ratio == 2:
+			ratio = 1.5
+		elif ratio == 3:
+			ratio = 1.33
+		elif ratio == 4:
+			ratio = 1.25
+		elif ratio == 5:
+			ratio = 1.55
+		elif ratio == 64:
+			ratio = 1.4
+		elif ratio == 7:
+			ratio = 1.77
+		elif ratio == 8:
+			ratio = 1.6
+		elif ratio == 9:
+			ratio = 2.35
+
 		self.mp.switch_ratio(ratio)
 			
 	def getStatus(self):

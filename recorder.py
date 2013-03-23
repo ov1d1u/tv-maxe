@@ -62,7 +62,7 @@ class Recorder:
 	def playResume(self, url):
 		time.sleep(2)
 		self.saveAs = self.saveAs.replace('file://', '')
-		exe = ['ffmpeg', '-y', '-i', url, '-acodec', 'copy', '-vcodec', 'copy', '-f', 'matroska', self.tmpfile,
+		exe = ['ffmpeg', '-y', '-i', url, '-acodec', 'copy', '-vcodec', 'copy', '-f', self.settingsManager.getFormat(), self.tmpfile,
 				'-acodec', self.settingsManager.getACodec(), '-ab', '128k', '-vcodec', self.settingsManager.getVCodec(), 
 				'-qscale', str(self.settingsManager.getRecQuality()), '-f', self.settingsManager.getFormat(), os.path.splitext(self.saveAs)[0]]
 		print ' '.join(exe)

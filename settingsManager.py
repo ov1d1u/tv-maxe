@@ -100,7 +100,7 @@ class settingsManager:
 			config.set('Recording', 'recordingQuality', '5')
 			config.set('Recording', 'acodec', 'copy')
 			config.set('Recording', 'vcodec', 'copy')
-			config.set('Recording', 'format', 'avi')
+			config.set('Recording', 'format', 'matroska')
 			
 			with open(cfgfile, 'wb') as configfile:
 				config.write(configfile)

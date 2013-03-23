@@ -66,21 +66,21 @@ class Player:
 			ratio = None
 		elif ratio == 1:
 			ratio = '1:1'
-		elif ratio == 1.5:
+		elif ratio == 2:
 			ratio = '3:2'
-		elif ratio == 1.33:
+		elif ratio == 3:
 			ratio = '4:3'
-		elif ratio == 1.25:
+		elif ratio == 4:
 			ratio = '5:4'
-		elif ratio == 1.55:
+		elif ratio == 5:
 			ratio = '14:9'
-		elif ratio == 1.4:
+		elif ratio == 6:
 			ratio = '14:10'
-		elif ratio == 1.77:
+		elif ratio == 7:
 			ratio = '16:9'
-		elif ratio == 1.6:
+		elif ratio == 8:
 			ratio = '16:10'
-		elif ratio == 2.35:
+		elif ratio == 9:
 			ratio = '2.35:1'
 		if hasattr(self, 'mp'):
 			self.mp.video_set_aspect_ratio(ratio)

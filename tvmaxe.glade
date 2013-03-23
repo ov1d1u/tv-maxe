@@ -386,7 +386,7 @@ please make a donation.</property>
       <object class="GtkMenuItem" id="menuitem16">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="label" translatable="yes">Video equalizer</property>
+        <property name="label" translatable="yes">Video settings</property>
         <property name="use_underline">True</property>
         <signal name="activate" handler="showVideoEQ" swapped="no"/>
       </object>
@@ -647,7 +647,7 @@ please make a donation.</property>
                         <property name="model">scheduleStore</property>
                         <child>
                           <object class="GtkTreeViewColumn" id="treeviewcolumn4">
-                            <property name="title" translatable="yes">Ora</property>
+                            <property name="title" translatable="yes">Time</property>
                             <child>
                               <object class="GtkCellRendererText" id="cellrenderertext17"/>
                               <attributes>
@@ -658,7 +658,7 @@ please make a donation.</property>
                         </child>
                         <child>
                           <object class="GtkTreeViewColumn" id="treeviewcolumn8">
-                            <property name="title" translatable="yes">Nume</property>
+                            <property name="title" translatable="yes">Name</property>
                             <property name="expand">True</property>
                             <child>
                               <object class="GtkCellRendererText" id="cellrenderertext18"/>
@@ -5868,7 +5868,7 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
     <property name="width_request">320</property>
     <property name="height_request">240</property>
     <property name="can_focus">False</property>
-    <property name="title" translatable="yes">Video equalizer</property>
+    <property name="title" translatable="yes">Video settings</property>
     <property name="icon">tvmaxe.png</property>
     <signal name="delete-event" handler="hideVideoEQ" swapped="no"/>
     <child>
