@@ -89,7 +89,6 @@ class TVMaxe:
                                   "drawLogo" : self.drawLogo,
                                   "showAbout" : self.showAbout,
                                   "hideAbout" : self.hideAbout,
-                                  "setAspectRatio" : self.setAspectRatio,
                                   "mouseRemote" : self.mouseRemote,
                                   "ShowDetails" : self.ShowDetails,
                                   "hideShowDetails" : self.hideShowDetails,
@@ -100,7 +99,7 @@ class TVMaxe:
                                   "addNewChannel" : self.addNewChannel,
                                   "deleteChannel" : self.deleteChannel,
                                   "showVideoEQ" : self.showVideoEQ,
-                                  "applyContrast" : self.applyContrast,
+                                  "applyVideoSettings" : self.applyVideoSettings,
                                   "hideVideoEQ" : self.hideVideoEQ,
                                   "videoEQreset" : self.videoEQreset,
                                   "saveContrast" : self.saveContrast,
@@ -298,7 +297,7 @@ class TVMaxe:
             loadmod = __import__('external')
             self.mediaPlayer = loadmod.Player(self.playCallback, self.settingsManager.player)
         self.Recorder = Recorder(self.playCallback, xid, copy.copy(self.mediaPlayer), self.settingsManager)
-        self.setAspectRatio()
+        self.applyVideoSettings()
 
     def initPlayer(self):
         self.isFullscreen = False
@@ -311,7 +310,7 @@ class TVMaxe:
             self.HTTPremote.start(int(float(self.settingsManager.remoteport)))
         self.gui.get_object('volumebutton1').set_value(self.settingsManager.volume)
         self.gui.get_object('volumebutton2').set_value(self.settingsManager.volume)
-        self.setContrast()
+        self.applyVideoSettings()
 
     def drawLogo(self, obj=None, event=None):
         if hasattr(self, 'mediaPlayer'):
@@ -917,16 +916,14 @@ class TVMaxe:
                     menu.append(item)
                 self.gui.get_object('menuitem43').set_submenu(menu)
                 self.gui.get_object('menuitem43').show()
-                self.gui.get_object('separatormenuitem4').show()
             else:
                 self.gui.get_object('menuitem43').remove_submenu()
                 self.gui.get_object('menuitem43').hide()
-                self.gui.get_object('separatormenuitem4').hide()
         self.gui.get_object('image1').set_from_stock(gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_BUTTON)
         self.keysimulator.src = gobject.timeout_add(60000, self.keysimulator.start)
         self.mediaPlayer.volume(self.gui.get_object('volumebutton1').get_value())
         gobject.timeout_add(2000, self.showEPG)
-        self.applyContrast(None)
+        gobject.timeout_add(500, self.applyVideoSettings, None)
         if hasattr(self, 'blinkRecord_source'):
             gobject.source_remove(self.blinkRecord_source)
             del self.blinkRecord_source
@@ -1727,7 +1724,14 @@ class TVMaxe:
         self.gui.get_object('radiostore').clear()
         threading.Thread(target=self.getChannels, args=(self.populateList,)).start()
 
-    def setAspectRatioCombo(self):
+    def loadVideoEQ(self):
+        # setup b, c, s sliders
+        values = self.settingsManager.getContrast()
+        self.gui.get_object('brightness_scale').set_value(values['b'])
+        self.gui.get_object('contrast_scale').set_value(values['c'])
+        self.gui.get_object('saturation_scale').set_value(values['s'])
+
+        # setup aspect ratio combo
         iter = self.gui.get_object('aspect_ratios').get_iter_root()
         while iter:
             if self.gui.get_object('aspect_ratios').get_value(iter, 0) == self.settingsManager.aspectratio:
@@ -1738,8 +1742,7 @@ class TVMaxe:
         self.gui.get_object('aspect_ratio_combo').set_active_iter(iter)
 
     def showVideoEQ(self, obj, event=None):
-        self.setAspectRatioCombo()
-        self.setContrast()
+        self.loadVideoEQ()
         self.gui.get_object('window8').show()
         self.gui.get_object('window8').present()
         self.gui.get_object('eq_revert_btn').set_sensitive(False)
@@ -1752,13 +1755,6 @@ class TVMaxe:
         self.gui.get_object('eq_revert_btn').set_sensitive(False)
         self.showVideoEQ(None)
 
-    def applyContrast(self, obj, event=None):
-        self.gui.get_object('eq_revert_btn').set_sensitive(True)
-        b = self.gui.get_object('brightness_scale').get_value()
-        c = self.gui.get_object('contrast_scale').get_value()
-        s = self.gui.get_object('saturation_scale').get_value()
-        self.mediaPlayer.adjustImage(b, c, s)
-
     def saveContrast(self, obj, event=None):
         b = self.gui.get_object('brightness_scale').get_value()
         c = self.gui.get_object('contrast_scale').get_value()
@@ -1768,17 +1764,19 @@ class TVMaxe:
         self.settingsManager.saveAspect(self.gui.get_object('aspect_ratio_combo').get_active_text())
         self.gui.get_object('window8').hide()
 
-    def setContrast(self):
-        values = self.settingsManager.getContrast()
-        self.gui.get_object('brightness_scale').set_value(values['b'])
-        self.gui.get_object('contrast_scale').set_value(values['c'])
-        self.gui.get_object('saturation_scale').set_value(values['s'])
+    def applyVideoSettings(self, obj=None, event=None):
+        if obj == None:                 # set on startup
+            self.loadVideoEQ()
+        else:
+            self.gui.get_object('eq_revert_btn').set_sensitive(True)
 
-    def setAspectRatio(self, obj=None):
-        if obj == None:                 # set aspect ratio on startup
-            self.setAspectRatioCombo()
+        # set video eq
+        b = self.gui.get_object('brightness_scale').get_value()
+        c = self.gui.get_object('contrast_scale').get_value()
+        s = self.gui.get_object('saturation_scale').get_value()
+
+        # set aspect ratio
         active = self.gui.get_object('aspect_ratio_combo').get_active()
-        self.mediaPlayer.setRatio(active)
 
         if active == 0:
             self.gui.get_object('aspectframe1').set(0.5, 0.5, float(gtk.gdk.screen_width()) / float(gtk.gdk.screen_height()), False)
@@ -1800,7 +1798,10 @@ class TVMaxe:
             self.gui.get_object('aspectframe1').set(0.5, 0.5, 1.6, False)
         elif active == 9:
             self.gui.get_object('aspectframe1').set(0.5, 0.5, 2.35, False)
-        self.gui.get_object('eq_revert_btn').set_sensitive(True)
+        
+        # apply settings to video backend
+        self.mediaPlayer.setRatio(active)
+        self.mediaPlayer.adjustImage(b, c, s)
 
     def showAddStream(self, obj, event=None):
         self.gui.get_object('entry3').set_text('')
