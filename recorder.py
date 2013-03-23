@@ -134,10 +134,22 @@ class Recorder:
 	def doAdjust(self, seconds):
 		if not os.path.exists(os.path.splitext(self.saveAs)[0]):
 			return
-		tempname = os.path.splitext(self.saveAs)[0] + '_'
-		os.rename(os.path.splitext(self.saveAs)[0], tempname)
-		exe = ['ffmpeg', '-y', '-i', tempname, '-acodec', 'copy', '-vcodec', 'copy', '-t', str(seconds), '-f', 'matroska', self.saveAs]
+		self.tempname = os.path.splitext(self.saveAs)[0] + '_'
+		os.rename(os.path.splitext(self.saveAs)[0], self.tempname)
+		exe = ['ffmpeg', '-y', '-i', self.tempname, '-acodec', 'copy', '-vcodec', 'copy', '-t', str(seconds), '-f', self.settingsManager.getFormat(), self.saveAs]
 		print ' '.join(exe)
 		self.ffmpeg = subprocess.Popen(exe, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
 		self.ffmpeg.wait()
-		os.unlink(tempname)
+		if os.path.getsize(self.saveAs) < 10240:	# workaround if conversion failed
+			os.unlink(self.saveAs)
+			os.rename(self.tempname, self.saveAs)
+		else:
+			os.unlink(self.tempname)
+
+	def quit(self):
+		if hasattr(self, 'ffmpeg'):
+			try:
+				self.ffmpeg.kill()
+				os.unlink(self.tempname)
+			except:
+				pass

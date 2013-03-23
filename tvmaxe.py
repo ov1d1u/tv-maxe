@@ -2658,6 +2658,7 @@ class TVMaxe:
         self.settingsManager.saveVolume()
         self.SocketServer.close()
         self.StatusImage.clean()
+        self.Recorder.quit()
         os._exit(0)
 
     def initHTTPRemote(self):
