@@ -319,19 +319,27 @@ class settingsManager:
 		return result
 			
 	def guess_shutdown_cmd(self):
-		des = {	'xfce' : 'xfce4-session-logout --halt',
-			'gnome' : 'gnome-session-save --shutdown-dialog',
-			'ubuntu' : 'gnome-session-quit --power-off', 
-			'mate' : 'mate-session-save --shutdown-dialog'}
-		desktop_session = os.environ['DESKTOP_SESSION']
-		if des.has_key(desktop_session):
-			return des[desktop_session]
-		elif des.has_key(desktop_session) == 'default':
-			if os.environ['KDE_FULL_SESSION']:
-				return 'qdbus org.kde.ksmserver /KSMServer logout 0 2 2'
-			if os.environ['MATECORBA_SOCKETDIR']:
-				return des['mate']
-		else:
+		try:
+			des = {	'xfce' : 'xfce4-session-logout --halt',
+				'gnome' : 'gnome-session-save --shutdown-dialog',
+				'ubuntu' : 'gnome-session-quit --power-off', 
+				'mate' : 'mate-session-save --shutdown-dialog'}
+			if os.environ.has_key('DESKTOP_SESSION'):
+				desktop_session = os.environ['DESKTOP_SESSION']
+			else:
+				desktop_session = 'default'
+
+			if des.has_key(desktop_session):
+				return des[desktop_session]
+
+			elif os.environ['DESKTOP_SESSION'] == 'default':
+				if os.environ.has_key('KDE_FULL_SESSION') and os.environ['KDE_FULL_SESSION']:
+					return 'qdbus org.kde.ksmserver /KSMServer logout 0 2 2'
+				if os.environ.has_key('MATECORBA_SOCKETDIR') and os.environ['MATECORBA_SOCKETDIR']:
+					return des['mate']
+			else:
+				return 'shutdown -h now'
+		except:
 			return 'shutdown -h now'
 				
 	def Save(self, obj):
