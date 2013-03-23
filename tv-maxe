@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+#################################################################
+#		TV-MAXE 0.07 Launcher Script			#
+#	Author : V3n3RiX [ at ] MandrivaUsers [ dot ] ro	#
+#################################################################
+
+
+# Version 0.07 comes with massive amount of changes, so old settings
+# might not be compatible. TV-MAXE should migrate them automathically
+# to the new format, but if for some reason it fails, errors can occur.
+# 
+# This script checks the presence of old settings, backs them up
+# and it asures that tv-maxe is started from a clean environment.
+
+workdir=/home/$USER/
+
+backup_old_settings ()
+{	
+	cd $workdir
+	for i in .tvmaxe .tvmaxe_subscriptions; do
+		if [ -f $i ] ; then
+			tar zcvf $i.tar.gz $i
+			rm -rf $i
+		fi
+	done
+}
+
+launch_tvmaxe ()
+{
+	cd /usr/share/tv-maxe/
+	python tvmaxe.py
+}
+
+doit ()
+{
+	backup_old_settings
+	launch_tvmaxe
+}
+
+doit
+exit 0

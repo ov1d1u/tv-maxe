@@ -1,0 +1,616 @@
+# Romanian translations for PACKAGE package.
+# Copyright (C) 2011 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Ovidiu D. Nițan <nitanovidiu@gmail.com>, 2011.
+# Daniel Serbanescu <cyber19rider@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-04-16 15:41+0300\n"
+"PO-Revision-Date: 2011-08-17 11:25+0200\n"
+"Last-Translator: Daniel Serbanescu <cyber19rider@gmail.com>\n"
+"Language-Team: TV-MAXE Project\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : (n==0 || (n%100 > 0 && n%100 < "
+"20)) ? 1 : 2);;\n"
+"X-Generator: Virtaal 0.6.1\n"
+
+#: tvmaxe.ui.h:1
+msgid "(c) 2010 - Ovidiu D. Niţan"
+msgstr "(c) 2010 - Ovidiu D. Nițan"
+
+#: tvmaxe.ui.h:2
+msgid "0000000000000000"
+msgstr "0000000000000000"
+
+#: tvmaxe.ui.h:3
+msgid "00:00:00"
+msgstr "00:00:00"
+
+#: tvmaxe.ui.h:4
+msgid "14:10"
+msgstr "14:10"
+
+#: tvmaxe.ui.h:5
+msgid "14:9"
+msgstr "14:9"
+
+#: tvmaxe.ui.h:6
+msgid "16:10"
+msgstr "16:10"
+
+#: tvmaxe.ui.h:7
+msgid "16:9"
+msgstr "16:9"
+
+#: tvmaxe.ui.h:8
+msgid "1:1"
+msgstr "1:1"
+
+#: tvmaxe.ui.h:9
+msgid "2.35:1"
+msgstr "2.35:1"
+
+#: tvmaxe.ui.h:10
+msgid "3:2"
+msgstr "3:2"
+
+#: tvmaxe.ui.h:11
+msgid "4:3"
+msgstr "4:3"
+
+#: tvmaxe.ui.h:12
+msgid "5:4"
+msgstr "5:4"
+
+#: tvmaxe.ui.h:13
+msgid "<a href=\"http://pbxtv.ro/\">Don't have an account? Click here</a>"
+msgstr "<a href=\"http://pbxtv.ro/\">Nu aveți un cont? Clic aici</a>"
+
+#: tvmaxe.ui.h:14
+msgid "<b>Channel +</b>"
+msgstr "<b>Canal +</b>"
+
+#: tvmaxe.ui.h:15
+msgid "<b>Channel -</b>"
+msgstr "<b>Canal -</b>"
+
+#: tvmaxe.ui.h:16
+msgid "<b>Down</b>"
+msgstr "<b>Jos</b>"
+
+#: tvmaxe.ui.h:17
+msgid "<b>Full screen</b>"
+msgstr "<b>Ecran complet</b>"
+
+#: tvmaxe.ui.h:18
+msgid "<b>Info</b>"
+msgstr "<b>Info</b>"
+
+#: tvmaxe.ui.h:19
+msgid "<b>Mute</b>"
+msgstr "<b>Mut</b>"
+
+#: tvmaxe.ui.h:20
+msgid "<b>OK</b>"
+msgstr "<b>OK</b>"
+
+#: tvmaxe.ui.h:21
+msgid "<b>Play/Pause</b>"
+msgstr "<b>Redare/Pauză</b>"
+
+#: tvmaxe.ui.h:22
+msgid ""
+"<b>Press a button to assign this function to it.</b> \n"
+"TV-MAXE will detect the pressed button and it will automatically asign to "
+"this function.\n"
+"If you don't want to set a key, press <b>Cancel</b>."
+msgstr ""
+"<b>Apăsați butonul căruia doriți să îi atribuiți această funcție.</b> \n"
+"TV-MAXE va detecta automat butonul apăsat și îi va atribui acestuia funcția "
+"dorită.\n"
+"Dacă v-ați răzgândit, apăsați <b>Anulează</b>."
+
+#: tvmaxe.ui.h:25
+msgid "<b>Quit</b>"
+msgstr "<b>Ieșire</b>"
+
+#: tvmaxe.ui.h:26
+msgid "<b>Show an icon in systray:</b>"
+msgstr "<b>Arată o iconiță în zona de notificare a sistemului:</b>"
+
+#: tvmaxe.ui.h:27
+msgid "<b>Static ports:</b>"
+msgstr "<b>Porturi statice:</b>"
+
+#: tvmaxe.ui.h:28
+msgid "<b>Stop</b>"
+msgstr "<b>Stop</b>"
+
+#: tvmaxe.ui.h:29
+msgid "<b>Up</b>"
+msgstr "<b>Sus</b>"
+
+#: tvmaxe.ui.h:30
+msgid "<b>Use an external application:</b>"
+msgstr "<b>Folosiți un player extern:</b>"
+
+#: tvmaxe.ui.h:31
+msgid "<b>Use internal player:</b>"
+msgstr "<b>Folosiți un player intern:</b>"
+
+#: tvmaxe.ui.h:32
+msgid "<b>Volume +</b>"
+msgstr "<b>Volum +</b>"
+
+#: tvmaxe.ui.h:33
+msgid "<b>Volume -</b>"
+msgstr "<b>Volum -</b>"
+
+#: tvmaxe.ui.h:34
+msgid ""
+"<span size=\"small\"><i>To view all PBX channels, <a href=\"http://www."
+"pbxtelecom.ro/\">buy a subscription</a></i></span>"
+msgstr ""
+"<span size=\"small\"><i>Pentru a putea viziona toate canalele de la PBX, <a "
+"href=\"http://www.pbxtelecom.ro/\">cumpărați un abonament</a></i></span>"
+
+#: tvmaxe.ui.h:35
+msgid "<span size=\"xx-large\"><b>TV Guide</b></span>"
+msgstr "<span size=\"xx-large\"><b>Ghid TV</b></span>"
+
+#: tvmaxe.ui.h:36
+msgid "About TV-MAXE"
+msgstr "Despre TV-MAXE"
+
+#: tvmaxe.ui.h:37
+msgid "Action button"
+msgstr "Buton de acționare"
+
+#: tvmaxe.ui.h:38
+msgid "Add"
+msgstr "Adaugă"
+
+#: tvmaxe.ui.h:39
+msgid "Add a TV channel"
+msgstr "Adaugă un canal TV"
+
+#: tvmaxe.ui.h:40
+msgid "Add new stream"
+msgstr "Adaugă un flux"
+
+#: tvmaxe.ui.h:41
+msgid "Add subscription"
+msgstr "Adaugă un abonament"
+
+#: tvmaxe.ui.h:42
+msgid "Address:"
+msgstr "Adresă:"
+
+#: tvmaxe.ui.h:43
+msgid "Aspect ratio"
+msgstr "Raport aspect"
+
+#: tvmaxe.ui.h:44
+msgid "Availability:"
+msgstr "Disponibilitate:"
+
+#: tvmaxe.ui.h:45
+msgid "Brightness"
+msgstr "Luminozitate"
+
+#: tvmaxe.ui.h:46
+msgid "Change to TV Mode"
+msgstr "Comută la modul TV"
+
+#: tvmaxe.ui.h:47
+msgid "Channel info"
+msgstr "Informații despre canal"
+
+#: tvmaxe.ui.h:48
+msgid "Channel list"
+msgstr "Listă cu canale"
+
+#: tvmaxe.ui.h:49
+msgid "Channel name: "
+msgstr "Nume canal: "
+
+#: tvmaxe.ui.h:50
+msgid "Channels"
+msgstr "Canale"
+
+#: tvmaxe.ui.h:51
+msgid "Close"
+msgstr "Închide"
+
+#: tvmaxe.ui.h:52
+msgid "Connect automatically when TV-MAXE starts."
+msgstr "Conectare automată la pornirea programului."
+
+#: tvmaxe.ui.h:53
+msgid "Connect with PBX"
+msgstr "Conectați-vă cu PBX"
+
+#: tvmaxe.ui.h:54
+msgid "Connecting..."
+msgstr "Se conectează..."
+
+#: tvmaxe.ui.h:55
+msgid "Contrast"
+msgstr "Contrast"
+
+#: tvmaxe.ui.h:56
+msgid "Day:"
+msgstr "Zi:"
+
+#: tvmaxe.ui.h:57
+msgid "Details"
+msgstr "Detalii"
+
+#: tvmaxe.ui.h:58
+msgid "Donate!"
+msgstr "Donează!"
+
+#: tvmaxe.ui.h:59
+msgid "Edit"
+msgstr "Editează"
+
+#: tvmaxe.ui.h:60
+msgid "Edit subscription"
+msgstr "Editează abonamentul"
+
+#: tvmaxe.ui.h:61
+msgid "Enable remote controller"
+msgstr "Activează telecomanda"
+
+#: tvmaxe.ui.h:62
+msgid "Enabled"
+msgstr "Activată"
+
+#: tvmaxe.ui.h:63
+msgid "From:"
+msgstr "Aparține de:"
+
+#: tvmaxe.ui.h:64
+msgid "Full screen"
+msgstr "Ecran complet"
+
+#: tvmaxe.ui.h:65
+msgid "General"
+msgstr "Generale"
+
+#: tvmaxe.ui.h:66
+msgid "Help"
+msgstr "Ajutor"
+
+#: tvmaxe.ui.h:67
+msgid "Hide TV-MAXE"
+msgstr "Ascunde TV-MAXE"
+
+#: tvmaxe.ui.h:68
+msgid ""
+"If you like this application and if you want to support its development,\n"
+"please make a donation."
+msgstr ""
+"Dacă vă place acest program și doriți să oferiți o mână de ajutor,\n"
+"faceți o donație."
+
+#: tvmaxe.ui.h:70
+msgid "Incoming port:"
+msgstr "Port intrare:"
+
+#: tvmaxe.ui.h:71
+msgid "List"
+msgstr "Listă"
+
+#: tvmaxe.ui.h:72
+msgid "MPlayer"
+msgstr "MPlayer"
+
+#: tvmaxe.ui.h:73
+msgid "Name"
+msgstr "Nume"
+
+#: tvmaxe.ui.h:74
+msgid "Name:"
+msgstr "Nume:"
+
+#: tvmaxe.ui.h:75
+msgid "Outgoing port:"
+msgstr "Port ieșire:"
+
+#: tvmaxe.ui.h:76
+msgid "Password:"
+msgstr "Parolă:"
+
+#: tvmaxe.ui.h:77
+msgid "Player backend:"
+msgstr "Modul de redare:"
+
+#: tvmaxe.ui.h:78
+msgid "Player init command:"
+msgstr "Comandă pentru a inițializa playerul:"
+
+#: tvmaxe.ui.h:79
+msgid "Preferences"
+msgstr "Preferințe"
+
+#: tvmaxe.ui.h:80
+msgid "Press OK or middle-click to play this channel"
+msgstr "Apăsați OK sau clic-mijloc pentru a reda acest canal"
+
+#: tvmaxe.ui.h:81
+msgid "Protocol:"
+msgstr "Protocol:"
+
+#: tvmaxe.ui.h:82
+msgid "Radio Channels"
+msgstr "Canale Radio"
+
+#: tvmaxe.ui.h:83
+msgid "Radio mode"
+msgstr "Mod radio"
+
+#: tvmaxe.ui.h:84
+msgid "Received:"
+msgstr "Recepționat:"
+
+#: tvmaxe.ui.h:85
+msgid "Record"
+msgstr "Înregistrează"
+
+#: tvmaxe.ui.h:86
+msgid "Recording..."
+msgstr "Se înregistrează..."
+
+#: tvmaxe.ui.h:87
+msgid "Refresh channel list"
+msgstr "Actualizează lista cu canale"
+
+#: tvmaxe.ui.h:88
+msgid "Remote controller"
+msgstr "Telecomandă"
+
+#: tvmaxe.ui.h:89
+msgid "Remote controller function"
+msgstr "Funcția telecomenzii"
+
+#: tvmaxe.ui.h:90
+msgid "Remove channel"
+msgstr "Elimină canalul"
+
+#: tvmaxe.ui.h:91
+msgid "Report as broken"
+msgstr "Raportează ca defect"
+
+#: tvmaxe.ui.h:92
+msgid "Saturation"
+msgstr "Saturație"
+
+#: tvmaxe.ui.h:93
+msgid "Save as: "
+msgstr "Salvează ca: "
+
+#: tvmaxe.ui.h:94
+msgid "Show name"
+msgstr "Afișează numele"
+
+#: tvmaxe.ui.h:95
+msgid "Stop"
+msgstr "Stop"
+
+#: tvmaxe.ui.h:96
+msgid "Subscriptions"
+msgstr "Abonamente"
+
+#: tvmaxe.ui.h:97
+msgid "TV Channel:"
+msgstr "Canal TV:"
+
+#: tvmaxe.ui.h:98
+msgid "TV Channel: "
+msgstr "Canal TV: "
+
+#: tvmaxe.ui.h:99
+msgid "TV Channels"
+msgstr "Canale TV"
+
+#: tvmaxe.ui.h:100
+msgid "TV Guide"
+msgstr "Ghid TV"
+
+#: tvmaxe.ui.h:101
+msgid "TV-Guide"
+msgstr "Ghid TV"
+
+#: tvmaxe.ui.h:102
+msgid "TV-MAXE"
+msgstr "TV-MAXE"
+
+#: tvmaxe.ui.h:103
+msgid ""
+"TV-MAXE is free software, but its development is not easy. If you like this "
+"application and if you want to show your support, please make a donation "
+"using the button below.\n"
+"Thank you"
+msgstr ""
+"TV-MAXE este gratuit, dar dezvoltarea sa nu este floare la ureche. Dacă vă "
+"place acest program și doriți să vă arătați recunoștința pentru munca depusă "
+"la crearea acestuia faceți o donație utilizând butonul de mai jos.\n"
+"Mulțumim"
+
+#: tvmaxe.ui.h:105
+msgid "TV-MAXE: Radio"
+msgstr "TV-MAXE: Radio"
+
+#: tvmaxe.ui.h:106
+msgid "URL"
+msgstr "URL"
+
+#: tvmaxe.ui.h:107
+msgid "URL: "
+msgstr "URL:"
+
+#: tvmaxe.ui.h:108
+msgid "Username:"
+msgstr "Nume utilizator:"
+
+#: tvmaxe.ui.h:109
+msgid "VLC"
+msgstr "VLC"
+
+#: tvmaxe.ui.h:110
+msgid "Video equalizer"
+msgstr "Egalizator video"
+
+#: tvmaxe.ui.h:111
+msgid "Waiting remote controller..."
+msgstr "Se așteaptă semnal de la telecomandă..."
+
+#: tvmaxe.ui.h:112
+msgid "Watch TV channels for free"
+msgstr "Vizionați gratuit canale TV"
+
+#: tvmaxe.ui.h:113
+msgid ""
+"You can add TV or radio streams by giving the name and the stream address. "
+"Please note that TV-MAXE only supports sop://, http://, mms:// and rmtp://. "
+"rtmpe:// is not supported!"
+msgstr ""
+"Puteți adăuga canale TV sau radio specificând numele și adresa stream-ului. "
+"Rețineți faptul că TV-MAXE suportă doar protocoalele sop://, http://, mms:// "
+"și rmtp://. Nu este suportat rtmpe://!"
+
+#: tvmaxe.ui.h:114
+msgid ""
+"You can log in on your PBX account\n"
+"and watch the channels offered by this service directly from TV-MAXE."
+msgstr ""
+"Vă puteți autentifica cu contul dumneavoastră de PBX\n"
+"și puteți viziona canalele TV oferite prin acest serviciu direct din TV-"
+"MAXE."
+
+#: tvmaxe.ui.h:116
+msgid ""
+"You can record the TV or radio stream by using this feature.\n"
+"Select a channel and set the file to save the stream\n"
+"and press Record."
+msgstr ""
+"Puteți înregistra o transmisie TV sau radio folosind această "
+"funcționalitate.\n"
+"Selectați un canal și apoi fișierul destinație al înregistrării \n"
+"iar apoi apăsați Înregistrare."
+
+#: tvmaxe.ui.h:119
+msgid "_Help"
+msgstr "_Ajutor"
+
+#: tvmaxe.ui.h:120
+msgid "_TV-maxe"
+msgstr "_TV-maxe"
+
+#: tvmaxe.ui.h:121
+msgid "_View"
+msgstr "_Vizualizare"
+
+#: tvmaxe.ui.h:122
+msgid "label"
+msgstr "etichetă"
+
+msgid "Ready"
+msgstr "Pregătit"
+
+msgid "Error"
+msgstr "Eroare"
+
+msgid "Cannot fetch the channel list. Aborting..."
+msgstr "Nu s-a putut prelua lista cu canale. Se abandonează..."
+
+msgid "Cannot read user's channel list"
+msgstr "Nu s-a putut citi lista personală de canale"
+
+msgid "Loading "
+msgstr "Se încarcă "
+
+msgid "Stopped"
+msgstr "Oprit"
+
+msgid "Sunday"
+msgstr "Duminică"
+
+msgid "Monday"
+msgstr "Luni"
+
+msgid "Tuesday"
+msgstr "Marți"
+
+msgid "Wednesday"
+msgstr "Miercuri"
+
+msgid "Thursday"
+msgstr "Joi"
+
+msgid "Friday"
+msgstr "Vineri"
+
+msgid "Saturday"
+msgstr "Sâmbătă"
+
+msgid "Save as..."
+msgstr "Salvează ca..."
+
+msgid "Channels: "
+msgstr "Canale: "
+
+msgid "Add a Radio channel"
+msgstr "Adaugă un canal radio"
+
+msgid "This channel already exists"
+msgstr "Acest canal există deja"
+
+msgid "Name and URL required!"
+msgstr "Numele și URL-ul sunt imperative!"
+
+msgid "Show TV-MAXE"
+msgstr "Arată TV-MAXE"
+
+msgid "appears to be broken"
+msgstr "posibil nefuncțional"
+
+msgid "Reported"
+msgstr "Raportat"
+
+msgid "Connecting... "
+msgstr "Se conectează... "
+
+msgid "Loading..."
+msgstr "Se încarcă..."
+
+msgid "Playing: "
+msgstr "Se redă: "
+
+msgid "Error, retrying..."
+msgstr "Eroare, se încearcă din nou..."
+
+msgid "SopCast module has stopped running. This mean that the stream is no longer available or that \'sp-sc-auth\' process cannot be executed."
+msgstr ""
+"Clientul de Sopcast s-a încheiat prematur. Acest lucru poate însemna că "
+"fluxul nu mai funcționează sau că procesul \\'sp-sc\\' nu a putut fi "
+"inițializat."
+
+msgid "Local source"
+msgstr "Sursă locală"
+
+msgid "Incoming and outgoing ports cannot be the same. Please review your settings."
+msgstr ""
+"Porturile de intrare și ieșire nu pot fi aceleași. Revizuiți configurația."
+
+msgid "Configuration error"
+msgstr "Eroare în configurație"
+
+msgid "More subscriptions lists"
+msgstr "Mai multe liste de canale"

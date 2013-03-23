@@ -1,0 +1,614 @@
+# Romanian translations for PACKAGE package.
+# Copyright (C) 2011 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Ovidiu D. Nițan <nitanovidiu@gmail.com>, 2011.
+# Daniel Serbanescu <cyber19rider@gmail.com>, 2011.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-04-16 15:41+0300\n"
+"PO-Revision-Date: 2011-08-17 10:54+0200\n"
+"Last-Translator: Daniel Serbanescu <cyber19rider@gmail.com>\n"
+"Language-Team: TV-MAXE Project\n"
+"Language: da\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Virtaal 0.6.1\n"
+
+#: tvmaxe.ui.h:1
+msgid "(c) 2010 - Ovidiu D. Niţan"
+msgstr "(c) 2010 - Ovidiu D. Nițan"
+
+#: tvmaxe.ui.h:2
+msgid "0000000000000000"
+msgstr "0000000000000000"
+
+#: tvmaxe.ui.h:3
+msgid "00:00:00"
+msgstr "00:00:00"
+
+#: tvmaxe.ui.h:4
+msgid "14:10"
+msgstr "14:10"
+
+#: tvmaxe.ui.h:5
+msgid "14:9"
+msgstr "14:9"
+
+#: tvmaxe.ui.h:6
+msgid "16:10"
+msgstr "16:10"
+
+#: tvmaxe.ui.h:7
+msgid "16:9"
+msgstr "16:9"
+
+#: tvmaxe.ui.h:8
+msgid "1:1"
+msgstr "1:1"
+
+#: tvmaxe.ui.h:9
+msgid "2.35:1"
+msgstr "2.35:1"
+
+#: tvmaxe.ui.h:10
+msgid "3:2"
+msgstr "3:2"
+
+#: tvmaxe.ui.h:11
+msgid "4:3"
+msgstr "4:3"
+
+#: tvmaxe.ui.h:12
+msgid "5:4"
+msgstr "5:4"
+
+#: tvmaxe.ui.h:13
+msgid "<a href=\"http://pbxtv.ro/\">Don't have an account? Click here</a>"
+msgstr "<a href=\"http://pbxtv.ro/\">Har du ikke en konto? Klik her</a>"
+
+#: tvmaxe.ui.h:14
+msgid "<b>Channel +</b>"
+msgstr "<b>Kanal +</b>"
+
+#: tvmaxe.ui.h:15
+msgid "<b>Channel -</b>"
+msgstr "<b>Kanal -</b>"
+
+#: tvmaxe.ui.h:16
+msgid "<b>Down</b>"
+msgstr "<b>Ned</b>"
+
+#: tvmaxe.ui.h:17
+msgid "<b>Full screen</b>"
+msgstr "<b>Fuld skærme</b>"
+
+#: tvmaxe.ui.h:18
+msgid "<b>Info</b>"
+msgstr "<b>Oplysninger</b>"
+
+#: tvmaxe.ui.h:19
+msgid "<b>Mute</b>"
+msgstr "<b>Lydløs</b>"
+
+#: tvmaxe.ui.h:20
+msgid "<b>OK</b>"
+msgstr "<b>OK</b>"
+
+#: tvmaxe.ui.h:21
+msgid "<b>Play/Pause</b>"
+msgstr "<b>Afspil/Pause</b>"
+
+#: tvmaxe.ui.h:22
+msgid ""
+"<b>Press a button to assign this function to it.</b> \n"
+"TV-MAXE will detect the pressed button and it will automatically asign to "
+"this function.\n"
+"If you don't want to set a key, press <b>Cancel</b>."
+msgstr ""
+"<b>Tryk på en tast for at tildele denne funktion til det.</b> \n"
+"TV-MAXE vil registrere trykket på tasten, og det vil automatisk tildele "
+"denne funktion.\n"
+"Hvis du ikke ønsker at indstille en tast, tryk <b>Annuller</b>."
+
+#: tvmaxe.ui.h:25
+msgid "<b>Quit</b>"
+msgstr "<b>Afslut</b>"
+
+#: tvmaxe.ui.h:26
+msgid "<b>Show an icon in systray:</b>"
+msgstr "<b>Vis et ikon i systembakken:</b>"
+
+#: tvmaxe.ui.h:27
+msgid "<b>Static ports:</b>"
+msgstr "<b>Statisk porte:</b>"
+
+#: tvmaxe.ui.h:28
+msgid "<b>Stop</b>"
+msgstr "<b>Stoppe</b>"
+
+#: tvmaxe.ui.h:29
+msgid "<b>Up</b>"
+msgstr "<b>Op</b>"
+
+#: tvmaxe.ui.h:30
+msgid "<b>Use an external application:</b>"
+msgstr "<b>Brug et eksternt applikation:</b>"
+
+#: tvmaxe.ui.h:31
+msgid "<b>Use internal player:</b>"
+msgstr "<b>Brug intern afspiller:</b>"
+
+#: tvmaxe.ui.h:32
+msgid "<b>Volume +</b>"
+msgstr "<b>Bind +</b>"
+
+#: tvmaxe.ui.h:33
+msgid "<b>Volume -</b>"
+msgstr "<b>Bind -</b>"
+
+#: tvmaxe.ui.h:34
+msgid ""
+"<span size=\"small\"><i>To view all PBX channels, <a href=\"http://www."
+"pbxtelecom.ro/\">buy a subscription</a></i></span>"
+msgstr ""
+"<span size=\"small\"><i>For at se alle PBX-kanaler, <a "
+"href=\"http://www.pbxtelecom.ro/\">købe et abonnement</a></i></span>"
+
+#: tvmaxe.ui.h:35
+msgid "<span size=\"xx-large\"><b>TV Guide</b></span>"
+msgstr "<span size=\"xx-large\"><b>Fjernsynsguide</b></span>"
+
+#: tvmaxe.ui.h:36
+msgid "About TV-MAXE"
+msgstr "Om TV-MAXE"
+
+#: tvmaxe.ui.h:37
+msgid "Action button"
+msgstr "Handlingsknappen"
+
+#: tvmaxe.ui.h:38
+msgid "Add"
+msgstr "Tilføj"
+
+#: tvmaxe.ui.h:39
+msgid "Add a TV channel"
+msgstr "Tilføj en fjernsynskanal"
+
+#: tvmaxe.ui.h:40
+msgid "Add new stream"
+msgstr "Tilføj en ny strøm"
+
+#: tvmaxe.ui.h:41
+msgid "Add subscription"
+msgstr "Tilføj en abonnement"
+
+#: tvmaxe.ui.h:42
+msgid "Address:"
+msgstr "Adresse:"
+
+#: tvmaxe.ui.h:43
+msgid "Aspect ratio"
+msgstr "Aspektforhold"
+
+#: tvmaxe.ui.h:44
+msgid "Availability:"
+msgstr "Tilgængelighed:"
+
+#: tvmaxe.ui.h:45
+msgid "Brightness"
+msgstr "Lysstyrke"
+
+#: tvmaxe.ui.h:46
+msgid "Change to TV Mode"
+msgstr "Skift til fjernsynmode"
+
+#: tvmaxe.ui.h:47
+msgid "Channel info"
+msgstr "Kanaloplysninger"
+
+#: tvmaxe.ui.h:48
+msgid "Channel list"
+msgstr "Kanalliste"
+
+#: tvmaxe.ui.h:49
+msgid "Channel name: "
+msgstr "Kanalnavn: "
+
+#: tvmaxe.ui.h:50
+msgid "Channels"
+msgstr "Kanaler"
+
+#: tvmaxe.ui.h:51
+msgid "Close"
+msgstr "Luk"
+
+#: tvmaxe.ui.h:52
+msgid "Connect automatically when TV-MAXE starts."
+msgstr "Tilslut automatisk når TV-MAXE starter."
+
+#: tvmaxe.ui.h:53
+msgid "Connect with PBX"
+msgstr "Tilslut med PBX"
+
+#: tvmaxe.ui.h:54
+msgid "Connecting..."
+msgstr "Tilslutning..."
+
+#: tvmaxe.ui.h:55
+msgid "Contrast"
+msgstr "Kontrast"
+
+#: tvmaxe.ui.h:56
+msgid "Day:"
+msgstr "Dag:"
+
+#: tvmaxe.ui.h:57
+msgid "Details"
+msgstr "Oplysninger"
+
+#: tvmaxe.ui.h:58
+msgid "Donate!"
+msgstr "Donere!"
+
+#: tvmaxe.ui.h:59
+msgid "Edit"
+msgstr "Redigere"
+
+#: tvmaxe.ui.h:60
+msgid "Edit subscription"
+msgstr "Redigere abonnement"
+
+#: tvmaxe.ui.h:61
+msgid "Enable remote controller"
+msgstr "Aktiver fjernbetjening"
+
+#: tvmaxe.ui.h:62
+msgid "Enabled"
+msgstr "Aktiveret"
+
+#: tvmaxe.ui.h:63
+msgid "From:"
+msgstr "Fra:"
+
+#: tvmaxe.ui.h:64
+msgid "Full screen"
+msgstr "Fuld skærm"
+
+#: tvmaxe.ui.h:65
+msgid "General"
+msgstr "Generelt"
+
+#: tvmaxe.ui.h:66
+msgid "Help"
+msgstr "Hjælp"
+
+#: tvmaxe.ui.h:67
+msgid "Hide TV-MAXE"
+msgstr "Skjule TV-MAXE"
+
+#: tvmaxe.ui.h:68
+msgid ""
+"If you like this application and if you want to support its development,\n"
+"please make a donation."
+msgstr ""
+"Hvis du kan lide denne applikation, og hvis du ønsker at støtte dens "
+"udvikling,\n"
+"giv en donation."
+
+#: tvmaxe.ui.h:70
+msgid "Incoming port:"
+msgstr "Indgående port:"
+
+#: tvmaxe.ui.h:71
+msgid "List"
+msgstr "Liste"
+
+#: tvmaxe.ui.h:72
+msgid "MPlayer"
+msgstr "MPlayer"
+
+#: tvmaxe.ui.h:73
+msgid "Name"
+msgstr "Navn"
+
+#: tvmaxe.ui.h:74
+msgid "Name:"
+msgstr "Navn:"
+
+#: tvmaxe.ui.h:75
+msgid "Outgoing port:"
+msgstr "Udgående port:"
+
+#: tvmaxe.ui.h:76
+msgid "Password:"
+msgstr "Adgangskode:"
+
+#: tvmaxe.ui.h:77
+msgid "Player backend:"
+msgstr "Afspiller backend:"
+
+#: tvmaxe.ui.h:78
+msgid "Player init command:"
+msgstr "Afspiller initialisere kommando:"
+
+#: tvmaxe.ui.h:79
+msgid "Preferences"
+msgstr "Indstillinger"
+
+#: tvmaxe.ui.h:80
+msgid "Press OK or middle-click to play this channel"
+msgstr "Tryk OK eller midt-klik for at afspille denne kanalen"
+
+#: tvmaxe.ui.h:81
+msgid "Protocol:"
+msgstr "Protokol:"
+
+#: tvmaxe.ui.h:82
+msgid "Radio Channels"
+msgstr "Radiokanaler"
+
+#: tvmaxe.ui.h:83
+msgid "Radio mode"
+msgstr "Radiomode"
+
+#: tvmaxe.ui.h:84
+msgid "Received:"
+msgstr "Modtaget:"
+
+#: tvmaxe.ui.h:85
+msgid "Record"
+msgstr "Optage"
+
+#: tvmaxe.ui.h:86
+msgid "Recording..."
+msgstr "Optagelse..."
+
+#: tvmaxe.ui.h:87
+msgid "Refresh channel list"
+msgstr "Opdater kanalliste"
+
+#: tvmaxe.ui.h:88
+msgid "Remote controller"
+msgstr "Fjernbetjening"
+
+#: tvmaxe.ui.h:89
+msgid "Remote controller function"
+msgstr "Fjernbetjeningsfunktion"
+
+#: tvmaxe.ui.h:90
+msgid "Remove channel"
+msgstr "Fjern kanal"
+
+#: tvmaxe.ui.h:91
+msgid "Report as broken"
+msgstr "Anmeld som knækkede"
+
+#: tvmaxe.ui.h:92
+msgid "Saturation"
+msgstr "Mætning"
+
+#: tvmaxe.ui.h:93
+msgid "Save as: "
+msgstr "Gem som: "
+
+#: tvmaxe.ui.h:94
+msgid "Show name"
+msgstr "Vis navn"
+
+#: tvmaxe.ui.h:95
+msgid "Stop"
+msgstr "Stoppe"
+
+#: tvmaxe.ui.h:96
+msgid "Subscriptions"
+msgstr "Abonnementer"
+
+#: tvmaxe.ui.h:97
+msgid "TV Channel:"
+msgstr "Fjernsynskanal:"
+
+#: tvmaxe.ui.h:98
+msgid "TV Channel: "
+msgstr "Fjernsynskanal: "
+
+#: tvmaxe.ui.h:99
+msgid "TV Channels"
+msgstr "Fjernsynskanaler"
+
+#: tvmaxe.ui.h:100
+msgid "TV Guide"
+msgstr "Fjernsynsguide"
+
+#: tvmaxe.ui.h:101
+msgid "TV-Guide"
+msgstr "Fjernsynsguide"
+
+#: tvmaxe.ui.h:102
+msgid "TV-MAXE"
+msgstr "TV-MAXE"
+
+#: tvmaxe.ui.h:103
+msgid ""
+"TV-MAXE is free software, but its development is not easy. If you like this "
+"application and if you want to show your support, please make a donation "
+"using the button below.\n"
+"Thank you"
+msgstr ""
+"TV-MAXE er gratis software, men dens udvikling er ikke let.Hvis du kan lide "
+"denne applikation, og hvis du ønsker at vise din støtte, giv en donation ved "
+"hjælp af knappen nedenfor.\n"
+"Tak"
+
+#: tvmaxe.ui.h:105
+msgid "TV-MAXE: Radio"
+msgstr "TV-MAXE: Radio"
+
+#: tvmaxe.ui.h:106
+msgid "URL"
+msgstr "URL"
+
+#: tvmaxe.ui.h:107
+msgid "URL: "
+msgstr "URL:"
+
+#: tvmaxe.ui.h:108
+msgid "Username:"
+msgstr "Brugernavn:"
+
+#: tvmaxe.ui.h:109
+msgid "VLC"
+msgstr "VLC"
+
+#: tvmaxe.ui.h:110
+msgid "Video equalizer"
+msgstr "Video-equalizer"
+
+#: tvmaxe.ui.h:111
+msgid "Waiting remote controller..."
+msgstr "Venter fjernbetjening..."
+
+#: tvmaxe.ui.h:112
+msgid "Watch TV channels for free"
+msgstr "Se fjernsynskanaler gratis"
+
+#: tvmaxe.ui.h:113
+msgid ""
+"You can add TV or radio streams by giving the name and the stream address. "
+"Please note that TV-MAXE only supports sop://, http://, mms:// and rmtp://. "
+"rtmpe:// is not supported!"
+msgstr ""
+"Du kan tilføje fjernsynskanaler eller radiokanaler ved at give navd og "
+"strømmer adresse. Bemærk venligst kun understøtter kun  sop://, http://, "
+"mms:// şi rtmp://. rtmpe:// er ikke understøttet!"
+
+#: tvmaxe.ui.h:114
+msgid ""
+"You can log in on your PBX account\n"
+"and watch the channels offered by this service directly from TV-MAXE."
+msgstr ""
+"Du kan logge ind på din PBX-konto\n"
+"og se kanalerne der tilbydes af denne service direkte fra TV-MAXE."
+
+#: tvmaxe.ui.h:116
+msgid ""
+"You can record the TV or radio stream by using this feature.\n"
+"Select a channel and set the file to save the stream\n"
+"and press Record."
+msgstr ""
+"Du optage fjernsyn eller radio strømerne ved at bruge denne funktion.\n"
+"Vælg en kanal og sæt den fil til at gemme strømmen\n"
+"og trykke på Optag."
+
+#: tvmaxe.ui.h:119
+msgid "_Help"
+msgstr "_Hjælp"
+
+#: tvmaxe.ui.h:120
+msgid "_TV-maxe"
+msgstr "_TV-maxe"
+
+#: tvmaxe.ui.h:121
+msgid "_View"
+msgstr "_Vis"
+
+#: tvmaxe.ui.h:122
+msgid "label"
+msgstr "etiket"
+
+msgid "Ready"
+msgstr "Klar"
+
+msgid "Error"
+msgstr "Fejl"
+
+msgid "Cannot fetch the channel list. Aborting..."
+msgstr "Kan ikke hente kanallisten. Afbrydning..."
+
+msgid "Cannot read user's channel list"
+msgstr "Kan ikke læse brugerens kanallisten"
+
+msgid "Loading "
+msgstr "Indlæser"
+
+msgid "Stopped"
+msgstr "Stoppet"
+
+msgid "Sunday"
+msgstr "Søndag"
+
+msgid "Monday"
+msgstr "Mandag"
+
+msgid "Tuesday"
+msgstr "Tirsdag"
+
+msgid "Wednesday"
+msgstr "Onsdag"
+
+msgid "Thursday"
+msgstr "Torsdag"
+
+msgid "Friday"
+msgstr "Fredag"
+
+msgid "Saturday"
+msgstr "Lørdag"
+
+msgid "Save as..."
+msgstr "Gem som..."
+
+msgid "Channels: "
+msgstr "Kanaler: "
+
+msgid "Add a Radio channel"
+msgstr "Tilføj en radiokanalen"
+
+msgid "This channel already exists"
+msgstr "Denne kanal findes allerede"
+
+msgid "Name and URL required!"
+msgstr "Navn og URL er obligatorisk!"
+
+msgid "Show TV-MAXE"
+msgstr "Vis TV-MAXE"
+
+msgid "appears to be broken"
+msgstr "Ser ud til at blive brudt"
+
+msgid "Reported"
+msgstr "Rapportet"
+
+msgid "Connecting... "
+msgstr "Tilslutning... "
+
+msgid "Loading..."
+msgstr "Indlæser..."
+
+msgid "Playing: "
+msgstr "Afspilning: "
+
+msgid "Error, retrying..."
+msgstr "Fejl, prøvering igen..."
+
+msgid "SopCast module has stopped running. This mean that the stream is no longer available or that 'sp-sc-auth' process cannot be executed."
+msgstr ""
+"SopCast modulen har stoppet. Dette betyder at strømeren ikke længere er "
+"tilgængelig eller 'sp-sc-auth'-processen kan ikke udføres."
+
+msgid "Local source"
+msgstr "Lokal kilde"
+
+msgid "Incoming and outgoing ports cannot be the same. Please review your settings."
+msgstr ""
+"Indgående og udgående porte kan ikke være den samme. Du bedes gennemgå dine "
+"indstillinger."
+
+msgid "Configuration error"
+msgstr "Konfigurationsfejl"
+
+msgid "More subscriptions lists"
+msgstr "Flere abonnementer lister"

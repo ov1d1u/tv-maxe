@@ -1,0 +1,40 @@
+TV-MAXE 0.05 Changelog
+	* Status Icon
+	* TV Shows section was cutted off
+	* Subscribe to different TV Channels Lists
+	* MPlayer backend with muted volume fixed
+	* Channel info window
+	* Broken channel reporting
+	* Icon caching
+	* Better icon downloading
+	* TV guide fixes
+	* Radio player
+	* Internationalization support
+TV-MAXE 0.06 Changelog
+	* Bugfixes
+	* TV-MAXE now detects available backends
+TV-MAXE 0.065 Changelog
+	* Channel lists are now cached
+	* Switched subscriptions to project's SVN
+TV-MAXE 0.07 Changelog
+	* HTTP remote control
+	* Separation of protocol engines and multimedia backends
+	* Removed recording options
+	* GStreamer backend support
+	* Faster startup ;)
+	* Support for streams with multiple audio tracks
+	* Support for multiple media sources per channel
+	* Channel list filtering
+	* Feature: saving the current channellist
+	* Management for deleted channels
+	* Auto aspect ratio option
+	* Extended support for RTMP streams
+	* Improvements in fullscreen bar info
+TV-MAXE 0.08 Changelog
+	* Fixed: cannot add radio channels
+	* Fixed: remapping of IR remote controls
+	* Fixed: issue with playing RTSP streams (stops about 6 - 8 minutes)
+	* Fixed: screensaver is now inhibited while a channel is playing
+	* Fixed: high CPU usage after stopping a RTSP:// stream
+	* Other random fixes
+	* Highlight current running TV Show in TV-Guide
