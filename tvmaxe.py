@@ -1048,8 +1048,8 @@ class TVMaxe:
                 chList = self.gui.get_object('treeview1')
                 treeselection = chList.get_selection()
                 (model, iter) = treeselection.get_selected()
-                channel = self.channels[model.get_value(iter, 0)]
                 if iter:
+                    channel = self.channels[model.get_value(iter, 0)]
                     self.urlIndex = 0
                     self.playChannel(channel)
                 else:
