@@ -45,6 +45,7 @@ from radioWidget import RadioWidget
 from blacklist import Blacklist
 from autosleep import Sleep
 from recorder import Recorder
+from diagnostics import Diagnostics
 import remoteC
 gtk.gdk.threads_init()
 
@@ -100,9 +101,10 @@ class TVMaxe:
                                   "deleteChannel" : self.deleteChannel,
                                   "showVideoEQ" : self.showVideoEQ,
                                   "applyVideoSettings" : self.applyVideoSettings,
-                                  "hideVideoEQ" : self.hideVideoEQ,
                                   "videoEQreset" : self.videoEQreset,
-                                  "saveContrast" : self.saveContrast,
+                                  "hideVideoEQ" : self.hideVideoEQ,
+                                  "saveVideoEQ_global" : self.saveVideoEQ_global,
+                                  "saveVideoEQ_channel" : self.saveVideoEQ_channel,
                                   "loginPBX" : self.loginPBX,
                                   "hidePBX" : self.hidePBX,
                                   "connectPBX" : self.connectPBX,
@@ -147,7 +149,11 @@ class TVMaxe:
                                   "hideSchedMan" : self.hideSchedMan,
                                   "removeSchedule" : self.removeSchedule,
                                   "editSchedule" : self.editSchedule,
-                                  "record" : self.record
+                                  "record" : self.record,
+                                  "showDiagnostics" : self.showDiagnostics,
+                                  "closeDiagnostics" : self.closeDiagnostics,
+                                  "runDiagnostics" : self.runDiagnostics,
+                                  "diagnosticSelect" : self.diagnosticSelect
         })
 
         drawingarea = self.gui.get_object('drawingarea1')
@@ -699,6 +705,7 @@ class TVMaxe:
                 gobject.source_remove(self.progressbarPulse)
                 self.progressbarPulse = None
             self.progressbarPulse = gobject.timeout_add(400, self.updateProgressbar, protocol)
+        self.applyVideoSettings()
 
     def playRadioChannel(self, channel, index = None):
         self.stop(None)
@@ -923,7 +930,7 @@ class TVMaxe:
         self.keysimulator.src = gobject.timeout_add(60000, self.keysimulator.start)
         self.mediaPlayer.volume(self.gui.get_object('volumebutton1').get_value())
         gobject.timeout_add(2000, self.showEPG)
-        gobject.timeout_add(500, self.applyVideoSettings, None)
+        gobject.timeout_add(2000, self.applyVideoSettings, None)
         if hasattr(self, 'blinkRecord_source'):
             gobject.source_remove(self.blinkRecord_source)
             del self.blinkRecord_source
@@ -977,6 +984,10 @@ class TVMaxe:
                 self.switch_fullscreen(obj)
             elif event.button == 3:
                 self.gui.get_object('menu5').popup(None, None, None, event.button, event.time)
+                if self.mediaPlayer.isPlaying():
+                    self.gui.get_object('menuitem_videoSettings').set_sensitive(True)
+                else:
+                    self.gui.get_object('menuitem_videoSettings').set_sensitive(False)
             elif event.button == 2:
                 self.remoteOK()
 
@@ -1726,15 +1737,26 @@ class TVMaxe:
 
     def loadVideoEQ(self):
         # setup b, c, s sliders
-        values = self.settingsManager.getContrast()
+        if hasattr(self, 'currentChannel') \
+        and self.currentChannel \
+        and self.settingsManager.getVideoEQ_channel(self.currentChannel.id):
+            values = self.settingsManager.getVideoEQ_channel(self.currentChannel.id)
+        else:
+            values = self.settingsManager.getVideoEQ_global()
         self.gui.get_object('brightness_scale').set_value(values['b'])
         self.gui.get_object('contrast_scale').set_value(values['c'])
         self.gui.get_object('saturation_scale').set_value(values['s'])
 
         # setup aspect ratio combo
+        if hasattr(self, 'currentChannel') \
+        and self.currentChannel \
+        and self.settingsManager.getAspect_channel(self.currentChannel.id):
+            aspect = self.settingsManager.getAspect_channel(self.currentChannel.id)
+        else:
+            aspect = self.settingsManager.getAspect_channel(self.settingsManager.aspectratio)
         iter = self.gui.get_object('aspect_ratios').get_iter_root()
         while iter:
-            if self.gui.get_object('aspect_ratios').get_value(iter, 0) == self.settingsManager.aspectratio:
+            if self.gui.get_object('aspect_ratios').get_value(iter, 0) == aspect:
                 break
             iter = self.gui.get_object('aspect_ratios').iter_next(iter)
         if iter == None:
@@ -1745,30 +1767,44 @@ class TVMaxe:
         self.loadVideoEQ()
         self.gui.get_object('window8').show()
         self.gui.get_object('window8').present()
-        self.gui.get_object('eq_revert_btn').set_sensitive(False)
+
+    def videoEQreset(self, obj, event=None):
+        self.loadVideoEQ()
+        self.hideVideoEQ(None)
 
     def hideVideoEQ(self, obj, event=None):
         self.gui.get_object('window8').hide()
         return True
 
-    def videoEQreset(self, obj, event=None):
-        self.gui.get_object('eq_revert_btn').set_sensitive(False)
-        self.showVideoEQ(None)
-
-    def saveContrast(self, obj, event=None):
+    def saveVideoEQ_channel(self, obj, event=None):
         b = self.gui.get_object('brightness_scale').get_value()
         c = self.gui.get_object('contrast_scale').get_value()
         s = self.gui.get_object('saturation_scale').get_value()
         self.mediaPlayer.adjustImage(b, c, s)
-        self.settingsManager.saveContrast(b, c, s)
-        self.settingsManager.saveAspect(self.gui.get_object('aspect_ratio_combo').get_active_text())
+        if hasattr(self, 'currentChannel') and self.currentChannel:
+            self.settingsManager.saveVideoEQ_channel(b, c, s, self.currentChannel.id)
+            self.settingsManager.saveAspect_channel(
+                self.gui.get_object('aspect_ratio_combo').get_active_text(),
+                self.currentChannel.id
+            )
+        else:
+            print 'Error saving video EQ settings'
+        self.gui.get_object('window8').hide()
+
+    def saveVideoEQ_global(self, obj, event=None):
+        b = self.gui.get_object('brightness_scale').get_value()
+        c = self.gui.get_object('contrast_scale').get_value()
+        s = self.gui.get_object('saturation_scale').get_value()
+        self.mediaPlayer.adjustImage(b, c, s)
+        self.settingsManager.saveVideoEQ_global(b, c, s)
+        self.settingsManager.saveAspect_global(self.gui.get_object('aspect_ratio_combo').get_active_text())
         self.gui.get_object('window8').hide()
 
     def applyVideoSettings(self, obj=None, event=None):
         if obj == None:                 # set on startup
+            if self.gui.get_object('window8').get_property("visible"):
+                return True
             self.loadVideoEQ()
-        else:
-            self.gui.get_object('eq_revert_btn').set_sensitive(True)
 
         # set video eq
         b = self.gui.get_object('brightness_scale').get_value()
@@ -1802,6 +1838,7 @@ class TVMaxe:
         # apply settings to video backend
         self.mediaPlayer.setRatio(active)
         self.mediaPlayer.adjustImage(b, c, s)
+        return True
 
     def showAddStream(self, obj, event=None):
         self.gui.get_object('entry3').set_text('')
@@ -2642,6 +2679,26 @@ class TVMaxe:
             self.gui.get_object('recordbox').hide()
         return self.recordingMode
 
+    def showDiagnostics(self, obj):
+        self.diags = Diagnostics(self.gui)
+        self.diags.settingsManager = self.settingsManager
+        self.diags.show()
+
+    def closeDiagnostics(self, obj, event=None):
+        if hasattr(self, 'diags'):
+            self.diags.close()
+        return True
+
+    def runDiagnostics(self, obj):
+        if hasattr(self, 'diags'):
+            self.diags.run()
+
+    def diagnosticSelect(self, obj):
+        if hasattr(self, 'diags'):
+            treeselection = obj.get_selection()
+            model_iter = treeselection.get_selected()
+            self.diags.show_details(model_iter[1])
+
     def quit(self, obj=None, event=None):
         self.mediaPlayer.quit()
         if hasattr(self, 'infrared'):
@@ -2663,11 +2720,11 @@ class TVMaxe:
 
     def initHTTPRemote(self):
         return remoteC.HTTPRemoteControl(self,
-                                                                chchannel = self.playURL,
-                                                                volume = self.setVolume,
-                                                                mute = self.mute,
-                                                                stop = self.stop,
-                                                                channelinfo = self.getCurrentChannelInfo)
+                chchannel = self.playURL,
+                volume = self.setVolume,
+                mute = self.mute,
+                stop = self.stop,
+                channelinfo = self.getCurrentChannelInfo)
 
     def getVersion(self):
         return version

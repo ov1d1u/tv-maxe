@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-import ConfigParser, os, shutil, gtk, gobject, threading, json, random
+import ConfigParser, os, shutil, gtk, gobject, threading, json, random, tools
 import which, subprocess
 try:
 	import remoteC
@@ -319,27 +319,15 @@ class settingsManager:
 		return result
 			
 	def guess_shutdown_cmd(self):
-		try:
-			des = {	'xfce' : 'xfce4-session-logout --halt',
+		de = tools.guess_de()
+		des = {	'xfce' : 'xfce4-session-logout --halt',
 				'gnome' : 'gnome-session-save --shutdown-dialog',
 				'ubuntu' : 'gnome-session-quit --power-off', 
-				'mate' : 'mate-session-save --shutdown-dialog'}
-			if os.environ.has_key('DESKTOP_SESSION'):
-				desktop_session = os.environ['DESKTOP_SESSION']
-			else:
-				desktop_session = 'default'
-
-			if des.has_key(desktop_session):
-				return des[desktop_session]
-
-			elif os.environ['DESKTOP_SESSION'] == 'default':
-				if os.environ.has_key('KDE_FULL_SESSION') and os.environ['KDE_FULL_SESSION']:
-					return 'qdbus org.kde.ksmserver /KSMServer logout 0 2 2'
-				if os.environ.has_key('MATECORBA_SOCKETDIR') and os.environ['MATECORBA_SOCKETDIR']:
-					return des['mate']
-			else:
-				return 'shutdown -h now'
-		except:
+				'mate' : 'mate-session-save --shutdown-dialog',
+				'kde' : 'qdbus org.kde.ksmserver /KSMServer logout 0 2 2'}
+		if de and des.has_key(de):
+			return des[de]
+		else:
 			return 'shutdown -h now'
 				
 	def Save(self, obj):
@@ -452,8 +440,27 @@ class settingsManager:
 		except:
 			val = False
 		return val
+
+	def getVideoEQ_channel(self, channelID):
+		section_name = 'ChannelSettings_{0}'.format(channelID)
+		if not config.has_section(section_name):
+			return None
+		val = {}
+		try:
+			val['b'] = config.getfloat(section_name, 'brightness')
+		except:
+			val['b'] = 0.0
+		try:
+			val['c'] = config.getfloat(section_name, 'contrast')
+		except:
+			val['c'] = 0.0
+		try:
+			val['s'] = config.getfloat(section_name, 'saturation')
+		except:
+			val['s'] = 0.0
+		return val
 	
-	def getContrast(self):
+	def getVideoEQ_global(self):
 		val = {}
 		try:
 			val['b'] = config.getfloat('General', 'brightness')
@@ -546,6 +553,17 @@ class settingsManager:
 		except:
 			val = 8080
 		return val
+
+	def getAspect_channel(self, channelID):
+		section_name = 'ChannelSettings_{0}'.format(channelID)
+		if not config.has_section(section_name):
+			return None
+		try:
+			aspect = config.get(section_name, 'aspect')
+		except:
+			aspect = 'Auto'
+		return aspect
+
 			
 	def getAspect(self):
 		try:
@@ -763,8 +781,18 @@ class settingsManager:
 		with open(cfgfile, 'wb') as configfile:
 			config.write(configfile)
 		self.readSettings()
+
+	def saveAspect_channel(self, aspect, channelID):
+		section_name = 'ChannelSettings_{0}'.format(channelID)
+		if not config.has_section(section_name):
+			config.add_section(section_name)
+		config.set(section_name, 'aspect', aspect)
 		
-	def saveAspect(self, aspect):
+		with open(cfgfile, 'wb') as configfile:
+			config.write(configfile)
+		self.readSettings()
+		
+	def saveAspect_global(self, aspect):
 		if not config.has_section('General'):
 			config.add_section('General')
 		config.set('General', 'aspect', aspect)
@@ -772,8 +800,20 @@ class settingsManager:
 		with open(cfgfile, 'wb') as configfile:
 			config.write(configfile)
 		self.readSettings()
+
+	def saveVideoEQ_channel(self, b, c, s, channelID):
+		section_name = 'ChannelSettings_{0}'.format(channelID)
+		if not config.has_section(section_name):
+			config.add_section(section_name)
+		config.set(section_name, 'contrast', c)
+		config.set(section_name, 'brightness', b)
+		config.set(section_name, 'saturation', s)
 		
-	def saveContrast(self, b, c, s):
+		with open(cfgfile, 'wb') as configfile:
+			config.write(configfile)
+		self.readSettings()
+		
+	def saveVideoEQ_global(self, b, c, s):
 		if not config.has_section('General'):
 			config.add_section('General')
 		config.set('General', 'contrast', c)

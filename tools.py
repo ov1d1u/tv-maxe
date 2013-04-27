@@ -139,6 +139,26 @@ def getOpenWith(ext):
 			command = command.split()
 	return command
 
+def guess_de():
+	import os
+	try:
+		known_de = ['xfce', 'gnome', 'ubuntu', 'mate', 'kde']
+		if os.environ.has_key('DESKTOP_SESSION'):
+			desktop_session = os.environ['DESKTOP_SESSION']
+		else:
+			desktop_session = 'default'
+
+		if desktop_session in known_de:
+			return desktop_session
+		else:
+			if os.environ.has_key('KDE_FULL_SESSION') and os.environ['KDE_FULL_SESSION']:
+				return 'kde'
+			if os.environ.has_key('MATECORBA_SOCKETDIR') and os.environ['MATECORBA_SOCKETDIR']:
+				return 'mate'
+		return None
+	except:
+		return None
+
 def strip_win32_incompat(string, BAD = '\:*?;"<>|/'):
 	import re, os
 	"""Strip Win32-incompatible characters.

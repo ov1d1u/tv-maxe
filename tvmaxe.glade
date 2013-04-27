@@ -140,6 +140,14 @@ please make a donation.</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkListStore" id="format_liststore">
+    <columns>
+      <!-- column-name codename -->
+      <column type="gchararray"/>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkListStore" id="aspect_ratios">
     <columns>
       <!-- column-name Aspect -->
@@ -207,13 +215,283 @@ please make a donation.</property>
       </row>
     </data>
   </object>
-  <object class="GtkListStore" id="format_liststore">
+  <object class="GtkListStore" id="diagnostics_store">
     <columns>
-      <!-- column-name codename -->
+      <!-- column-name Icon -->
+      <column type="GdkPixbuf"/>
+      <!-- column-name Message -->
       <column type="gchararray"/>
-      <!-- column-name name -->
+      <!-- column-name Description -->
       <column type="gchararray"/>
     </columns>
+  </object>
+  <object class="GtkWindow" id="diagnostics_w">
+    <property name="width_request">650</property>
+    <property name="height_request">450</property>
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Diagnostics</property>
+    <property name="icon">tvmaxe_mini.png</property>
+    <signal name="destroy-event" handler="closeDiagnostics" swapped="no"/>
+    <signal name="delete-event" handler="closeDiagnostics" swapped="no"/>
+    <child>
+      <object class="GtkHBox" id="hbox58">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkVBox" id="vbox50">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkHBox" id="hbox59">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkImage" id="diag_icon">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="pixel_size">96</property>
+                    <property name="icon_name">help-browser</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="padding">5</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label108">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
+                    <property name="yalign">0</property>
+                    <property name="ypad">15</property>
+                    <property name="label" translatable="yes">This utility will check if all the requirements for TV-Maxe are fullfied.
+Not all requirements are needed for TV-Maxe to work, but
+some of the iternal components requires special versions of libraries.
+
+Press "Run tests" button when you're ready.
+</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox60">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkScrolledWindow" id="scrolledwindow10">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="hscrollbar_policy">automatic</property>
+                    <property name="vscrollbar_policy">automatic</property>
+                    <property name="shadow_type">in</property>
+                    <child>
+                      <object class="GtkTreeView" id="diagnostics_treeview">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="model">diagnostics_store</property>
+                        <property name="headers_visible">False</property>
+                        <signal name="cursor-changed" handler="diagnosticSelect" swapped="no"/>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="treeviewcolumn12">
+                            <property name="title" translatable="yes">column</property>
+                            <child>
+                              <object class="GtkCellRendererPixbuf" id="cellrendererpixbuf2"/>
+                              <attributes>
+                                <attribute name="pixbuf">0</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkTreeViewColumn" id="treeviewcolumn13">
+                            <property name="title" translatable="yes">column</property>
+                            <child>
+                              <object class="GtkCellRendererText" id="cellrenderertext23"/>
+                              <attributes>
+                                <attribute name="text">1</attribute>
+                              </attributes>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkScrolledWindow" id="scrolledwindow11">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="hscrollbar_policy">never</property>
+                    <property name="vscrollbar_policy">automatic</property>
+                    <child>
+                      <object class="GtkViewport" id="viewport4">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkLabel" id="diag_desc">
+                            <property name="width_request">200</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="yalign">0</property>
+                            <property name="xpad">5</property>
+                            <property name="ypad">5</property>
+                            <property name="label" translatable="yes">&lt;b&gt;Informations&lt;/b&gt;
+
+Click on an item in the list to get informations about it.</property>
+                            <property name="use_markup">True</property>
+                            <property name="wrap">True</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHBox" id="hbox61">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkButton" id="diag_run">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <signal name="clicked" handler="runDiagnostics" swapped="no"/>
+                    <child>
+                      <object class="GtkHBox" id="hbox62">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkImage" id="image35">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="stock">gtk-media-play</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label110">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Run tests</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkImage" id="diag_waiting_img">
+                    <property name="can_focus">False</property>
+                    <property name="xpad">5</property>
+                    <property name="pixbuf">wait.gif</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="diag_waiting_txt">
+                    <property name="can_focus">False</property>
+                    <property name="xalign">0</property>
+                    <property name="label" translatable="yes">Running tests...</property>
+                  </object>
+                  <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkHButtonBox" id="hbuttonbox13">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="layout_style">end</property>
+                <child>
+                  <object class="GtkButton" id="diag_closebtn">
+                    <property name="label">gtk-close</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                    <signal name="clicked" handler="closeDiagnostics" swapped="no"/>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="padding">3</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="padding">5</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+      </object>
+    </child>
   </object>
   <object class="GtkMenu" id="guideMenu">
     <property name="visible">True</property>
@@ -383,7 +661,7 @@ please make a donation.</property>
       </object>
     </child>
     <child>
-      <object class="GtkMenuItem" id="menuitem16">
+      <object class="GtkMenuItem" id="menuitem_videoSettings">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Video settings</property>
@@ -1496,6 +1774,15 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                   <object class="GtkMenu" id="menu3">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkMenuItem" id="menuitem_diag">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Diagnostics</property>
+                        <property name="use_underline">True</property>
+                        <signal name="activate" handler="showDiagnostics" swapped="no"/>
+                      </object>
+                    </child>
                     <child>
                       <object class="GtkImageMenuItem" id="imagemenuitem10">
                         <property name="label">gtk-about</property>
@@ -5865,8 +6152,6 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
     </child>
   </object>
   <object class="GtkWindow" id="window8">
-    <property name="width_request">320</property>
-    <property name="height_request">240</property>
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Video settings</property>
     <property name="icon">tvmaxe.png</property>
@@ -5880,15 +6165,16 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkHBox" id="hbox22">
+              <object class="GtkVBox" id="vbox51">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <child>
-                  <object class="GtkVBox" id="vbox22">
+                  <object class="GtkHBox" id="hbox65">
+                    <property name="height_request">30</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImage" id="image12">
+                      <object class="GtkImage" id="image38">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="pixbuf">brightness.png</property>
@@ -5901,38 +6187,12 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkHBox" id="hbox23">
+                      <object class="GtkHScale" id="brightness_scale">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkLabel" id="label52">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Brightness</property>
-                            <property name="angle">90</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkVScale" id="brightness_scale">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="adjustment">adjustment3</property>
-                            <property name="inverted">True</property>
-                            <property name="fill_level">9.9999999999999996e+27</property>
-                            <property name="draw_value">False</property>
-                            <signal name="value-changed" handler="applyVideoSettings" swapped="no"/>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
+                        <property name="can_focus">True</property>
+                        <property name="adjustment">adjustment3</property>
+                        <property name="draw_value">False</property>
+                        <signal name="value-changed" handler="applyVideoSettings" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -5943,16 +6203,17 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
-                    <property name="fill">False</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkVBox" id="vbox23">
+                  <object class="GtkHBox" id="hbox66">
+                    <property name="height_request">30</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImage" id="image16">
+                      <object class="GtkImage" id="image39">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="pixbuf">contrast.png</property>
@@ -5965,37 +6226,12 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkHBox" id="hbox24">
+                      <object class="GtkHScale" id="contrast_scale">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkLabel" id="label53">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Contrast</property>
-                            <property name="angle">90</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkVScale" id="contrast_scale">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="adjustment">adjustment4</property>
-                            <property name="inverted">True</property>
-                            <property name="draw_value">False</property>
-                            <signal name="value-changed" handler="applyVideoSettings" swapped="no"/>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
+                        <property name="can_focus">True</property>
+                        <property name="adjustment">adjustment4</property>
+                        <property name="draw_value">False</property>
+                        <signal name="value-changed" handler="applyVideoSettings" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -6006,16 +6242,17 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
-                    <property name="fill">False</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkVBox" id="vbox24">
+                  <object class="GtkHBox" id="hbox67">
+                    <property name="height_request">30</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <child>
-                      <object class="GtkImage" id="image17">
+                      <object class="GtkImage" id="image40">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="pixbuf">saturation.png</property>
@@ -6028,37 +6265,12 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkHBox" id="hbox25">
+                      <object class="GtkHScale" id="saturation_scale">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <child>
-                          <object class="GtkLabel" id="label55">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Saturation</property>
-                            <property name="angle">90</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkVScale" id="saturation_scale">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="adjustment">adjustment5</property>
-                            <property name="inverted">True</property>
-                            <property name="draw_value">False</property>
-                            <signal name="value-changed" handler="applyVideoSettings" swapped="no"/>
-                          </object>
-                          <packing>
-                            <property name="expand">True</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
+                        <property name="can_focus">True</property>
+                        <property name="adjustment">adjustment5</property>
+                        <property name="draw_value">False</property>
+                        <signal name="value-changed" handler="applyVideoSettings" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -6069,14 +6281,14 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
-                    <property name="fill">False</property>
+                    <property name="fill">True</property>
                     <property name="position">2</property>
                   </packing>
                 </child>
               </object>
               <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -6142,9 +6354,8 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                 <property name="layout_style">end</property>
                 <child>
                   <object class="GtkButton" id="eq_revert_btn">
-                    <property name="label">gtk-revert-to-saved</property>
+                    <property name="label">gtk-cancel</property>
                     <property name="visible">True</property>
-                    <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_stock">True</property>
@@ -6158,13 +6369,41 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="button29">
-                    <property name="label">gtk-cancel</property>
+                  <object class="GtkButton" id="saveVideoEQ_channel">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
-                    <signal name="clicked" handler="hideVideoEQ" swapped="no"/>
+                    <signal name="clicked" handler="saveVideoEQ_channel" swapped="no"/>
+                    <child>
+                      <object class="GtkHBox" id="hbox64">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkImage" id="image37">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="stock">gtk-save</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label111">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Save for this channel only</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -6174,12 +6413,40 @@ If you don't want to set a key, press &lt;b&gt;Cancel&lt;/b&gt;.</property>
                 </child>
                 <child>
                   <object class="GtkButton" id="button27">
-                    <property name="label">gtk-ok</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
-                    <signal name="clicked" handler="saveContrast" swapped="no"/>
+                    <signal name="clicked" handler="saveVideoEQ_global" swapped="no"/>
+                    <child>
+                      <object class="GtkHBox" id="hbox63">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <child>
+                          <object class="GtkImage" id="image36">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="stock">gnome-stock-multiple-file</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label109">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Save for all channels</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
