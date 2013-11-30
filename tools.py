@@ -55,7 +55,8 @@ def Image_to_GdkPixbuf(image):
 	return pixbuf
 	
 def GdkPixbuf_to_Image(pb):
-	import gtk, Image
+        from PIL import Image
+	import gtk
 	assert(pb.get_colorspace() == gtk.gdk.COLORSPACE_RGB)
 	dimensions = pb.get_width(), pb.get_height()
 	stride = pb.get_rowstride()
