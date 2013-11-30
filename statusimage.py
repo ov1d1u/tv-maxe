@@ -1,4 +1,5 @@
-import gtk, gobject, StringIO, Image, ImageDraw, ImageFont, os, tempfile
+import gtk, gobject, StringIO, os, tempfile
+from PIL import Image, ImageDraw, ImageFont
 
 class StatusImage:
 	def __init__(self):
