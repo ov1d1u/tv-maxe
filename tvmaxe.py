@@ -4,7 +4,7 @@
 version = 0.09
 basehost = 'http://www.tv-maxe.org/'
 
-import gettext, locale, gtk.glade
+import gettext, locale, gtk.glade,  os
 GETTEXT_DOMAIN = 'tvmaxe'
 try:
     LOCALE_PATH = os.path.join(os.path.dirname(os.path.abspath( __file__ )), 'lng')
@@ -17,7 +17,7 @@ for module in gtk.glade, gettext:
 
 def translate(text):
     try:
-        text = unicode(text, errors='ignore')
+        #text = unicode(text, errors='ignore')
         return unicode(gettext.gettext(text), errors='ignore')
     except:
         return gettext.gettext(text)
@@ -25,7 +25,7 @@ def translate(text):
 import __builtin__
 __builtin__._ = translate
 
-import os, sys, tempfile
+import sys, tempfile
 #os.chdir('/usr/share/tvmaxe')
 import pygtk, gobject
 pygtk.require('2.0')
