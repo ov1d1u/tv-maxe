@@ -31,8 +31,9 @@ import pygtk, gobject
 pygtk.require('2.0')
 import gtk
 import subprocess, threading, urllib2, workerpool, random, time, datetime, webbrowser, string, copy
-import irwatch, which, sqlite3, re, json, base64, Image, StringIO
+import irwatch, which, sqlite3, re, json, base64, StringIO
 import tools, keysim, scheduler, socketserver
+from PIL import Image
 from settingsManager import settingsManager
 from channel import Channel
 from scheduler import Scheduler
