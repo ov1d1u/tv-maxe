@@ -266,7 +266,8 @@ class TVMaxe:
                     try:
                         loadmod = __import__(x)
                         self.protocols[x] = loadmod.Protocol(self.play, self.stop)
-                    except:
+                    except Exception, e:
+                        print e
                         pass
 
     def setupPlayers(self):
@@ -547,6 +548,10 @@ class TVMaxe:
         return toReturn
 
     def getProtocol(self, url):
+        for x in self.protocols:
+          if x == 'Petrodava':
+            return self.protocols[x]
+
         for x in self.protocols:
             for y in self.protocols[x].protocols:
                 if url.startswith(y):
