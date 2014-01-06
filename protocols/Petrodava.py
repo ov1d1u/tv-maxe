@@ -182,25 +182,34 @@ class SocketConnection:
             while len(header) < HEADER_LENGTH:
                 header += self.s.recv(1)
 
-            recvp = PetrodavaPacket()
-            recvp.decode_partial(header)
-            data_length = recvp.length
-            if data_length:
-                recvp.data = self.s.recv(data_length)
-                while len(recvp.data) < data_length:
-                    recvp.data += self.s.recv(1)
+            try:
+                recvp = PetrodavaPacket()
+                recvp.decode_partial(header)
+                data_length = recvp.length
+                if data_length:
+                    recvp.data = self.s.recv(data_length)
+                    while len(recvp.data) < data_length:
+                        recvp.data += self.s.recv(1)
 
-            if recvp.command == 'HI00':
-                self.uid = recvp.data
-                print 'Setting uid: {0}'.format(self.uid)
-            if recvp.command == 'WAIT':
-                print 'Buffer progress: {0}'.format(recvp.data)
-                if 'update_progress' in self.callbacks:
-                    self.callbacks['update_progress'](int(recvp.data))
-            if recvp.command == 'DATA':
-                self.callbacks['write_data'](recvp.data)
-            if recvp.command == 'STOP':
-                self.callbacks['stop_media'](recvp.data)
+                if recvp.command == 'HI00':
+                    self.uid = recvp.data
+                    print 'Setting uid: {0}'.format(self.uid)
+                if recvp.command == 'WAIT':
+                    print 'Buffer progress: {0}'.format(recvp.data)
+                    if 'update_progress' in self.callbacks:
+                        self.callbacks['update_progress'](int(recvp.data))
+                if recvp.command == 'DATA':
+                    self.callbacks['write_data'](recvp.data)
+                if recvp.command == 'STOP':
+                    self.callbacks['stop_media'](recvp.data)
+                if recvp.command == 'PING':
+                    print 'Received PING, sending back PONG'
+                    pong = PetrodavaPacket()
+                    pong.command = 'PONG'
+                    pong.data = recvp.data
+                    self.send_packet(pong)
+            except Exception, e:
+                print 'Exception occured: {0}'.format(e)
 
             if self.stop:
                 print 'STOP {0}'.format(self.uid)
