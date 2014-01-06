@@ -548,9 +548,8 @@ class TVMaxe:
         return toReturn
 
     def getProtocol(self, url):
-        for x in self.protocols:
-          if x == 'Petrodava':
-            return self.protocols[x]
+        if self.settingsManager.getEnablePetrodava():
+          return self.protocols['Petrodava']
 
         for x in self.protocols:
             for y in self.protocols[x].protocols:
@@ -706,6 +705,8 @@ class TVMaxe:
             gobject.idle_add(self.modradiomenuStatus, 'tv')
             protocol = self.getProtocol(self.url)
             protocol.inport, protocol.outport = self.protocolPorts()
+            protocol.petrodava_server = self.settingsManager.getPetrodavaServer()
+            protocol.petrodava_port = self.settingsManager.getPetrodavaPort()
             protocol.play(self.url, channel.params)
             if self.progressbarPulse:
                 gobject.source_remove(self.progressbarPulse)

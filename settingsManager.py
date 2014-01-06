@@ -101,9 +101,20 @@ class settingsManager:
             config.set('Recording', 'acodec', 'copy')
             config.set('Recording', 'vcodec', 'copy')
             config.set('Recording', 'format', 'matroska')
+            config.add_section('Petrodava')
+            config.set('Petrodava', 'enable', 'False')
+            config.set('Petrodava', 'server', 'petrodava.tv-maxe.org')
+            config.set('Petrodava', 'port', '80')
             
             with open(cfgfile, 'wb') as configfile:
                 config.write(configfile)
+
+        self.petrodavaPortChanged_handler =\
+            self.gui.get_object('petrodavaPort').connect('key-release-event', self.petrodavaPortChanged, None)
+        self.petrodavaEnableChanged_handler =\
+            self.gui.get_object('petrodavaEnable').connect('toggled', self.petrodavaEnableChanged, None)
+
+        self.initiallabel53text = self.gui.get_object('label53').get_text()
         self.readSettings()
         self.setAbonamente()
         
@@ -113,6 +124,9 @@ class settingsManager:
     
     def hideGUI(self, obj, event=None):
         self.gui.get_object('window2').hide()
+        self.gui.get_object('petrodavaPort').disconnect(self.petrodavaPortChanged_handler)
+        self.gui.get_object('petrodavaEnable').disconnect(self.petrodavaEnableChanged_handler)
+
         return True
         
     def toggleInternalPlayer(self, obj, event=None):
@@ -162,6 +176,20 @@ class settingsManager:
                     x[0] = 0
         self.updateList = True
 
+    def petrodavaPortChanged(self, obj = None, *args):
+        text = self.gui.get_object('petrodavaPort').get_text().strip()
+        self.gui.get_object('petrodavaPort').set_text(
+            ''.join([i for i in text if i in '0123456789'])
+        )
+        self.gui.get_object('label53').set_text(
+            self.initiallabel53text.format(self.gui.get_object('petrodavaPort').get_text())
+        )
+
+    def petrodavaEnableChanged(self, obj = None, *args):
+        self.gui.get_object('petrodavaSettings').set_sensitive(
+            self.gui.get_object('petrodavaEnable').get_active()
+        )
+
     def updateWindow(self):
         if self.internal is True:
             self.gui.get_object('radiobutton1').set_active(True)
@@ -202,6 +230,12 @@ class settingsManager:
         self.gui.get_object('button22').set_label(self.remote_down)
         self.gui.get_object('button23').set_label(self.remote_ok)
         self.gui.get_object('button54').set_label(self.remote_sleep)
+        self.gui.get_object('petrodavaEnable').set_active(self.petrodavaEnable)
+        self.gui.get_object('petrodavaServer').set_text(self.petrodavaServer)
+        self.gui.get_object('petrodavaPort').set_text(self.petrodavaPort)
+
+        self.petrodavaEnableChanged()
+        self.petrodavaPortChanged()
         self.updateThemesList()
         self.updateRecordingsLists()
 
@@ -360,6 +394,9 @@ class settingsManager:
         self.inport = self.getInport()
         self.outport = self.getOutport()
         self.abonamente = self.getSubscriptions()
+        self.petrodavaEnable = self.getEnablePetrodava()
+        self.petrodavaServer = self.getPetrodavaServer()
+        self.petrodavaPort = self.getPetrodavaPort()
         self.getRemoteButtons()
         
     def getRemoteButtons(self):
@@ -645,6 +682,27 @@ class settingsManager:
             subs = json.dumps(self.slist)
         slist = json.loads(subs)
         return slist
+
+    def getEnablePetrodava(self):
+        try:
+            enable = config.getboolean('Petrodava', 'enable')
+        except:
+            return False
+        return enable
+
+    def getPetrodavaServer(self):
+        try:
+            server = config.get('Petrodava', 'server')
+        except:
+            server = 'petrodava.tv-maxe.org'
+        return server
+
+    def getPetrodavaPort(self):
+        try:
+            port = config.get('Petrodava', 'port')
+        except:
+            port = '80'
+        return port
     
     def getHPanedPosition(self):
         try:
@@ -733,6 +791,8 @@ class settingsManager:
             config.add_section('Remote')
         if not config.has_section('Recording'):
             config.add_section('Recording')
+        if not config.has_section('Petrodava'):
+            config.add_section('Petrodava')
         config.set('General', 'backend', self.gui.get_object('combobox1').get_active_text())
         config.set('General', 'internal', self.gui.get_object('radiobutton1').get_active())
         config.set('General', 'player', self.gui.get_object('entry1').get_text())
@@ -764,6 +824,9 @@ class settingsManager:
         config.set('Recording', 'acodec', self.gui.get_object('acodec_liststore')[self.gui.get_object('acodec_combobox').get_active_iter()][0])
         config.set('Recording', 'vcodec', self.gui.get_object('vcodec_liststore')[self.gui.get_object('vcodec_combobox').get_active_iter()][0])
         config.set('Recording', 'format', self.gui.get_object('format_liststore')[self.gui.get_object('format_combobox').get_active_iter()][0])
+        config.set('Petrodava', 'enable', self.gui.get_object('petrodavaEnable').get_active())
+        config.set('Petrodava', 'server', self.gui.get_object('petrodavaServer').get_text())
+        config.set('Petrodava', 'port', self.gui.get_object('petrodavaPort').get_text())
         with open(cfgfile, 'wb') as configfile:
             config.write(configfile)
         self.readSettings()

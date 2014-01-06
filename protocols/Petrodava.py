@@ -10,8 +10,6 @@ import gobject
 import tempfile
 from Queue import Queue, Empty
 
-HOST = '162.243.228.197'    # The remote host
-PORT = 8080           # The same port as used by the server
 HEADER_LENGTH = 52
 
 data_queue = Queue()
@@ -101,7 +99,6 @@ class Proxy(SimpleHTTPServer.SimpleHTTPRequestHandler):
         t = threading.Thread(target=self.enqueue, args=(q, ))
         t.start()
         while True:
-            print '1'
             try:
                 byte = q.get()
             except:
@@ -110,6 +107,7 @@ class Proxy(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 self.wfile.write(byte)
             except:
                 self.server.abort = True
+                self.shutdown()
                 print 'Ooops, something went wrong :('
                 return
 
@@ -117,17 +115,16 @@ class Proxy(SimpleHTTPServer.SimpleHTTPRequestHandler):
                 # fh = open('/tmp/petrodava', 'rb')
                 # fh = os.fdopen(os.open('/tmp/petrodava', os.O_BINARY))
                 while True:
-                    print '2'
                     byte = data_queue.get() # fh.read(65536)
                     q.put(byte)
                     if self.server.abort:
-                        fh.close()
+                        #fh.close()
                         return
 
 
 class Server:
     def __init__(self):
-        self.port = random.randint(9000, 9999)
+        self.port = random.randint(29000, 29999)
         self.httpd = None
 
     def start(self, callback):
@@ -145,7 +142,7 @@ class Server:
 
 
 class SocketConnection:
-    def __init__(self, callbacks):
+    def __init__(self, host, port, callbacks):
         self.callbacks = callbacks
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.q = Queue()
@@ -153,11 +150,15 @@ class SocketConnection:
         self.listener_running = False
         self.sender_running = False
         self.uid = '00000000-0000-0000-0000-000000000000'
+        self.host = host
+        self.port = int(port)
+        self.stop = False
 
         self.start()
 
     def start(self):
-        self.s.connect((HOST, PORT))
+        print 'Petrodava: connecting to {0}:{1}'.format(self.host, self.port)
+        self.s.connect((self.host, self.port))
         self.connected = True
 
         threading.Thread(target=self.listener, args=()).start()
@@ -177,19 +178,16 @@ class SocketConnection:
         self.send_packet(p)
 
         while True:
-            print '3'
             header = self.s.recv(HEADER_LENGTH)
             while len(header) < HEADER_LENGTH:
-                print '4'
                 header += self.s.recv(1)
 
             recvp = PetrodavaPacket()
             recvp.decode_partial(header)
             data_length = recvp.length
-            recvp.data = self.s.recv(data_length)
             if data_length:
+                recvp.data = self.s.recv(data_length)
                 while len(recvp.data) < data_length:
-                    print '5'
                     recvp.data += self.s.recv(1)
 
             if recvp.command == 'HI00':
@@ -201,6 +199,13 @@ class SocketConnection:
                     self.callbacks['update_progress'](int(recvp.data))
             if recvp.command == 'DATA':
                 self.callbacks['write_data'](recvp.data)
+            if recvp.command == 'STOP':
+                self.callbacks['stop_media'](recvp.data)
+
+            if self.stop:
+                print 'STOP {0}'.format(self.uid)
+                self.s.close()
+                return
 
     def sender(self):
         if self.sender_running:
@@ -210,7 +215,6 @@ class SocketConnection:
         self.sender_running = True
 
         while True:
-            print '6'
             p = self.q.get()
             if p.command != 'OHAI' and self.uid == '00000000-0000-0000-0000-000000000000':
                 # UID not set yet, try again
@@ -225,6 +229,14 @@ class SocketConnection:
             threading.Thread(target=self.listener, args=()).start()
         self.q.put(p)
 
+    def close(self):
+        print 'Close Connection {0}'.format(self.uid)
+        self.s.close()
+        self.stop = True
+        p = PetrodavaPacket()
+        p.command = 'EXIT'
+        self.send_packet(p)
+
 
 class Protocol:
     def __init__(self, play_media, stop_media):
@@ -238,16 +250,17 @@ class Protocol:
         self.error = None
         self.httpsrv = None
         self.conn = None
+        self.petrodava_server = ''
+        self.petrodava_port = ''
         self.protocols = ['*']
 
     def play(self, url, params={}):
-        self.conn = SocketConnection({
+        self.conn = SocketConnection(self.petrodava_server, self.petrodava_port, {
             'update_progress': self.update_progress,
-            'write_data': self.write_data
+            'write_data': self.write_data,
+            'stop_media': self.stop_petrodava
             })
 
-        if os.path.exists('/tmp/petrodava'):
-            os.remove('/tmp/petrodava')
         threading.Thread(target=self.startmp, args=(url,)).start()
 
     def startmp(self, url):
@@ -267,20 +280,35 @@ class Protocol:
 
         # print 'Writing {0} bytes...'.format(len(data))
 
-        if not os.path.exists('/tmp/petrodava'):
-            os.mkfifo('/tmp/petrodava')
         data_queue.put(data)
 
-    def stop(self):
+    def stop(self, error = None):
+        p = PetrodavaPacket()
+        p.command = 'EXIT'
+
+        if error == '':
+            error = None
         if self.conn:
-            p = PetrodavaPacket()
-            p.command = 'EXIT'
             self.conn.send_packet(p)
+            self.conn.close()
             self.conn = None
+        if self.httpsrv:
+            self.httpsrv.stop()
+            self.httpsrv = None
+
+    def stop_petrodava(self, error = None):
+        if error == '':
+            error = None
+        if self.conn:
+            self.conn.send_packet(p)
+            self.conn.close()
+            self.conn = None
+        if self.httpsrv:
+            self.httpsrv.stop()
+            self.httpsrv = None
+        self.stop_media(error)
 
     def quit(self):
         if self.conn:
-            p = PetrodavaPacket()
-            p.command = 'EXIT'
-            self.conn.send_packet(p)
+            self.conn.close()
             self.conn = None
