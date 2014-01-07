@@ -15,6 +15,10 @@ HEADER_LENGTH = 52
 data_queue = Queue()
 
 
+class DecodeError(Exception):
+    pass
+
+
 class PetrodavaPacket(object):
     """Format of a Petrodava packet (a "-" equals one byte)
     +----+-+----+-+----+-+------------------------------------+-+-------+
@@ -74,7 +78,7 @@ class PetrodavaPacket(object):
 
     def decode(self, rawdata):
         if not rawdata.startswith('TVMX'):
-            raise(ValueError, "This doesn't seems to be a Petrodava packet")
+            raise(DecodeError, "This doesn't seems to be a Petrodava packet")
 
         self._length = struct.unpack('!I', rawdata[10:14])[0]
         self._command = rawdata[5:9]
@@ -83,7 +87,7 @@ class PetrodavaPacket(object):
 
     def decode_partial(self, rawdata):
         if not rawdata.startswith('TVMX'):
-            raise(ValueError, "This doesn't seems to be a Petrodava packet")
+            raise(DecodeError, "This doesn't seems to be a Petrodava packet")
 
         self._length = struct.unpack('!I', rawdata[10:14])[0]
         self._command = rawdata[5:9]
@@ -203,13 +207,17 @@ class SocketConnection:
                 if recvp.command == 'STOP':
                     self.callbacks['stop_media'](recvp.data)
                 if recvp.command == 'PING':
-                    print 'Received PING, sending back PONG'
                     pong = PetrodavaPacket()
                     pong.command = 'PONG'
                     pong.data = recvp.data
                     self.send_packet(pong)
+            except DecodeError, e:
+                print 'Decode error'
             except Exception, e:
-                print 'Exception occured: {0}'.format(e)
+                print 'Exception occured:', e
+                time.sleep(0.01)
+
+            header = ''
 
             if self.stop:
                 print 'STOP {0}'.format(self.uid)
