@@ -71,9 +71,9 @@ class PetrodavaPacket(object):
         self._command = cmd
 
     def encode(self):
-        pdata = 'TVMX' + chr(0x00) + self.command + chr(0x00) + \
+        pdata = 'TVMX' + chr(0x00) + str(self.command) + chr(0x00) + \
                 struct.pack('!I', len(self.data)) + chr(0x00) + \
-                self._uid + chr(0x00) + self.data
+                str(self._uid) + chr(0x00) + str(self.data)
         return pdata
 
     def decode(self, rawdata):
@@ -135,8 +135,9 @@ class Server:
         self.httpd = SocketServer.ThreadingTCPServer(('', self.port), Proxy)
         self.httpd.abort = False
         threading.Thread(target=self.httpd.serve_forever).start()
+        print 'Started server at http://localhost:{0}/'.format(self.port)
         time.sleep(3)
-        gobject.idle_add(callback, 'http://localhost:' + str(self.port))
+        gobject.idle_add(callback, 'http://localhost:{0}'.format(self.port))
 
     def stop(self):
         if self.httpd:
@@ -278,12 +279,16 @@ class Protocol:
             'stop_media': self.stop_petrodava
             })
 
-        threading.Thread(target=self.startmp, args=(url,)).start()
+        threading.Thread(target=self.startmp, args=(url, params)).start()
 
-    def startmp(self, url):
+    def startmp(self, url, params):
+        url_params = ''
+        if params.has_key(url):
+            url_params = params[url]
+
         p = PetrodavaPacket()
         p.command = 'CONN'
-        p.data = url
+        p.data = url + chr(0x00) + url_params
         self.conn.send_packet(p)
 
     def update_progress(self, progress):
@@ -317,13 +322,12 @@ class Protocol:
         if error == '':
             error = None
         if self.conn:
-            self.conn.send_packet(p)
             self.conn.close()
             self.conn = None
         if self.httpsrv:
             self.httpsrv.stop()
             self.httpsrv = None
-        self.stop_media(error)
+        gobject.idle_add(self.stop_media, error)
 
     def quit(self):
         if self.conn:
