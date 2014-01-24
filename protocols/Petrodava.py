@@ -305,6 +305,8 @@ class Protocol:
         data_queue.put(data)
 
     def stop(self, error = None):
+        self.progress = 0
+
         p = PetrodavaPacket()
         p.command = 'EXIT'
 
@@ -319,6 +321,8 @@ class Protocol:
             self.httpsrv = None
 
     def stop_petrodava(self, error = None):
+        self.progress = 0
+
         if error == '':
             error = None
         if self.conn:
