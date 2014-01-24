@@ -217,6 +217,14 @@ please make a donation.</property>
       <column type="gchararray"/>
     </columns>
   </object>
+  <object class="GtkListStore" id="format_liststore">
+    <columns>
+      <!-- column-name codename -->
+      <column type="gchararray"/>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkWindow" id="diagnostics_w">
     <property name="width_request">650</property>
     <property name="height_request">450</property>
@@ -484,14 +492,6 @@ Click on an item in the list to get informations about it.</property>
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkListStore" id="format_liststore">
-    <columns>
-      <!-- column-name codename -->
-      <column type="gchararray"/>
-      <!-- column-name name -->
-      <column type="gchararray"/>
-    </columns>
   </object>
   <object class="GtkMenu" id="guideMenu">
     <property name="visible">True</property>
@@ -5189,7 +5189,7 @@ remove them all from blacklist</property>
                       <object class="GtkImage" id="image12">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="stock">gtk-dialog-info</property>
+                        <property name="pixbuf">petrodava.png</property>
                         <property name="icon-size">6</property>
                       </object>
                       <packing>
