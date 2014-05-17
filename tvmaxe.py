@@ -1,13 +1,14 @@
 #!/usr/bin/python2
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
-version = 0.09
-basehost = 'http://www.tv-maxe.org/'
-
-import gettext, locale, gtk.glade,  os
+import gettext
+import locale
+import gtk.glade
+import os
 GETTEXT_DOMAIN = 'tvmaxe'
 try:
-    LOCALE_PATH = os.path.join(os.path.dirname(os.path.abspath( __file__ )), 'lng')
+    LOCALE_PATH = os.path.join(os.path.dirname(
+        os.path.abspath(__file__)), 'lng')
 except:
     LOCALE_PATH = 'lng'
 locale.setlocale(locale.LC_ALL, '')
@@ -15,9 +16,10 @@ for module in gtk.glade, gettext:
     module.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
     module.textdomain(GETTEXT_DOMAIN)
 
+
 def translate(text):
     try:
-        #text = unicode(text, errors='ignore')
+        # text = unicode(text, errors='ignore')
         return unicode(gettext.gettext(text), errors='ignore')
     except:
         return gettext.gettext(text)
@@ -25,14 +27,34 @@ def translate(text):
 import __builtin__
 __builtin__._ = translate
 
-import sys, tempfile
-#os.chdir('/usr/share/tvmaxe')
-import pygtk, gobject
-pygtk.require('2.0')
+import sys
+import tempfile
+# os.chdir('/usr/share/tvmaxe')
+import pygtk
+import gobject
 import gtk
-import subprocess, threading, urllib2, workerpool, random, time, datetime, webbrowser, string, copy
-import irwatch, which, sqlite3, re, json, base64, StringIO
-import tools, keysim, scheduler, socketserver
+import subprocess
+import threading
+import urllib2
+import workerpool
+import random
+import time
+import datetime
+import webbrowser
+import string
+import copy
+import irwatch
+import which
+import sqlite3
+import re
+import json
+import base64
+import StringIO
+import tools
+import keysim
+import scheduler
+import socketserver
+import trayIcon
 from PIL import Image
 from settingsManager import settingsManager
 from channel import Channel
@@ -50,116 +72,132 @@ from diagnostics import Diagnostics
 import remoteC
 gtk.gdk.threads_init()
 
-tvmaxedir = os.getenv('HOME') + '/.tvmaxe/'
+pygtk.require('2.0')
+VERSION = 0.09
+BASEHOST = 'http://www.tv-maxe.org/'
+TVMAXEDIR = os.getenv('HOME') + '/.tvmaxe/'
+
 
 class TVMaxe:
-    def __init__(self, autostart = None):
+
+    def __init__(self, autostart=None):
         self.gui = gtk.Builder()
         self.gui.add_from_file('tvmaxe.glade')
         self.settingsManager = settingsManager(self)
         self.autosleep = Sleep(self)
+        self.trayIcon = trayIcon.TrayIcon(self)
         self.channels = {}
         self.radioWidget = RadioWidget(self)
         self.HTTPremote = self.initHTTPRemote()
-        self.gui.connect_signals({"on_imagemenuitem5_activate" : self.quit,
-                                  "on_window1_delete_event" : self.quit,
-                                  "listPress" : self.listPress,
-                                  "radioListPress" : self.radioListPress,
-                                  "fullscreen" : self.fullscreen,
-                                  "playpause" : self.playpause,
-                                  "stop" : self.stop,
-                                  "hideCursor" : self.hideCursor,
-                                  "setVolume" : self.setVolume,
-                                  "mainWindowsKeyRelease" : self.mainWindowsKeyRelease,
-                                  "show_settings" : self.settingsManager.showGUI,
-                                  "hide_settings" : self.settingsManager.hideGUI,
-                                  "save_settings" : self.settingsManager.Save,
-                                  "toggleInternalPlayer" : self.settingsManager.toggleInternalPlayer,
-                                  "toggleExternalPlayer" : self.settingsManager.toggleExternalPlayer,
-                                  "toggleStaticPorts" : self.settingsManager.toggleStaticPorts,
-                                  "toggleEnableRemote" : self.settingsManager.toggleEnableRemote,
-                                  "toggleEnableHTTP" : self.settingsManager.toggleEnableHTTP,
-                                  "toggleStatusIcon" : self.settingsManager.toggleStatusIcon,
-                                  "mapRemote" : self.settingsManager.mapRemote,
-                                  "hideIR" : self.settingsManager.hideIR,
-                                  "toggleAbonament" : self.settingsManager.toggleAbonament,
-                                  "channelList" : self.channelList,
-                                  "showGhidTV" : self.showGhidTV,
-                                  "hideGhidTV" : self.hideGhidTV,
-                                  "pgDetails" : self.pgDetails,
-                                  "updateEPG" : self.updateEPG,
-                                  "drawLogo" : self.drawLogo,
-                                  "showAbout" : self.showAbout,
-                                  "hideAbout" : self.hideAbout,
-                                  "mouseRemote" : self.mouseRemote,
-                                  "ShowDetails" : self.ShowDetails,
-                                  "hideShowDetails" : self.hideShowDetails,
-                                  "refreshList" : self.refreshList,
-                                  "showAddStream" : self.showAddStream,
-                                  "hideAddStream" : self.hideAddStream,
-                                  "tabSwitch" : self.tabSwitch,
-                                  "addNewChannel" : self.addNewChannel,
-                                  "deleteChannel" : self.deleteChannel,
-                                  "showVideoEQ" : self.showVideoEQ,
-                                  "applyVideoSettings" : self.applyVideoSettings,
-                                  "videoEQreset" : self.videoEQreset,
-                                  "hideVideoEQ" : self.hideVideoEQ,
-                                  "saveVideoEQ_global" : self.saveVideoEQ_global,
-                                  "saveVideoEQ_channel" : self.saveVideoEQ_channel,
-                                  "loginPBX" : self.loginPBX,
-                                  "hidePBX" : self.hidePBX,
-                                  "connectPBX" : self.connectPBX,
-                                  "donate" : self.donate,
-                                  "donated" : self.donated,
-                                  "adaugaAbonament" : self.adaugaAbonament,
-                                  "hideAdaugaAbonament" : self.hideAdaugaAbonament,
-                                  "addSubscription" : self.addSubscription,
-                                  "editAbonament" : self.editAbonament,
-                                  "hideEditAbonament" : self.hideEditAbonament,
-                                  "stergeAbonament" : self.stergeAbonament,
-                                  "saveEditAbonament" : self.saveEditAbonament,
-                                  "hideShowTVMaxe" : self.hideShowTVMaxe,
-                                  "hideShowTVMaxe_Menu" : self.hideShowTVMaxe_Menu,
-                                  "channelInfo" : self.channelInfo,
-                                  "hideChannelInfo" : self.hideChannelInfo,
-                                  "channelInfo_raporteaza" : self.channelInfo_raporteaza,
-                                  "statusIconVolume" : self.statusIconVolume,
-                                  "modRadio" : self.radioWidget.modRadio,
-                                  "modTV" : self.radioWidget.modTV,
-                                  "prevChannel" : self.prevChannel,
-                                  "nextChannel" : self.nextChannel,
-                                  "hideError" : self.hideError,
-                                  "blmanager" : self.blmanager,
-                                  "hideblmanager" : self.hideblmanager,
-                                  "removeBlacklisted" : self.removeBlacklisted,
-                                  "blclear" : self.blclear,
-                                  "refilter" : self.refilter,
-                                  "addChanel_selectIcon" : self.addChanel_selectIcon,
-                                  "browseSubscription" : self.browseSubscription,
-                                  "saveChannellist" : self.saveChannellist,
-                                  "showSleep" : self.autosleep.show,
-                                  "hideSleep" : self.autosleep.hide,
-                                  "okSleep" : self.autosleep.ok,
-                                  "cancelShutdown" : self.autosleep.cancel,
-                                  "readTheme" : self.readTheme,
-                                  "showScheduler" : self.showScheduler,
-                                  "tvguide_popmenu" : self.tvguide_popmenu,
-                                  "hideScheduler" : self.hideScheduler,
-                                  "addScheduler" : self.addScheduler,
-                                  "showSchedMan" : self.showSchedMan,
-                                  "hideSchedMan" : self.hideSchedMan,
-                                  "removeSchedule" : self.removeSchedule,
-                                  "editSchedule" : self.editSchedule,
-                                  "record" : self.record,
-                                  "showDiagnostics" : self.showDiagnostics,
-                                  "closeDiagnostics" : self.closeDiagnostics,
-                                  "runDiagnostics" : self.runDiagnostics,
-                                  "diagnosticSelect" : self.diagnosticSelect
+        self.gui.connect_signals({
+            "on_imagemenuitem5_activate": self.quit,
+            "on_window1_delete_event": self.quit,
+            "listPress": self.listPress,
+            "radioListPress": self.radioListPress,
+            "fullscreen": self.fullscreen,
+            "playpause": self.playpause,
+            "stop": self.stop,
+            "hideCursor": self.hideCursor,
+            "setVolume": self.setVolume,
+            "mainWindowsKeyRelease": self.mainWindowsKeyRelease,
+            "show_settings": self.settingsManager.showGUI,
+            "hide_settings": self.settingsManager.hideGUI,
+            "save_settings": self.settingsManager.Save,
+            "toggleInternalPlayer": self.settingsManager.toggleInternalPlayer,
+            "toggleExternalPlayer": self.settingsManager.toggleExternalPlayer,
+            "toggleStaticPorts": self.settingsManager.toggleStaticPorts,
+            "toggleEnableRemote": self.settingsManager.toggleEnableRemote,
+            "toggleEnableHTTP": self.settingsManager.toggleEnableHTTP,
+            "toggleStatusIcon": self.trayIcon.toggle,
+            "mapRemote": self.settingsManager.mapRemote,
+            "hideIR": self.settingsManager.hideIR,
+            "toggleAbonament": self.settingsManager.toggleAbonament,
+            "channelList": self.channelList,
+            "showGhidTV": self.showGhidTV,
+            "hideGhidTV": self.hideGhidTV,
+            "pgDetails": self.pgDetails,
+            "updateEPG": self.updateEPG,
+            "drawLogo": self.drawLogo,
+            "showAbout": self.showAbout,
+            "hideAbout": self.hideAbout,
+            "mouseRemote": self.mouseRemote,
+            "ShowDetails": self.ShowDetails,
+            "hideShowDetails": self.hideShowDetails,
+            "refreshList": self.refreshList,
+            "showAddStream": self.showAddStream,
+            "hideAddStream": self.hideAddStream,
+            "tabSwitch": self.tabSwitch,
+            "addNewChannel": self.addNewChannel,
+            "deleteChannel": self.deleteChannel,
+            "showVideoEQ": self.showVideoEQ,
+            "applyVideoSettings": self.applyVideoSettings,
+            "videoEQreset": self.videoEQreset,
+            "hideVideoEQ": self.hideVideoEQ,
+            "saveVideoEQ_global": self.saveVideoEQ_global,
+            "saveVideoEQ_channel": self.saveVideoEQ_channel,
+            "loginPBX": self.loginPBX,
+            "hidePBX": self.hidePBX,
+            "connectPBX": self.connectPBX,
+            "donate": self.donate,
+            "donated": self.donated,
+            "adaugaAbonament": self.adaugaAbonament,
+            "hideAdaugaAbonament": self.hideAdaugaAbonament,
+            "addSubscription": self.addSubscription,
+            "editAbonament": self.editAbonament,
+            "hideEditAbonament": self.hideEditAbonament,
+            "stergeAbonament": self.stergeAbonament,
+            "saveEditAbonament": self.saveEditAbonament,
+            "hideShowTVMaxe": self.hideShowTVMaxe,
+            "hideShowTVMaxe_Menu": self.hideShowTVMaxe_Menu,
+            "channelInfo": self.channelInfo,
+            "hideChannelInfo": self.hideChannelInfo,
+            "channelInfo_raporteaza": self.channelInfo_raporteaza,
+            "modRadio": self.radioWidget.modRadio,
+            "modTV": self.radioWidget.modTV,
+            "prevChannel": self.prevChannel,
+            "nextChannel": self.nextChannel,
+            "hideError": self.hideError,
+            "blmanager": self.blmanager,
+            "hideblmanager": self.hideblmanager,
+            "removeBlacklisted": self.removeBlacklisted,
+            "blclear": self.blclear,
+            "refilter": self.refilter,
+            "addChanel_selectIcon": self.addChanel_selectIcon,
+            "browseSubscription": self.browseSubscription,
+            "saveChannellist": self.saveChannellist,
+            "showSleep": self.autosleep.show,
+            "hideSleep": self.autosleep.hide,
+            "okSleep": self.autosleep.ok,
+            "cancelShutdown": self.autosleep.cancel,
+            "readTheme": self.readTheme,
+            "showScheduler": self.showScheduler,
+            "tvguide_popmenu": self.tvguide_popmenu,
+            "hideScheduler": self.hideScheduler,
+            "addScheduler": self.addScheduler,
+            "showSchedMan": self.showSchedMan,
+            "hideSchedMan": self.hideSchedMan,
+            "removeSchedule": self.removeSchedule,
+            "editSchedule": self.editSchedule,
+            "record": self.record,
+            "showDiagnostics": self.showDiagnostics,
+            "closeDiagnostics": self.closeDiagnostics,
+            "runDiagnostics": self.runDiagnostics,
+            "diagnosticSelect": self.diagnosticSelect
         })
 
         drawingarea = self.gui.get_object('drawingarea1')
-        drawingarea.modify_bg(gtk.STATE_NORMAL, drawingarea.get_colormap().alloc_color("black"))
-        self.gui.get_object('eventbox1').modify_bg(gtk.STATE_NORMAL, self.gui.get_object('eventbox1').get_colormap().alloc_color("black"))
+        drawingarea.modify_bg(
+            gtk.STATE_NORMAL,
+            drawingarea.get_colormap(
+            ).alloc_color(
+                "black"))
+        self.gui.get_object(
+            'eventbox1').modify_bg(
+                gtk.STATE_NORMAL,
+                self.gui.get_object(
+                    'eventbox1').get_colormap(
+                ).alloc_color(
+                    "black"))
         tools.label_set_autowrap(self.gui.get_object('label62'))
         tools.label_set_autowrap(self.gui.get_object('label29'))
         self.statusbar(_('Ready'))
@@ -171,8 +209,20 @@ class TVMaxe:
 
         self.accel_group = gtk.AccelGroup()
         self.gui.get_object('window1').add_accel_group(self.accel_group)
-        self.gui.get_object('checkmenuitem1').add_accelerator("activate", self.accel_group, ord("F"), gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
-        self.gui.get_object('menuitem7').add_accelerator("activate", self.accel_group, ord("H"), gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
+        self.gui.get_object(
+            'checkmenuitem1').add_accelerator(
+                "activate",
+                self.accel_group,
+                ord("F"),
+                gtk.gdk.CONTROL_MASK,
+                gtk.ACCEL_VISIBLE)
+        self.gui.get_object(
+            'menuitem7').add_accelerator(
+                "activate",
+                self.accel_group,
+                ord("H"),
+                gtk.gdk.CONTROL_MASK,
+                gtk.ACCEL_VISIBLE)
         self.combobox2h = None
         self.combobox3h = None
         self.hideTimeout = None
@@ -191,18 +241,21 @@ class TVMaxe:
         self.gui.get_object('window1').resize(wsize[0], wsize[1])
         hpaned = self.settingsManager.getHPanedPosition()
         self.gui.get_object('hpaned1').set_position(hpaned)
-        self.gui.get_object('statusicon1').set_visible(self.settingsManager.getStatusIcon())
+        if (self.settingsManager.getStatusIcon()):
+            self.trayIcon.show()
 
         if autostart:
-            self.logo = [0, ['Please wait,', 'your channel will be played immediately']]
+            self.logo = [
+                0, ['Please wait,', 'your channel will be played immediately']]
         else:
-            self.logo = [0, 'TV-MAXE ' + str(version)]
+            self.logo = [0, 'TV-MAXE ' + str(VERSION)]
         if not which.which('ffmpeg'):
             self.gui.get_object('button61').hide()
             self.gui.get_object('menuitem47').hide()
 
         self.gui.get_object('window1').show()
-        self.channelsort = gtk.TreeModelSort(self.gui.get_object('channelstore'))
+        self.channelsort = gtk.TreeModelSort(
+            self.gui.get_object('channelstore'))
         self.channelsort.set_sort_column_id(2, gtk.SORT_ASCENDING)
         self.radiosort = gtk.TreeModelSort(self.gui.get_object('radiostore'))
         self.radiosort.set_sort_column_id(2, gtk.SORT_ASCENDING)
@@ -212,8 +265,10 @@ class TVMaxe:
         self.radiofilter.set_visible_func(self.sortme)
         self.gui.get_object('treeview1').set_model(self.channelfilter)
         self.gui.get_object('treeview3').set_model(self.radiofilter)
-        self.gui.get_object('liststatuslabel').set_text(_("Total: %s channels in %s subscriptions" % ('0', str(len(self.settingsManager.getSubscriptions())))))
-        self.gui.get_object('aboutdialog1').set_version(str(version))
+        self.gui.get_object('liststatuslabel').set_text(
+            _("Total: %s channels in %s subscriptions" %
+              ('0', str(len(self.settingsManager.getSubscriptions())))))
+        self.gui.get_object('aboutdialog1').set_version(str(VERSION))
         self.gui.get_object('recqScale').set_show_fill_level(False)
         self.gui.get_object('recqScale').add_mark(1, gtk.POS_LEFT, 'Very high')
         self.gui.get_object('recqScale').add_mark(8, gtk.POS_LEFT, 'High')
@@ -234,21 +289,23 @@ class TVMaxe:
         self.buildComboDays()
         self.SocketServer = socketserver.SocketServer(self)
         self.infrared = irwatch.Main({
-                "playpause" : self.playpause,
-                "fullscreen" : self.fullscreen,
-                "stop" : self.stop,
-                "setVolume" : self.setVolume,
-                "mute" : self.mute,
-                "quit" : self.quit,
-                "nextChannel" : self.nextChannel,
-                "prevChannel" : self.prevChannel,
-                "showEPG" : self.showEPG,
-                "remoteUP" : self.remoteUP,
-                "remoteDOWN" : self.remoteDOWN,
-                "remoteOK" : self.remoteOK,
-                "remoteSLEEP" : self.autosleep.remote
-                })
-        threading.Thread(target=self.getChannels, args=(self.populateList,)).start()
+                "playpause": self.playpause,
+                "fullscreen": self.fullscreen,
+                "stop": self.stop,
+                "setVolume": self.setVolume,
+                "mute": self.mute,
+                "quit": self.quit,
+                "nextChannel": self.nextChannel,
+                "prevChannel": self.prevChannel,
+                "showEPG": self.showEPG,
+                "remoteUP": self.remoteUP,
+                "remoteDOWN": self.remoteDOWN,
+                "remoteOK": self.remoteOK,
+                "remoteSLEEP": self.autosleep.remote
+        })
+        threading.Thread(
+            target=self.getChannels,
+            args=(self.populateList,)).start()
         self.initPlayer()
         gobject.timeout_add(500, self.drawLogo)
 
@@ -265,8 +322,9 @@ class TVMaxe:
                     x = x[0]
                     try:
                         loadmod = __import__(x)
-                        self.protocols[x] = loadmod.Protocol(self.play, self.stop)
-                    except Exception, e:
+                        self.protocols[x] = loadmod.Protocol(
+                            self.play, self.stop)
+                    except Exception as e:
                         print e
                         pass
 
@@ -289,22 +347,29 @@ class TVMaxe:
                     x = x[0]
                     try:
                         loadmod = __import__(x)
-                        self.players[x] = loadmod.Player(self.playCallback, xid)
+                        self.players[x] = loadmod.Player(
+                            self.playCallback, xid)
                         if self.players[x].name != 'External':
                             liststore.append([self.players[x].name])
-                    except Exception, e:
+                    except Exception as e:
                         print e
 
         backend = self.settingsManager.backend
         if self.settingsManager.internal:
             try:
                 self.mediaPlayer = self.players[backend.lower()]
-            except Exception, e:
+            except Exception as e:
                 self.mediaPlayer = self.players['mplayer']
         else:
             loadmod = __import__('external')
-            self.mediaPlayer = loadmod.Player(self.playCallback, self.settingsManager.player)
-        self.Recorder = Recorder(self.playCallback, xid, copy.copy(self.mediaPlayer), self.settingsManager)
+            self.mediaPlayer = loadmod.Player(
+                self.playCallback,
+                self.settingsManager.player)
+        self.Recorder = Recorder(
+            self.playCallback,
+            xid,
+            copy.copy(self.mediaPlayer),
+            self.settingsManager)
         self.applyVideoSettings()
 
     def initPlayer(self):
@@ -316,8 +381,12 @@ class TVMaxe:
             self.infrared.initRemote(self.settingsManager)
         if self.settingsManager.enablehttpremote:
             self.HTTPremote.start(int(float(self.settingsManager.remoteport)))
-        self.gui.get_object('volumebutton1').set_value(self.settingsManager.volume)
-        self.gui.get_object('volumebutton2').set_value(self.settingsManager.volume)
+        self.gui.get_object(
+            'volumebutton1').set_value(
+                self.settingsManager.volume)
+        self.gui.get_object(
+            'volumebutton2').set_value(
+                self.settingsManager.volume)
         self.applyVideoSettings()
 
     def drawLogo(self, obj=None, event=None):
@@ -341,9 +410,9 @@ class TVMaxe:
             if pbxlogin[0]:
                 self.pbx.working = False
                 gobject.idle_add(self.loginPBX, None, True)
-        except Exception, e:
+        except Exception as e:
             print e
-        callback(None)                  # load user's channel list
+        gobject.idle_add(callback, None)  # load user's channel list
         for x in self.abonamente:
             if x[0] == 0:
                 continue
@@ -357,15 +426,15 @@ class TVMaxe:
             if x[1].startswith('http://'):
                 savefile = x[1].replace("http://", "")
                 savefile = re.sub(r'\W+', '', savefile)
-                savefile = tvmaxedir + 'cache/' + savefile
+                savefile = TVMAXEDIR + 'cache/' + savefile
                 try:
                     if os.path.exists(savefile):
                         fh = open(savefile, "rb")
                         data = fh.read()
                         fh.close()
                         gobject.idle_add(callback, data, x[1])
-                    if not os.path.exists(tvmaxedir + 'cache/'):
-                        os.mkdir(tvmaxedir + 'cache/')
+                    if not os.path.exists(TVMAXEDIR + 'cache/'):
+                        os.mkdir(TVMAXEDIR + 'cache/')
                     req = urllib2.Request(x[1])
                     response = urllib2.urlopen(req)
                     data = response.read()
@@ -373,13 +442,13 @@ class TVMaxe:
                     fh.write(data)
                     fh.close()
                     gobject.idle_add(callback, data, x[1])
-                except Exception, e:
+                except Exception as e:
                     print e
                     gobject.idle_add(self.listError)
         gobject.idle_add(self.autoplay)
         gobject.timeout_add(2000, self.createTrayMenus)
 
-    def populateList(self, data, abo = None):
+    def populateList(self, data, abo=None):
         channelstore = self.gui.get_object('channelstore')
         radiostore = self.gui.get_object('radiostore')
         if not data:
@@ -404,7 +473,7 @@ class TVMaxe:
         name = channel.name
         url = channel.streamurls[:]
         iter = None
-        if type(url) == list:
+        if isinstance(url, list):
             for x in url:
                 if not self.protocolCheck(x):
                     channel.streamurls.pop(channel.streamurls.index(x))
@@ -414,22 +483,27 @@ class TVMaxe:
             if not self.protocolCheck(url):
                 return
         self.channels[id] = channel
-        if id in self.channels:                                 # canalul exista deja in baza de date, il actualizam...
+        if id in self.channels:
             iter = self.channels[id].get_iter()
-            if iter:                                            # canalul exista si in lista din GUI, actualizam intrarea...
+            if iter:
                 liststore.set_value(iter, 1, image)
                 liststore.set_value(iter, 2, name)
-            else:                                               # canalul exista in baza de date, dar nu si in GUI (probabil a fost sters?)
+            else:
                 if not self.blacklist.is_blacklisted(channel):
-                    iter = liststore.append([id, image, name])  # il adaugam in GUI...
+                    iter = liststore.append(
+                        [id, image, name])  # il adaugam in GUI...
                     if channel.guide != '':
-                        self.gui.get_object('tvguidestore').append([id, image, name])
+                        self.gui.get_object(
+                            'tvguidestore').append([id, image, name])
         else:
             if not self.blacklist.is_blacklisted(channel):
                 iter = liststore.append([id, image, name])
                 if channel.guide != '':
-                    self.gui.get_object('tvguidestore').append([id, image, name])
-        self.gui.get_object('liststatuslabel').set_text(_("Total: %s channels in %s subscriptions" % (str(self.countChannels()), str(len(self.settingsManager.abonamente)))))
+                    self.gui.get_object(
+                        'tvguidestore').append([id, image, name])
+        self.gui.get_object(
+            'liststatuslabel').set_text(_("Total: %s channels in %s subscriptions" %
+     (str(self.countChannels()), str(len(self.settingsManager.abonamente)))))
         if idleadd:
             return False
         return iter
@@ -459,7 +533,16 @@ class TVMaxe:
             params = json.loads(x['params'])
             tvguide = x['guide']
             audiochs = json.loads(x['audiochannels'])
-            channel = Channel(id = id, icon = image, name = name, streamurls = url, params = params, guide = tvguide, audiochannels = audiochs, liststore = channelstore, source = abo)
+            channel = Channel(
+                id=id,
+                icon=image,
+                name=name,
+                streamurls=url,
+                params=params,
+                guide=tvguide,
+                audiochannels=audiochs,
+                liststore=channelstore,
+                source=abo)
             channel.info = db_info
             gobject.idle_add(self.addChannel, channel, channelstore, True)
 
@@ -475,11 +558,18 @@ class TVMaxe:
             name = x['name']
             url = json.loads(x['streamurls'])
             params = json.loads(x['params'])
-            channel = Channel(id = id, icon = image, name = name, streamurls = url, params = params, liststore = radiostore, source = abo)
+            channel = Channel(
+                id=id,
+                icon=image,
+                name=name,
+                streamurls=url,
+                params=params,
+                liststore=radiostore,
+                source=abo)
             channel.info = db_info
             gobject.idle_add(self.addChannel, channel, radiostore, True)
 
-    def parseOldList(self, data, abo):                      # abo ajuta la creearea id-ului unic al canalului
+    def parseOldList(self, data, abo):
         gobject.idle_add(self.addabo, os.path.basename(abo))
         self.pool = workerpool.WorkerPool(size=10)
         if '|tvchannels|' in data:
@@ -500,11 +590,27 @@ class TVMaxe:
                     chid = ''
                 image = gtk.gdk.pixbuf_new_from_file('blank.gif')
                 id = re.sub(r'\W+', '', abo + nume)
-                channel = Channel(id = id, icon = image, name = nume, streamurls = [url], guide = chid, liststore = channelstore, source = os.path.basename(abo))
-                channel.info = {'name' : os.path.basename(abo), 'version' : '0.01', 'author' : '', 'url' : 'http://www.pymaxe.com', 'epgurl' : ''}
+                channel = Channel(
+                    id=id,
+                    icon=image,
+                    name=nume,
+                    streamurls=[url],
+                    guide=chid,
+                    liststore=channelstore,
+                    source=os.path.basename(abo))
+                channel.info = {
+                    'name': os.path.basename(
+                        abo),
+                    'version': '0.01',
+                    'author': '',
+                    'url': 'http://www.pymaxe.com',
+                    'epgurl': ''}
                 iter = self.addChannel(channel, channelstore)
                 if iter:
-                    threading.Thread(target=self.updateIcon, args=(channel, icon)).start()
+                    threading.Thread(
+                        target=self.updateIcon,
+                        args=(channel,
+     icon)).start()
 
         if '|radiochannels|' in data:
             grch = data.split('|radiochannels|')
@@ -520,14 +626,28 @@ class TVMaxe:
                 icon = cdata[2]
                 image = gtk.gdk.pixbuf_new_from_file('blank.gif')
                 id = re.sub(r'\W+', '', abo + nume)
-                channel = Channel(id = id, icon = image, name = nume, streamurls = [url], liststore = channelstore, source = os.path.basename(abo))
-                channel.info = {'name' : os.path.basename(abo), 'version' : '0.01', 'author' : '', 'url' : 'http://www.pymaxe.com', 'epgurl' : ''}
+                channel = Channel(
+                    id=id,
+                    icon=image,
+                    name=nume,
+                    streamurls=[url],
+                    liststore=channelstore,
+                    source=os.path.basename(abo))
+                channel.info = {
+                    'name': os.path.basename(
+                        abo),
+                    'version': '0.01',
+                    'author': '',
+                    'url': 'http://www.pymaxe.com',
+                    'epgurl': ''}
                 iter = self.addChannel(channel, channelstore)
                 if iter:
-                    threading.Thread(target=self.updateIcon, args=(channel, icon)).start()
+                    threading.Thread(
+                        target=self.updateIcon,
+                        args=(channel, icon)).start()
 
     def updateIcon(self, channel, icon):
-        job = IconDownloader(basehost, channel, icon, self.setIcon)
+        job = IconDownloader(BASEHOST, channel, icon, self.setIcon)
         self.pool.put(job)
 
     def setIcon(self, channel, imgdata):
@@ -549,7 +669,7 @@ class TVMaxe:
 
     def getProtocol(self, url):
         if self.settingsManager.getEnablePetrodava():
-          return self.protocols['Petrodava']
+            return self.protocols['Petrodava']
 
         for x in self.protocols:
             for y in self.protocols[x].protocols:
@@ -570,7 +690,10 @@ class TVMaxe:
         index = 0
         for url in urls:
             menu = gtk.MenuItem(url)
-            menu.connect('activate', lambda obj, x = index: func(self.channels[id], x))
+            menu.connect(
+                'activate',
+                lambda obj,
+                x=index: func(self.channels[id], x))
             menu.show()
             submenu.append(menu)
             index += 1
@@ -586,7 +709,9 @@ class TVMaxe:
                 (model, iter) = treeselection.get_selected()
                 self.urlIndex = 0
                 channel = self.channels[model.get_value(iter, 0)]
-                threading.Thread(target=self.playChannel, args=(channel,)).start()
+                threading.Thread(
+                    target=self.playChannel,
+                    args=(channel,)).start()
                 self.gui.get_object('modradiomenu').set_sensitive(False)
             if event.button == 3:
                 x = int(event.x)
@@ -595,7 +720,7 @@ class TVMaxe:
                 if pthinfo is not None:
                     path, col, cellx, celly = pthinfo
                     obj.grab_focus()
-                    obj.set_cursor( path, col, 0)
+                    obj.set_cursor(path, col, 0)
                     treeselection = obj.get_selection()
                     (model, iter) = treeselection.get_selected()
                     if iter:
@@ -604,25 +729,47 @@ class TVMaxe:
                         chid = self.channels[id].guide
                         if chid != '':
                             if self.channels[id].info['epgurl'] != '':
-                                self.gui.get_object('menuitem6').set_sensitive(True)
+                                self.gui.get_object(
+                                    'menuitem6').set_sensitive(
+                                        True)
                         else:
-                            self.gui.get_object('menuitem6').set_sensitive(False)
+                            self.gui.get_object(
+                                'menuitem6').set_sensitive(
+                                    False)
                         if len(urls) > 1:
                             submenu = self.generateStreamsMenu(id, 'tv', urls)
-                            self.gui.get_object('menuitem40').set_submenu(submenu)
+                            self.gui.get_object(
+                                'menuitem40').set_submenu(
+                                    submenu)
                             self.gui.get_object('menuitem40').show()
-                            submenu = self.generateStreamsMenu(id, 'tv_rec', urls)
+                            submenu = self.generateStreamsMenu(
+                                id, 'tv_rec', urls)
                             if hasattr(self, 'handler_menuitem47'):
-                                self.gui.get_object('menuitem47').disconnect(self.handler_menuitem47)
-                            self.gui.get_object('menuitem47').set_submenu(submenu)
+                                self.gui.get_object(
+                                    'menuitem47').disconnect(
+                                        self.handler_menuitem47)
+                            self.gui.get_object(
+                                'menuitem47').set_submenu(
+                                    submenu)
                         else:
                             self.gui.get_object('menuitem40').hide()
-                            self.gui.get_object('menuitem47').set_label('Record')
+                            self.gui.get_object(
+                                'menuitem47').set_label(
+                                    'Record')
                             self.gui.get_object('menuitem47').set_submenu(None)
                             if hasattr(self, 'handler_menuitem47'):
-                                self.gui.get_object('menuitem47').disconnect(self.handler_menuitem47)
-                            self.handler_menuitem47 = self.gui.get_object('menuitem47').connect('activate', lambda obj: self.recordChannel(None))
-                        self.gui.get_object('menu4').popup(None, None, None, event.button, event.time)
+                                self.gui.get_object(
+                                    'menuitem47').disconnect(
+                                        self.handler_menuitem47)
+                            self.handler_menuitem47 = self.gui.get_object(
+                                'menuitem47').connect('activate',
+                                                      lambda obj: self.recordChannel(None))
+                        self.gui.get_object('menu4').popup(
+                            None,
+                            None,
+                            None,
+                            event.button,
+                            event.time)
         elif hasattr(event, 'keyval'):
             if event.keyval == 65293:
                 chList = self.gui.get_object('treeview1')
@@ -630,7 +777,9 @@ class TVMaxe:
                 (model, iter) = treeselection.get_selected()
                 self.urlIndex = 0
                 channel = self.channels[model.get_value(iter, 0)]
-                threading.Thread(target=self.playChannel, args=(channel,)).start()
+                threading.Thread(
+                    target=self.playChannel,
+                    args=(channel,)).start()
 
     def radioListPress(self, obj, event):
         self.gui.get_object('treeview1').get_selection().unselect_all()
@@ -642,7 +791,9 @@ class TVMaxe:
                 (model, iter) = treeselection.get_selected()
                 channel = self.channels[model.get_value(iter, 0)]
                 self.urlIndex = 0
-                threading.Thread(target=self.playRadioChannel, args=(channel,)).start()
+                threading.Thread(
+                    target=self.playRadioChannel,
+                    args=(channel,)).start()
             if event.button == 3:
                 x = int(event.x)
                 y = int(event.y)
@@ -650,7 +801,7 @@ class TVMaxe:
                 if pthinfo is not None:
                     path, col, cellx, celly = pthinfo
                     obj.grab_focus()
-                    obj.set_cursor( path, col, 0)
+                    obj.set_cursor(path, col, 0)
                     treeselection = obj.get_selection()
                     (model, iter) = treeselection.get_selected()
                     if iter:
@@ -659,25 +810,48 @@ class TVMaxe:
                         chid = self.channels[id].guide
                         self.gui.get_object('menuitem6').set_sensitive(False)
                         if len(urls) > 1:
-                            submenu = self.generateStreamsMenu(id, 'radio', urls)
-                            self.gui.get_object('menuitem40').set_submenu(submenu)
+                            submenu = self.generateStreamsMenu(
+                                id, 'radio', urls)
+                            self.gui.get_object(
+                                'menuitem40').set_submenu(
+                                    submenu)
                             self.gui.get_object('menuitem40').show()
                             if hasattr(self, 'handler_menuitem47'):
-                                self.gui.get_object('menuitem47').disconnect(self.handler_menuitem47)
+                                self.gui.get_object(
+                                    'menuitem47').disconnect(
+                                        self.handler_menuitem47)
                                 del self.handler_menuitem47
-                            self.gui.get_object('menuitem47').set_label('Record stream')
-                            submenu = self.generateStreamsMenu(id, 'radio_rec', urls)
+                            self.gui.get_object(
+                                'menuitem47').set_label(
+                                    'Record stream')
+                            submenu = self.generateStreamsMenu(
+                                id, 'radio_rec', urls)
                             if hasattr(self, 'handler_menuitem47'):
-                                self.gui.get_object('menuitem47').disconnect(self.handler_menuitem47)
-                            self.gui.get_object('menuitem47').set_submenu(submenu)
+                                self.gui.get_object(
+                                    'menuitem47').disconnect(
+                                        self.handler_menuitem47)
+                            self.gui.get_object(
+                                'menuitem47').set_submenu(
+                                    submenu)
                         else:
                             self.gui.get_object('menuitem40').hide()
-                            self.gui.get_object('menuitem47').set_label('Record')
+                            self.gui.get_object(
+                                'menuitem47').set_label(
+                                    'Record')
                             self.gui.get_object('menuitem47').set_submenu(None)
                             if hasattr(self, 'handler_menuitem47'):
-                                self.gui.get_object('menuitem47').disconnect(self.handler_menuitem47)
-                            self.handler_menuitem47 = self.gui.get_object('menuitem47').connect('activate', lambda obj: self.recordRadioChannel(None))
-                        self.gui.get_object('menu4').popup(None, None, None, event.button, event.time)
+                                self.gui.get_object(
+                                    'menuitem47').disconnect(
+                                        self.handler_menuitem47)
+                            self.handler_menuitem47 = self.gui.get_object(
+                                'menuitem47').connect('activate',
+                                                      lambda obj: self.recordRadioChannel(None))
+                        self.gui.get_object('menu4').popup(
+                            None,
+                            None,
+                            None,
+                            event.button,
+                            event.time)
         elif hasattr(event, 'keyval'):
             if event.keyval == 65293:
                 chList = self.gui.get_object('treeview3')
@@ -685,9 +859,11 @@ class TVMaxe:
                 (model, iter) = treeselection.get_selected()
                 channel = self.channels[model.get_value(iter, 0)]
                 self.urlIndex = 0
-                threading.Thread(target=self.playRadioChannel, args=(channel,)).start()
+                threading.Thread(
+                    target=self.playRadioChannel,
+                    args=(channel,)).start()
 
-    def playChannel(self, channel, index = None):
+    def playChannel(self, channel, index=None):
         self.stop(None)
         self.recordingMode = False
         self.currentChannel = channel
@@ -697,24 +873,24 @@ class TVMaxe:
             if self.getTime_to:
                 gobject.source_remove(self.getTime_to)
             self.logo = [1, _("Loading: %s" % self.currentChannel.name)]
-            if self.urlIndex > 0:
-                gobject.idle_add(self.statusbar, _('(Retrying) Loading ') + self.currentChannel.name)
-                self.logo = [1, _('(Retrying) Loading: ') + self.currentChannel.name]
-            else:
-                gobject.idle_add(self.statusbar, _('Loading ') + self.currentChannel.name)
+            gobject.idle_add(
+                self.statusbar,
+                _('Loading ') + self.currentChannel.name)
             gobject.idle_add(self.modradiomenuStatus, 'tv')
             protocol = self.getProtocol(self.url)
             protocol.inport, protocol.outport = self.protocolPorts()
-            protocol.petrodava_server = self.settingsManager.getPetrodavaServer()
+            protocol.petrodava_server = self.settingsManager.\
+                getPetrodavaServer()
             protocol.petrodava_port = self.settingsManager.getPetrodavaPort()
             protocol.play(self.url, channel.params)
             if self.progressbarPulse:
                 gobject.source_remove(self.progressbarPulse)
                 self.progressbarPulse = None
-            self.progressbarPulse = gobject.timeout_add(400, self.updateProgressbar, protocol)
-        self.applyVideoSettings()
+            self.progressbarPulse = gobject.timeout_add(
+                400, self.updateProgressbar, protocol)
+        gobject.idle_add(self.applyVideoSettings)
 
-    def playRadioChannel(self, channel, index = None):
+    def playRadioChannel(self, channel, index=None):
         self.stop(None)
         self.recordingMode = False
         self.currentChannel = channel
@@ -725,11 +901,20 @@ class TVMaxe:
             if self.getTime_to:
                 gobject.source_remove(self.getTime_to)
             if self.urlIndex > 0:
-                gobject.idle_add(self.statusbar, _('(Retrying) Loading ') + self.currentChannel.name)
-                self.logo = [1, _('(Retrying) Loading: ') + self.currentChannel.name]
+                gobject.idle_add(
+                    self.statusbar,
+                    _('(Retrying) Loading ') + self.currentChannel.name)
+                self.logo = [
+                    1, _('(Retrying) Loading: ') + self.currentChannel.name]
             else:
-                gobject.idle_add(self.statusbar, _('Loading ') + self.currentChannel.name)
-            gobject.idle_add(self.radioWidget.updateWidget, self.currentChannel.name, self.url, icon)
+                gobject.idle_add(
+                    self.statusbar,
+                    _('Loading ') + self.currentChannel.name)
+            gobject.idle_add(
+                self.radioWidget.updateWidget,
+                self.currentChannel.name,
+                self.url,
+                icon)
             gobject.idle_add(self.modradiomenuStatus, 'radio')
             if self.url.endswith('.pls') or self.url.endswith('.m3u'):
                 self.url = ListParser().getData(self.url)
@@ -739,14 +924,16 @@ class TVMaxe:
             if self.progressbarPulse:
                 gobject.source_remove(self.progressbarPulse)
                 self.progressbarPulse = None
-            self.progressbarPulse = gobject.timeout_add(400, self.updateProgressbar, protocol)
+            self.progressbarPulse = gobject.timeout_add(
+                400, self.updateProgressbar, protocol)
 
     def playURL(self, url):
         self.stop(None)
         self.recordingMode = False
         time.sleep(1)
-        if not '://' in url:                 # making a base check if the protocol has been specified
-            self.url = 'http://' + url   # we suppose that the user wants to play a HTTP stream...
+        if not '://' in url:
+            self.url = 'http://' + \
+                url
         else:
             self.url = url
         # Try to find if the address already exists in list
@@ -798,7 +985,9 @@ class TVMaxe:
         else:
             if self.url != '':
                 self.logo = [1, _("Loading: %s" % self.currentChannel.name)]
-                gobject.idle_add(self.statusbar, _('Loading ') + self.currentChannel.name)
+                gobject.idle_add(
+                    self.statusbar,
+                    _('Loading ') + self.currentChannel.name)
                 gobject.idle_add(self.modradiomenuStatus, 'tv')
                 protocol = self.getProtocol(self.url)
                 protocol.inport, protocol.outport = self.protocolPorts()
@@ -806,9 +995,10 @@ class TVMaxe:
                 if self.progressbarPulse:
                     gobject.source_remove(self.progressbarPulse)
                     self.progressbarPulse = None
-                self.progressbarPulse = gobject.timeout_add(400, self.updateProgressbar, protocol)
+                self.progressbarPulse = gobject.timeout_add(
+                    400, self.updateProgressbar, protocol)
 
-    def recordChannel(self, channel, index = None, askSave = True):
+    def recordChannel(self, channel, index=None, askSave=True):
         self.stop(None)
         if askSave:
             self.Recorder.saveAs = self.saveRecord('video')
@@ -828,10 +1018,15 @@ class TVMaxe:
                 gobject.source_remove(self.getTime_to)
             self.logo = [1, _("Recording: %s" % self.currentChannel.name)]
             if self.urlIndex > 0:
-                gobject.idle_add(self.statusbar, _('(Retrying) Recording ') + self.currentChannel.name)
-                self.logo = [1, _('(Retrying) Recording: ') + self.currentChannel.name]
+                gobject.idle_add(
+                    self.statusbar,
+                    _('(Retrying) Recording ') + self.currentChannel.name)
+                self.logo = [
+                    1, _('(Retrying) Recording: ') + self.currentChannel.name]
             else:
-                gobject.idle_add(self.statusbar, _('Recording ') + self.currentChannel.name)
+                gobject.idle_add(
+                    self.statusbar,
+                    _('Recording ') + self.currentChannel.name)
             gobject.idle_add(self.modradiomenuStatus, 'tv')
             protocol = self.getProtocol(self.url)
             protocol.inport, protocol.outport = self.protocolPorts()
@@ -839,9 +1034,10 @@ class TVMaxe:
             if self.progressbarPulse:
                 gobject.source_remove(self.progressbarPulse)
                 self.progressbarPulse = None
-            self.progressbarPulse = gobject.timeout_add(400, self.updateProgressbar, protocol)
+            self.progressbarPulse = gobject.timeout_add(
+                400, self.updateProgressbar, protocol)
 
-    def recordRadioChannel(self, channel, index = None, askSave = True):
+    def recordRadioChannel(self, channel, index=None, askSave=True):
         self.stop(None)
         if askSave:
             self.Recorder.saveAs = self.saveRecord('audio')
@@ -862,11 +1058,20 @@ class TVMaxe:
                 gobject.source_remove(self.getTime_to)
             self.logo = [1, _("Recording: %s" % self.currentChannel.name)]
             if self.urlIndex > 0:
-                gobject.idle_add(self.statusbar, _('(Retrying) Recording ') + self.currentChannel.name)
-                self.logo = [1, _('(Retrying) Recording: ') + self.currentChannel.name]
+                gobject.idle_add(
+                    self.statusbar,
+                    _('(Retrying) Recording ') + self.currentChannel.name)
+                self.logo = [
+                    1, _('(Retrying) Recording: ') + self.currentChannel.name]
             else:
-                gobject.idle_add(self.statusbar, _('Recording ') + self.currentChannel.name)
-            gobject.idle_add(self.radioWidget.updateWidget, self.currentChannel.name, self.url, icon)
+                gobject.idle_add(
+                    self.statusbar,
+                    _('Recording ') + self.currentChannel.name)
+            gobject.idle_add(
+                self.radioWidget.updateWidget,
+                self.currentChannel.name,
+                self.url,
+                icon)
             gobject.idle_add(self.modradiomenuStatus, 'radio')
             if self.url.endswith('.pls') or self.url.endswith('.m3u'):
                 self.url = ListParser().getData(self.url)
@@ -876,9 +1081,14 @@ class TVMaxe:
             if self.progressbarPulse:
                 gobject.source_remove(self.progressbarPulse)
                 self.progressbarPulse = None
-            self.progressbarPulse = gobject.timeout_add(400, self.updateProgressbar, protocol)
+            self.progressbarPulse = gobject.timeout_add(
+                400, self.updateProgressbar, protocol)
 
     def play(self, url):
+        gobject.idle_add(self.do_play, url)
+
+    def do_play(self, url):
+        """ Wrapper to make sure we do this in main thread """
         if self.recordingMode:
             if not hasattr(self.mediaPlayer, 'recQuality'):
                 self.orig_mediaPlayer = copy.copy(self.mediaPlayer)
@@ -898,10 +1108,10 @@ class TVMaxe:
                 self.gui.get_object('modradiomenu').set_sensitive(True)
 
     def stop(self, error=None):
-        if type(error) == str:
+        if isinstance(error, str):
             for x in self.protocols:
                 self.protocols[x].stop()
-            self.playerError(self.currentChannel)
+            #self.playerError(self.currentChannel)
             return
         if hasattr(self, 'url'):
             protocol = self.getProtocol(self.url)
@@ -909,17 +1119,21 @@ class TVMaxe:
         else:
             for x in self.protocols:
                 self.protocols[x].stop()
-        self.isUpdatingProgressbar = False
-        if type(error) == int:
+        if isinstance(error, int):
             self.stopCallback(error)
         else:
             self.currentChannel = None
             self.stopCallback()
 
     def playCallback(self):
+        gobject.idle_add(self.do_playCallback)
+
+    def do_playCallback(self):
         if self.currentChannel:
-            self.gui.get_object('label65').set_text(_("Playing: ") + self.currentChannel.name)
-            self.gui.get_object('label80').set_text(_("Playing: ") + self.currentChannel.name)
+            self.gui.get_object('label65').set_text(
+                _("Playing: ") + self.currentChannel.name)
+            self.gui.get_object('label80').set_text(
+                _("Playing: ") + self.currentChannel.name)
             self.statusbar(_('Playing ') + self.currentChannel.name)
             if len(self.currentChannel.audiochannels) > 1:
                 menu = gtk.Menu()
@@ -933,9 +1147,16 @@ class TVMaxe:
             else:
                 self.gui.get_object('menuitem43').remove_submenu()
                 self.gui.get_object('menuitem43').hide()
-        self.gui.get_object('image1').set_from_stock(gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_BUTTON)
-        self.keysimulator.src = gobject.timeout_add(60000, self.keysimulator.start)
-        self.mediaPlayer.volume(self.gui.get_object('volumebutton1').get_value())
+        self.gui.get_object(
+            'image1').set_from_stock(
+                gtk.STOCK_MEDIA_PAUSE,
+                gtk.ICON_SIZE_BUTTON)
+        self.keysimulator.src = gobject.timeout_add(
+            60000, self.keysimulator.start)
+        self.mediaPlayer.volume(
+            self.gui.get_object(
+                'volumebutton1').get_value(
+            ))
         gobject.timeout_add(2000, self.showEPG)
         gobject.timeout_add(2000, self.applyVideoSettings, None)
         if hasattr(self, 'blinkRecord_source'):
@@ -947,31 +1168,47 @@ class TVMaxe:
         self.getTime_to = gobject.timeout_add(1000, self.getTime)
         try:
             drawingarea = self.gui.get_object('drawingarea1')
-            gobject.timeout_add(200, drawingarea.modify_bg, gtk.STATE_NORMAL, drawingarea.get_colormap().alloc_color("black"))
+            gobject.timeout_add(
+                200,
+                drawingarea.modify_bg,
+                gtk.STATE_NORMAL,
+                drawingarea.get_colormap(
+                ).alloc_color(
+                    "black"))
         except:
             pass
         protocol = self.getProtocol(self.url)
         protocol.progress = -1
         return False
 
-    def stopCallback(self, errorlevel = 0):
+    def stopCallback(self, errorlevel=0):
+        gobject.idle_add(self.do_stopCallback, errorlevel)
+
+    def do_stopCallback(self, errorlevel=0):
+        if self.progressbarPulse:
+            gobject.source_remove(self.progressbarPulse)
+        self.gui.get_object('progressbar2').hide()
+
         if self.getTime_to:
             gobject.source_remove(self.getTime_to)
         self.recordingMode = False
-        if errorlevel != 1:                                             # errorlevel == 1 means 'retry channel'
-            threading.Thread(target=self.mediaPlayer.stop, args=()).start()
-            if errorlevel == 0:                                     # errorlevel 0 means that the channel wasn't stopped because of an error
-                self.logo = [0, 'TV-MAXE ' + str(version)]
-            if hasattr(self.mediaPlayer, 'recQuality'):             # if we just recorded smth, trim the recording to match the recorded length
+        if errorlevel != 1:  # errorlevel == 1 means 'retry channel'
+            self.mediaPlayer.stop()
+            if errorlevel == 0:
+                self.logo = [0, 'TV-MAXE ' + str(VERSION)]
+            if hasattr(self.mediaPlayer, 'recQuality'):
                 recordedTime = self.gui.get_object('label36').get_label()
                 l = recordedTime.split(':')
                 seconds = int(l[0]) * 3600 + int(l[1]) * 60 + int(l[2])
                 if seconds:
                     self.mediaPlayer.adjustTime(seconds)
-            self.gui.get_object('image1').set_from_stock(gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_BUTTON)
+            self.gui.get_object(
+                'image1').set_from_stock(
+                    gtk.STOCK_MEDIA_PLAY,
+                    gtk.ICON_SIZE_BUTTON)
             gobject.source_remove(self.keysimulator.src)
             self.gui.get_object('menuitem43').hide()
-            gobject.idle_add(self.statusbar, _('Stopped'))
+            self.statusbar(_('Stopped'))
             self.gui.get_object('label36').set_text('00:00:00')
             self.gui.get_object('label83').set_text('00:00:00')
 
@@ -980,9 +1217,15 @@ class TVMaxe:
             if self.mediaPlayer.getStatus() == False:
                 self.playerError(self.currentChannel)
                 return False
-            current = time.strftime('%H:%M:%S', time.gmtime(self.mediaPlayer.getTime()[0]))
-            gobject.idle_add(self.gui.get_object('label36').set_text, str(current))
-            gobject.idle_add(self.gui.get_object('label83').set_text, str(current))
+            current = time.strftime(
+                '%H:%M:%S',
+                time.gmtime(self.mediaPlayer.getTime()[0]))
+            gobject.idle_add(
+                self.gui.get_object('label36').set_text,
+                str(current))
+            gobject.idle_add(
+                self.gui.get_object('label83').set_text,
+                str(current))
         return True
 
     def fullscreen(self, obj, event=None):
@@ -990,11 +1233,20 @@ class TVMaxe:
             if event.button == 1 and event.type == gtk.gdk._2BUTTON_PRESS:
                 self.switch_fullscreen(obj)
             elif event.button == 3:
-                self.gui.get_object('menu5').popup(None, None, None, event.button, event.time)
+                self.gui.get_object('menu5').popup(
+                    None,
+                    None,
+                    None,
+                    event.button,
+                    event.time)
                 if self.mediaPlayer.isPlaying():
-                    self.gui.get_object('menuitem_videoSettings').set_sensitive(True)
+                    self.gui.get_object(
+                        'menuitem_videoSettings').set_sensitive(
+                            True)
                 else:
-                    self.gui.get_object('menuitem_videoSettings').set_sensitive(False)
+                    self.gui.get_object(
+                        'menuitem_videoSettings').set_sensitive(
+                            False)
             elif event.button == 2:
                 self.remoteOK()
 
@@ -1010,7 +1262,7 @@ class TVMaxe:
             self.gui.get_object('checkmenuitem1').set_active(True)
             self.gui.get_object('menuitem9').set_active(True)
             self.gui.get_object('menubar1').hide()
-            #self.gui.get_object('notebook2').hide()
+            # self.gui.get_object('notebook2').hide()
             self.gui.get_object('hbox1').hide()
             self.gui.get_object('vbox27').hide()
             self.gui.get_object('hbox32').hide()
@@ -1055,10 +1307,16 @@ class TVMaxe:
         if self.mediaPlayer.isPlaying() and obj == self.gui.get_object('button1'):
             self.mediaPlayer.pause()
             if not self.paused:
-                self.gui.get_object('image1').set_from_stock(gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_BUTTON)
+                self.gui.get_object(
+                    'image1').set_from_stock(
+                        gtk.STOCK_MEDIA_PLAY,
+                        gtk.ICON_SIZE_BUTTON)
                 self.paused = True
             else:
-                self.gui.get_object('image1').set_from_stock(gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_BUTTON)
+                self.gui.get_object(
+                    'image1').set_from_stock(
+                        gtk.STOCK_MEDIA_PAUSE,
+                        gtk.ICON_SIZE_BUTTON)
                 self.paused = False
         else:
             page = self.gui.get_object('notebook2').get_current_page()
@@ -1100,7 +1358,10 @@ class TVMaxe:
     def record(self, obj):
         if self.mediaPlayer.isPlaying() and obj == self.gui.get_object('button1'):
             self.mediaPlayer.stop()
-            self.gui.get_object('image1').set_from_stock(gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_BUTTON)
+            self.gui.get_object(
+                'image1').set_from_stock(
+                    gtk.STOCK_MEDIA_PLAY,
+                    gtk.ICON_SIZE_BUTTON)
         page = self.gui.get_object('notebook2').get_current_page()
         if page == 0:
             chList = self.gui.get_object('treeview1')
@@ -1211,7 +1472,6 @@ class TVMaxe:
                 treeselection.select_iter(lastIter)
                 selected = treeselection.get_selected()
 
-
     def mute(self):
         if self.gui.get_object('volumebutton1').get_value() != 0:
             self.lastVolume = self.gui.get_object('volumebutton1').get_value()
@@ -1233,19 +1493,42 @@ class TVMaxe:
         if not chName == self.currentChannel.name:
             return
         if len(self.currentChannel.audiochannels) > 1:
-            langMsg = _('Languages: %s' % (self.currentChannel.audiochannels[0][1]))
+            langMsg = _(
+                'Languages: %s' %
+                (self.currentChannel.audiochannels[0][1]))
         else:
             langMsg = ''
         now = datetime.datetime.now()
         ceas = now.strftime("%H:%M")
         if nowontv:
             if langMsg != '':
-                self.OSD('[' + ceas + ']' + nowontv + '\n' + self.currentChannel.name + '\n' + langMsg)
+                self.OSD(
+                    '[' +
+                    ceas +
+                    ']' +
+                    nowontv +
+                    '\n' +
+                    self.currentChannel.name +
+                    '\n' +
+                    langMsg)
             else:
-                self.OSD('[' + ceas + ']' + nowontv + '\n' + self.currentChannel.name)
+                self.OSD(
+                    '[' +
+                    ceas +
+                    ']' +
+                    nowontv +
+                    '\n' +
+                    self.currentChannel.name)
         else:
             if langMsg != '':
-                self.OSD('[' + ceas + ']' + '\n' + self.currentChannel.name + '\n' + langMsg)
+                self.OSD(
+                    '[' +
+                    ceas +
+                    ']' +
+                    '\n' +
+                    self.currentChannel.name +
+                    '\n' +
+                    langMsg)
             else:
                 self.OSD('[' + ceas + ']' + '\n' + self.currentChannel.name)
         return False
@@ -1256,13 +1539,13 @@ class TVMaxe:
     def statusbar(self, message, percent=None):
         self.gui.get_object('label65').set_text(message)
         self.gui.get_object('label80').set_text(message)
-        self.gui.get_object('statusicon1').set_tooltip_text(message)
+        self.trayIcon.set_tooltip_text(message)
         if percent:
             try:
                 if percent == -1:
                     self.gui.get_object('progressbar2').hide()
                 else:
-                    r = float(percent)/float(100)
+                    r = float(percent) / float(100)
                     self.gui.get_object('progressbar2').set_fraction(r)
                     self.gui.get_object('progressbar2').show()
                 if r >= 1.0:
@@ -1271,20 +1554,27 @@ class TVMaxe:
                 self.gui.get_object('progressbar2').set_fraction(0.0)
 
     def updateProgressbar(self, protocol):
-        if protocol == None:
+        if protocol is None:
             self.gui.get_object('progressbar2').hide()
             return False
         percent = protocol.progress
         if percent == -1:
+            if self.currentChannel:
+                self.statusbar(_('Playing ') + self.currentChannel.name)
+            else:
+                self.statusbar(_('Ready'))
             self.gui.get_object('progressbar2').hide()
             return False
         if percent == 0:
+            self.statusbar(_('Loading... '))
             self.gui.get_object('progressbar2').pulse()
             self.gui.get_object('progressbar2').show()
             return True
-        r = float(percent)/float(100)
+        r = float(percent) / float(100)
         self.gui.get_object('progressbar2').set_fraction(r)
         self.gui.get_object('progressbar2').show()
+        self.statusbar(_('Loading... ') + "({0}%)".format(percent))
+
         return True
 
     def resetStatusbar(self):
@@ -1316,11 +1606,16 @@ class TVMaxe:
 
     def gtkMessage(self, tip, butoane, titlu, text):
         gtk.gdk.threads_enter()
-        dialog = gtk.MessageDialog(parent=self.gui.get_object('window1'), flags=0, type=tip, buttons=butoane, message_format=text);
-        dialog.set_title(titlu);
-        resp = dialog.run();
-        dialog.destroy();
-        gtk.gdk.threads_leave();
+        dialog = gtk.MessageDialog(
+            parent=self.gui.get_object('window1'),
+            flags=0,
+            type=tip,
+            buttons=butoane,
+            message_format=text)
+        dialog.set_title(titlu)
+        resp = dialog.run()
+        dialog.destroy()
+        gtk.gdk.threads_leave()
         return False
 
     def showError(self, msg):
@@ -1332,15 +1627,15 @@ class TVMaxe:
     def playerError(self, channel):
         if not channel:
             self.urlIndex = 0
-            self.logo = [2, [_('NO SIGNAL'),
-                            '',
-                            '',
-                            _('This channel seems to be offline.'),
-                            _('Also, it could be unreachable because of'),
-                            _('your network settings or restrictions.'),
-                            '',
-                            _('Please try again later')]
-            ]
+            self.logo = [2, [
+                _('NO SIGNAL'),
+                '',
+                '',
+                _('This channel seems to be offline.'),
+                _('Also, it could be unreachable because of'),
+                _('your network settings or restrictions.'),
+                '',
+                _('Please try again later')]]
             self.stopCallback(2)
             return
         urls = channel.streamurls
@@ -1387,21 +1682,25 @@ class TVMaxe:
                 channel = self.currentChannel
                 channel.streamurls[self.urlIndex]
                 if self.recordingMode:
-                    gobject.idle_add(self.recordRadioChannel, channel, None, False)
+                    gobject.idle_add(
+                        self.recordRadioChannel,
+                        channel,
+                        None,
+                        False)
                 else:
                     gobject.idle_add(self.playRadioChannel, channel)
             self.stop(1)
         else:
             self.urlIndex = 0
-            self.logo = [2, [_('NO SIGNAL'),
-                            '',
-                            '',
-                            _('This channel seems to be offline.'),
-                            _('Also, it could be unreachable because of'),
-                            _('your network settings or restrictions.'),
-                            '',
-                            _('Please try again later')]
-            ]
+            self.logo = [2, [
+                _('NO SIGNAL'),
+                '',
+                '',
+                _('This channel seems to be offline.'),
+                _('Also, it could be unreachable because of'),
+                _('your network settings or restrictions.'),
+                '',
+                _('Please try again later')]]
             self.stopCallback(2)
 
     def retryPlay(self, func, channel):             # reincearca redarea
@@ -1411,7 +1710,8 @@ class TVMaxe:
     def error_countdown(self):
         if self.countdown != 0:
             self.countdown = self.countdown - 1
-            self.gui.get_object('label32').set_text('Closing in %s seconds...' % str(self.countdown))
+            self.gui.get_object('label32').set_text(
+                'Closing in {0} seconds...'.format(self.countdown))
             return True
         else:
             self.hideError()
@@ -1432,24 +1732,47 @@ class TVMaxe:
         self.gui.get_object('image5').clear()
         treeselection = self.gui.get_object('treeview1').get_selection()
         (model, iter) = self.iterConvert(treeselection.get_selected())
-        iter = tools.search_iter(self.gui.get_object('tvguidestore'), 0, model[iter][0])
+        iter = tools.search_iter(
+            self.gui.get_object('tvguidestore'),
+            0,
+            model[iter][0])
         self.gui.get_object('combobox2').set_active_iter(iter)
-        timp = self.gui.get_object('liststore3').get_value(self.gui.get_object('combobox3').get_active_iter(), 1)
+        timp = self.gui.get_object(
+            'liststore3').get_value(
+                self.gui.get_object(
+                    'combobox3').get_active_iter(
+                ), 1)
         if not channel:
-            id = self.gui.get_object('tvguidestore').get_value(self.gui.get_object('combobox2').get_active_iter(), 0)
+            id = self.gui.get_object('tvguidestore')\
+                .get_value(
+                    self.gui.get_object('combobox2').get_active_iter(), 0)
             channel = self.channels[id]
-        threading.Thread(target=self.tvguide.getGuideData, args=(timp, channel, self.fillGhidTV)).start()
+        threading.Thread(
+            target=self.tvguide.getGuideData,
+            args=(timp,
+                  channel,
+                  self.fillGhidTV)).start()
         self.gui.get_object('window4').show()
         self.gui.get_object('window4').present()
-        self.combobox2h = self.gui.get_object('combobox2').connect('changed', self.updateEPG)
-        self.combobox3h = self.gui.get_object('combobox3').connect('changed', self.updateEPG)
+        self.combobox2h = self.gui.get_object(
+            'combobox2').connect('changed', self.updateEPG)
+        self.combobox3h = self.gui.get_object(
+            'combobox3').connect('changed', self.updateEPG)
 
     def fillGhidTV(self, data, chname=None, day=None):
         model = self.gui.get_object('liststore4')
-        timp = self.gui.get_object('liststore3').get_value(self.gui.get_object('combobox3').get_active_iter(), 1)
+        timp = self.gui.get_object(
+            'liststore3').get_value(
+                self.gui.get_object(
+                    'combobox3').get_active_iter(
+                ), 1)
         if day != timp:
             return
-        id = self.gui.get_object('tvguidestore').get_value(self.gui.get_object('combobox2').get_active_iter(), 0)
+        id = self.gui.get_object(
+            'tvguidestore').get_value(
+                self.gui.get_object(
+                    'combobox2').get_active_iter(
+                ), 0)
         channel = self.channels[id]
         if chname != channel.name:
             return
@@ -1463,13 +1786,14 @@ class TVMaxe:
             H = str(time.strftime("%H", time.localtime()))
             M = int(time.strftime("%M", time.localtime()))
             if M != 59:
-                M = str(M+1)
+                M = str(M + 1)
             else:
                 M = str(M)
             if len(M) == 1:
                 M = '0' + M
-            acum = datetime.datetime.strptime(H+':'+M , "%H:%M")
-            apro = [x for x in itertools.takewhile( lambda t: acum > datetime.datetime.strptime(t, "%H:%M"), ore )][-1]
+            now = datetime.datetime.strptime(H + ':' + M, "%H:%M")
+            apro = [x for x in itertools.takewhile(
+                lambda t: now > datetime.datetime.strptime(t, "%H:%M"), ore)][-1]
             for x in data:
                 ora = x[0]
                 nume = x[1]
@@ -1491,7 +1815,9 @@ class TVMaxe:
         treeselection = self.gui.get_object('treeview2').get_selection()
         (model, iter) = treeselection.get_selected()
         url = model.get_value(iter, 2)
-        threading.Thread(target=self.tvguide.getPgDetails, args=(url, self.showpgDetails)).start()
+        threading.Thread(
+            target=self.tvguide.getPgDetails,
+            args=(url, self.showpgDetails)).start()
 
     def showpgDetails(self, data, data_url):
         treeselection = self.gui.get_object('treeview2').get_selection()
@@ -1506,7 +1832,8 @@ class TVMaxe:
                 loader = gtk.gdk.PixbufLoader()
                 loader.write(data[0])
                 loader.close()
-                self.gui.get_object('image5').set_from_pixbuf(loader.get_pixbuf())
+                self.gui.get_object('image5').set_from_pixbuf(
+                    loader.get_pixbuf())
             self.gui.get_object('scrolledwindow4').show()
         else:
             self.gui.get_object('scrolledwindow4').hide()
@@ -1520,10 +1847,20 @@ class TVMaxe:
             self.gui.get_object('scrolledwindow4').hide()
             self.gui.get_object('liststore4').clear()
             self.gui.get_object('image5').clear()
-            timp = self.gui.get_object('liststore3').get_value(self.gui.get_object('combobox3').get_active_iter(), 1)
-            id = self.gui.get_object('tvguidestore').get_value(self.gui.get_object('combobox2').get_active_iter(), 0)
-            threading.Thread(target=self.tvguide.getGuideData, args=(timp, self.channels[id], self.fillGhidTV)).start()
-        except Exception, e:
+            timp = self.gui.get_object(
+                'liststore3').get_value(
+                    self.gui.get_object(
+                        'combobox3').get_active_iter(), 1)
+            id = self.gui.get_object(
+                'tvguidestore').get_value(
+                    self.gui.get_object(
+                        'combobox2').get_active_iter(), 0)
+            threading.Thread(
+                target=self.tvguide.getGuideData,
+                args=(timp,
+                      self.channels[id],
+                      self.fillGhidTV)).start()
+        except Exception as e:
             pass
 
     def remoteUP(self):
@@ -1541,11 +1878,11 @@ class TVMaxe:
         if iter:
             path = model.get_path(iter)
             row = list(path)
-            newlast = row[len(row)-1]-1
+            newlast = row[len(row) - 1] - 1
             if newlast < 0:
                 row.pop()
             else:
-                row[len(row)-1] = newlast
+                row[len(row) - 1] = newlast
             row = tuple(row)
             if len(row) != 0:
                 if row > 0:
@@ -1571,7 +1908,8 @@ class TVMaxe:
         channel = self.channels[id]
         self.gui.get_object('image9').set_from_pixbuf(channel.icon)
         self.gui.get_object('label39').set_text(channel.name)
-        self.gui.get_object('label40').set_text(_("Press OK or middle-click to play this channel"))
+        self.gui.get_object('label40').set_text(
+            _("Press OK or middle-click to play this channel"))
         self.gui.get_object('label63').set_text('')
         self.gui.get_object('minutesLeft_pb').hide()
         try:
@@ -1581,7 +1919,8 @@ class TVMaxe:
         except:
             pass
         if self.autosleep.timer:
-            self.gui.get_object('sleepLabel').set_text(str(self.autosleep.get_minutes_left()) + ' minute(s)')
+            self.gui.get_object('sleepLabel').set_text(
+                str(self.autosleep.get_minutes_left()) + ' minute(s)')
             self.gui.get_object('sleepBox').show()
         else:
             self.gui.get_object('sleepBox').hide()
@@ -1626,17 +1965,19 @@ class TVMaxe:
         channel = self.channels[id]
         self.gui.get_object('image9').set_from_pixbuf(channel.icon)
         self.gui.get_object('label39').set_text(channel.name)
-        self.gui.get_object('label40').set_text(_("Press OK or middle-click to play this channel"))
+        self.gui.get_object('label40').set_text(
+            _("Press OK or middle-click to play this channel"))
         self.gui.get_object('label63').set_text('')
         self.gui.get_object('minutesLeft_pb').hide()
         try:
             if 'epgurl' in dict(channel.info):
                 if channel.info['epgurl'] != '':
                     self.tvguide.getCurrent(channel, self.label63)
-        except Exception, e:
+        except Exception as e:
             pass
         if self.autosleep.timer:
-            self.gui.get_object('sleepLabel').set_text(str(self.autosleep.get_minutes_left()) + ' minute(s)')
+            self.gui.get_object('sleepLabel').set_text(
+                str(self.autosleep.get_minutes_left()) + ' minute(s)')
             self.gui.get_object('sleepBox').show()
         else:
             self.gui.get_object('sleepBox').hide()
@@ -1659,8 +2000,11 @@ class TVMaxe:
                     self.gui.get_object('label63').set_text(data)
                     left = self.tvguide.minutesLeft(channel)
                     if left[0] != -1:
-                        self.gui.get_object('minutesLeft_pb').set_text(_("%s left...") % str(left[0]))
-                        self.gui.get_object('minutesLeft_pb').set_fraction(left[1])
+                        self.gui.get_object('minutesLeft_pb').set_text(
+                            _("%s left...") % str(left[0])
+                        )
+                        self.gui.get_object(
+                            'minutesLeft_pb').set_fraction(left[1])
                         self.gui.get_object('minutesLeft_pb').show()
                     else:
                         self.gui.get_object('minutesLeft_pb').hide()
@@ -1693,9 +2037,9 @@ class TVMaxe:
     def ShowDetails(self, obj, event=None):
         treeselection = self.gui.get_object('treeview4').get_selection()
         (model, iter) = treeselection.get_selected()
-        description = model.get_value(iter, 2);
-        photo = model.get_value(iter, 3);
-        name = model.get_value(iter, 0);
+        description = model.get_value(iter, 2)
+        photo = model.get_value(iter, 3)
+        name = model.get_value(iter, 0)
         self.gui.get_object('label45').set_text(name)
         self.gui.get_object('label46').set_text(description)
         threading.Thread(target=self.downloadShowImage, args=(photo, )).start()
@@ -1729,25 +2073,30 @@ class TVMaxe:
 
     def tabSwitch(self, obj, pointer, page):
         self.gui.get_object('imagemenuitem1').show()
-        if page == 0: #la selectarea primului tab
-            self.gui.get_object('imagemenuitem1').set_label(_('Add a TV channel'))
-        if page == 1: #la selectarea celui de-al doilea tab
-            self.gui.get_object('imagemenuitem1').set_label(_('Add a Radio channel'))
-        if page == 2: #la selectarea celui de-al treilea tab
+        if page == 0:  # la selectarea primului tab
+            self.gui.get_object('imagemenuitem1').set_label(
+                _('Add a TV channel'))
+        if page == 1:  # la selectarea celui de-al doilea tab
+            self.gui.get_object('imagemenuitem1').set_label(
+                _('Add a Radio channel'))
+        if page == 2:  # la selectarea celui de-al treilea tab
             self.gui.get_object('imagemenuitem1').hide()
 
     def refreshList(self, obj, event=None):
         self.clearChannelCache()
         self.gui.get_object('channelstore').clear()
         self.gui.get_object('radiostore').clear()
-        threading.Thread(target=self.getChannels, args=(self.populateList,)).start()
+        threading.Thread(
+            target=self.getChannels,
+            args=(self.populateList,)).start()
 
     def loadVideoEQ(self):
         # setup b, c, s sliders
         if hasattr(self, 'currentChannel') \
-        and self.currentChannel \
-        and self.settingsManager.getVideoEQ_channel(self.currentChannel.id):
-            values = self.settingsManager.getVideoEQ_channel(self.currentChannel.id)
+            and self.currentChannel \
+            and self.settingsManager.getVideoEQ_channel(self.currentChannel.id):
+            values = self.settingsManager.getVideoEQ_channel(
+                self.currentChannel.id)
         else:
             values = self.settingsManager.getVideoEQ_global()
         self.gui.get_object('brightness_scale').set_value(values['b'])
@@ -1756,17 +2105,19 @@ class TVMaxe:
 
         # setup aspect ratio combo
         if hasattr(self, 'currentChannel') \
-        and self.currentChannel \
-        and self.settingsManager.getAspect_channel(self.currentChannel.id):
-            aspect = self.settingsManager.getAspect_channel(self.currentChannel.id)
+            and self.currentChannel \
+            and self.settingsManager.getAspect_channel(self.currentChannel.id):
+            aspect = self.settingsManager.getAspect_channel(
+                self.currentChannel.id)
         else:
-            aspect = self.settingsManager.getAspect_channel(self.settingsManager.aspectratio)
+            aspect = self.settingsManager.getAspect_channel(
+                self.settingsManager.aspectratio)
         iter = self.gui.get_object('aspect_ratios').get_iter_root()
         while iter:
             if self.gui.get_object('aspect_ratios').get_value(iter, 0) == aspect:
                 break
             iter = self.gui.get_object('aspect_ratios').iter_next(iter)
-        if iter == None:
+        if iter is None:
             iter = self.gui.get_object('aspect_ratios').get_iter_root()
         self.gui.get_object('aspect_ratio_combo').set_active_iter(iter)
 
@@ -1789,7 +2140,8 @@ class TVMaxe:
         s = self.gui.get_object('saturation_scale').get_value()
         self.mediaPlayer.adjustImage(b, c, s)
         if hasattr(self, 'currentChannel') and self.currentChannel:
-            self.settingsManager.saveVideoEQ_channel(b, c, s, self.currentChannel.id)
+            self.settingsManager.saveVideoEQ_channel(
+                b, c, s, self.currentChannel.id)
             self.settingsManager.saveAspect_channel(
                 self.gui.get_object('aspect_ratio_combo').get_active_text(),
                 self.currentChannel.id
@@ -1804,11 +2156,12 @@ class TVMaxe:
         s = self.gui.get_object('saturation_scale').get_value()
         self.mediaPlayer.adjustImage(b, c, s)
         self.settingsManager.saveVideoEQ_global(b, c, s)
-        self.settingsManager.saveAspect_global(self.gui.get_object('aspect_ratio_combo').get_active_text())
+        self.settingsManager.saveAspect_global(
+            self.gui.get_object('aspect_ratio_combo').get_active_text())
         self.gui.get_object('window8').hide()
 
     def applyVideoSettings(self, obj=None, event=None):
-        if obj == None:                 # set on startup
+        if obj is None:                 # set on startup
             if self.gui.get_object('window8').get_property("visible"):
                 return True
             self.loadVideoEQ()
@@ -1841,11 +2194,11 @@ class TVMaxe:
             self.gui.get_object('aspectframe1').set(0.5, 0.5, 1.6, False)
         elif active == 9:
             self.gui.get_object('aspectframe1').set(0.5, 0.5, 2.35, False)
-        
+
         # apply settings to video backend
         self.mediaPlayer.setRatio(active)
         self.mediaPlayer.adjustImage(b, c, s)
-        return True
+        return False
 
     def showAddStream(self, obj, event=None):
         self.gui.get_object('entry3').set_text('')
@@ -1865,7 +2218,7 @@ class TVMaxe:
         nume = self.gui.get_object('entry3').get_text()
         url = self.gui.get_object('entry4').get_text()
         param = self.gui.get_object('entry2').get_text()
-        params = {url : param}
+        params = {url: param}
         img = tools.GdkPixbuf_to_Image(image)
         buf = StringIO.StringIO()
         img.save(buf, "PNG")
@@ -1874,10 +2227,15 @@ class TVMaxe:
         conn.row_factory = sqlite3.Row
         conn.text_factory = str
         data = conn.cursor()
-        data.execute("CREATE TABLE IF NOT EXISTS tv_channels (id, icon, name, streamurls, params, guide, audiochannels)")
-        data.execute("CREATE TABLE IF NOT EXISTS radio_channels (id, icon, name, streamurls, params)")
-        data.execute("CREATE TABLE IF NOT EXISTS info (name, version, author, url, epgurl)")
-        data.execute("INSERT INTO info VALUES (?, ?, ?, ?, ?)", ['Local', '1', getpass.getuser(), '', ''])
+        data.execute("""CREATE TABLE IF NOT EXISTS tv_channels
+            (id, icon, name, streamurls, params, guide, audiochannels)""")
+        data.execute("""CREATE TABLE IF NOT EXISTS radio_channels
+            (id, icon, name, streamurls, params)""")
+        data.execute("""CREATE TABLE IF NOT EXISTS info
+            (name, version, author, url, epgurl)""")
+        data.execute(
+            "INSERT INTO info VALUES (?, ?, ?, ?, ?)",
+            ['Local', '1', getpass.getuser(), '', ''])
         conn.commit()
 
         if page == 0:
@@ -1886,60 +2244,124 @@ class TVMaxe:
             while (iter):
                 id = channelstore.get_value(iter, 0)
                 if url in self.channels[id].streamurls:
-                    dialog = gtk.MessageDialog(parent=self.gui.get_object('window7'), flags=0, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format=_('This channel already exists'));
-                    dialog.set_title(_('Error'));
-                    resp = dialog.run();
-                    dialog.destroy();
+                    dialog = gtk.MessageDialog(
+                        parent=self.gui.get_object('window7'),
+                        flags=0,
+                        type=gtk.MESSAGE_ERROR,
+                        buttons=gtk.BUTTONS_CLOSE,
+                        message_format=_('This channel already exists'))
+                    dialog.set_title(_('Error'))
+                    resp = dialog.run()
+                    dialog.destroy()
                     return
                 iter = channelstore.iter_next(iter)
             if nume == '' or url == '':
-                dialog = gtk.MessageDialog(parent=self.gui.get_object('window12'), flags=0, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format=_('Name and URL required!'));
-                dialog.set_title(_('Error'));
-                resp = dialog.run();
-                dialog.destroy();
-                return
-            url = url.translate(string.maketrans("", ""), string.whitespace)
-            id = re.sub(r'\W+', '', 'Local::' + nume + str(random.randint(1, 9999)))
-            channel = Channel(id = id, icon = image, name = nume, streamurls = [url], params = params, guide = '', audiochannels = '', liststore = channelstore, source = 'Local')
-            channel.info['name'] = 'Local'
-            iter = self.addChannel(channel, channelstore)
-            if iter == None:
-                dialog = gtk.MessageDialog(parent=self.gui.get_object('window12'), flags=0, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format=_('Channel cannot be added. Are you sure that the URL is correct?'))
+                dialog = gtk.MessageDialog(
+                    parent=self.gui.get_object('window12'),
+                    flags=0,
+                    type=gtk.MESSAGE_ERROR,
+                    buttons=gtk.BUTTONS_CLOSE,
+                    message_format=_('Name and URL required!'))
                 dialog.set_title(_('Error'))
                 resp = dialog.run()
                 dialog.destroy()
                 return
-            data.execute("INSERT INTO tv_channels VALUES (?,?,?,?,?,?,?)", [id, base64.b64encode(imgdata), nume, json.dumps([url]), json.dumps(params), '', json.dumps([])])
+            url = url.translate(string.maketrans("", ""), string.whitespace)
+            id = re.sub(
+                r'\W+', '', 'Local::' + nume + str(random.randint(1, 9999)))
+            channel = Channel(
+                id=id,
+                icon=image,
+                name=nume,
+                streamurls=[url],
+                params=params,
+                guide='',
+                audiochannels='',
+                liststore=channelstore,
+                source='Local')
+            channel.info['name'] = 'Local'
+            iter = self.addChannel(channel, channelstore)
+            if iter is None:
+                dialog = gtk.MessageDialog(
+                    parent=self.gui.get_object('window12'),
+                    flags=0,
+                    type=gtk.MESSAGE_ERROR,
+                    buttons=gtk.BUTTONS_CLOSE,
+                    message_format=_('Channel cannot be added. Are you sure that the URL is correct?'))
+                dialog.set_title(_('Error'))
+                resp = dialog.run()
+                dialog.destroy()
+                return
+            data.execute(
+                "INSERT INTO tv_channels VALUES (?,?,?,?,?,?,?)",
+                [id,
+                 base64.b64encode(imgdata),
+                 nume,
+                 json.dumps([url]),
+                 json.dumps(params),
+                 '',
+                 json.dumps([])])
             conn.commit()
         if page == 1:
             channelstore = self.gui.get_object('radiostore')
             iter = channelstore.get_iter_root()
             while (iter):
                 if url == channelstore.get_value(iter, 2):
-                    dialog = gtk.MessageDialog(parent=self.gui.get_object('window7'), flags=0, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format=_('This channel already exists'));
-                    dialog.set_title(_('Error'));
-                    resp = dialog.run();
-                    dialog.destroy();
+                    dialog = gtk.MessageDialog(
+                        parent=self.gui.get_object('window7'),
+                        flags=0,
+                        type=gtk.MESSAGE_ERROR,
+                        buttons=gtk.BUTTONS_CLOSE,
+                        message_format=_('This channel already exists'))
+                    dialog.set_title(_('Error'))
+                    resp = dialog.run()
+                    dialog.destroy()
                     return
                 iter = channelstore.iter_next(iter)
             url = url.translate(string.maketrans("", ""), string.whitespace)
             if nume == '' or url == '':
-                dialog = gtk.MessageDialog(parent=self.gui.get_object('window12'), flags=0, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format=_('Name and URL required!'));
-                dialog.set_title(_('Error'));
-                resp = dialog.run();
-                dialog.destroy();
-                return
-            id = re.sub(r'\W+', '', 'Local::' + nume + str(random.randint(1, 9999)))
-            channel = Channel(id = id, icon = image, name = nume, streamurls = [url], params = params, guide = '', audiochannels = '', liststore = channelstore, source = 'Local')
-            channel.info['name'] = 'Local'
-            iter = self.addChannel(channel, channelstore)
-            if iter == None:
-                dialog = gtk.MessageDialog(parent=self.gui.get_object('window12'), flags=0, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format=_('Channel cannot be added. Are you sure that the URL is correct?'))
+                dialog = gtk.MessageDialog(
+                    parent=self.gui.get_object('window12'),
+                    flags=0,
+                    type=gtk.MESSAGE_ERROR,
+                    buttons=gtk.BUTTONS_CLOSE,
+                    message_format=_('Name and URL required!'))
                 dialog.set_title(_('Error'))
                 resp = dialog.run()
                 dialog.destroy()
                 return
-            data.execute("INSERT INTO radio_channels VALUES (?,?,?,?,?)", [id, base64.b64encode(imgdata), nume, json.dumps([url]), json.dumps(params)])
+            id = re.sub(
+                r'\W+', '', 'Local::' + nume + str(random.randint(1, 9999)))
+            channel = Channel(
+                id=id,
+                icon=image,
+                name=nume,
+                streamurls=[url],
+                params=params,
+                guide='',
+                audiochannels='',
+                liststore=channelstore,
+                source='Local')
+            channel.info['name'] = 'Local'
+            iter = self.addChannel(channel, channelstore)
+            if iter is None:
+                dialog = gtk.MessageDialog(
+                    parent=self.gui.get_object('window12'),
+                    flags=0,
+                    type=gtk.MESSAGE_ERROR,
+                    buttons=gtk.BUTTONS_CLOSE,
+                    message_format=_('Channel cannot be added. Are you sure that the URL is correct?'))
+                dialog.set_title(_('Error'))
+                resp = dialog.run()
+                dialog.destroy()
+                return
+            data.execute(
+                "INSERT INTO radio_channels VALUES (?,?,?,?,?)",
+                [id,
+                 base64.b64encode(imgdata),
+                 nume,
+                 json.dumps([url]),
+                 json.dumps(params)])
         self.gui.get_object('entry3').set_text('')
         self.gui.get_object('entry4').set_text('')
         self.gui.get_object('image23').set_from_file('blank.gif')
@@ -1971,7 +2393,9 @@ class TVMaxe:
             self.blacklist.add(self.channels[id])
         blackstore = self.gui.get_object('blackstore')
         blackstore.append([id, self.channels[id].name])
-        self.gui.get_object('liststatuslabel').set_text(_("Total: %s channels in %s subscriptions" % (str(self.countChannels()), str(len(self.settingsManager.abonamente)))))
+        self.gui.get_object('liststatuslabel').set_text(
+            _("Total: %s channels in %s subscriptions" % (str(self.countChannels()), str(len(self.settingsManager.abonamente))))
+        )
 
     def iterConvert(self, tup):
         (model, iter) = tup
@@ -1979,7 +2403,7 @@ class TVMaxe:
         iter = model.get_model().convert_iter_to_child_iter(None, iter)
         return (model.get_model().get_model(), iter)
 
-    def loginPBX(self, obj, auto = False):
+    def loginPBX(self, obj, auto=False):
         pbxlogin = self.settingsManager.getPBXuser()
         self.gui.get_object('entry5').set_text(pbxlogin[1])
         self.gui.get_object('entry6').set_text(pbxlogin[2])
@@ -1993,9 +2417,15 @@ class TVMaxe:
         if not self.gui.get_object('checkbutton3').get_active():
             self.gui.get_object('entry5').set_text('')
             self.gui.get_object('entry6').set_text('')
-            self.settingsManager.savePBX(self.gui.get_object('checkbutton3').get_active(), self.gui.get_object('entry5').get_text(), self.gui.get_object('entry6').get_text())
+            self.settingsManager.savePBX(
+                self.gui.get_object('checkbutton3').get_active(),
+                self.gui.get_object('entry5').get_text(),
+                self.gui.get_object('entry6').get_text())
         else:
-            self.settingsManager.savePBX(self.gui.get_object('checkbutton3').get_active(), self.gui.get_object('entry5').get_text(), self.gui.get_object('entry6').get_text())
+            self.settingsManager.savePBX(
+                self.gui.get_object('checkbutton3').get_active(),
+                self.gui.get_object('entry5').get_text(),
+                self.gui.get_object('entry6').get_text())
         self.gui.get_object('window9').hide()
         return True
 
@@ -2014,7 +2444,11 @@ class TVMaxe:
     def connectPBX(self, obj, event=None):
         username = self.gui.get_object('entry5').get_text()
         password = self.gui.get_object('entry6').get_text()
-        threading.Thread(target=self.pbx.signIn, args=(username, password, self.getPBX)).start()
+        threading.Thread(
+            target=self.pbx.signIn,
+            args=(username,
+                  password,
+              self.getPBX)).start()
         self.gui.get_object('vbox26').set_sensitive(False)
         self.gui.get_object('hbox27').show()
         self.PBXupdateBar_to = gobject.timeout_add(500, self.PBXupdateBar)
@@ -2023,7 +2457,12 @@ class TVMaxe:
         if not chlist:
             if hasattr(self, 'PBXupdateBar_to'):
                 gobject.source_remove(self.PBXupdateBar_to)
-            gobject.idle_add(self.gtkMessage, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, _('Error'), _('Cannot fetch the channel list. Aborting...'))
+            gobject.idle_add(
+                self.gtkMessage,
+                gtk.MESSAGE_ERROR,
+                gtk.BUTTONS_CLOSE,
+                _('Error'),
+                _('Cannot fetch the channel list. Aborting...'))
             gobject.idle_add(self.gui.get_object('vbox26').set_sensitive, True)
             gobject.idle_add(self.gui.get_object('hbox27').hide)
             gobject.idle_add(self.gui.get_object('window9').hide)
@@ -2038,17 +2477,37 @@ class TVMaxe:
                 channelstore = self.gui.get_object('radiostore')
             else:
                 channelstore = self.gui.get_object('channelstore')
-            channel = Channel(id = id, icon = icon, name = nume, streamurls = url, params = {}, guide = '', audiochannels = [], liststore = channelstore, source = 'PBX TV')
-            channel.info = {'name' : 'PBX TV', 'version' : '0.01', 'author' : '', 'url' : 'http://pbxtv.ro/', 'epgurl' : ''}
+            channel = Channel(
+                id=id,
+                icon=icon,
+                name=nume,
+                streamurls=url,
+                params={},
+                guide='',
+                audiochannels=[],
+                liststore=channelstore,
+                source='PBX TV')
+            channel.info = {
+                'name': 'PBX TV',
+                'version': '0.01',
+                'author': '',
+                'url': 'http://pbxtv.ro/',
+                'epgurl': ''}
             self.addChannel(channel, channelstore)
 
         self.gui.get_object('vbox26').set_sensitive(True)
         self.gui.get_object('hbox27').hide()
         self.gui.get_object('window9').hide()
         if self.gui.get_object('checkbutton3').get_active():
-            self.settingsManager.savePBX(self.gui.get_object('checkbutton3').get_active(), self.gui.get_object('entry5').get_text(), self.gui.get_object('entry6').get_text())
+            self.settingsManager.savePBX(
+                self.gui.get_object('checkbutton3').get_active(),
+                self.gui.get_object('entry5').get_text(),
+                self.gui.get_object('entry6').get_text())
         else:
-            self.settingsManager.savePBX(self.gui.get_object('checkbutton3').get_active(), '', '')
+            self.settingsManager.savePBX(
+                self.gui.get_object('checkbutton3').get_active(),
+                '',
+                '')
 
     def adaugaAbonament(self, obj=None):
         self.gui.get_object('entry8').set_text('')
@@ -2083,7 +2542,8 @@ class TVMaxe:
         if url != self.lastSubURLEdit:
             for x in self.settingsManager.abonamente:
                 if x[1] == self.lastSubURLEdit:
-                    self.settingsManager.abonamente[self.settingsManager.abonamente.index(x)] = [x[0], url]
+                    self.settingsManager.abonamente[
+                        self.settingsManager.abonamente.index(x)] = [x[0], url]
                     break
             self.lastSubURLEdit = None
             self.settingsManager.updateList = True
@@ -2101,7 +2561,8 @@ class TVMaxe:
         if iter:
             for x in self.settingsManager.abonamente:
                 if x[1] == model.get_value(iter, 1):
-                    self.settingsManager.abonamente.pop(self.settingsManager.abonamente.index(x))
+                    self.settingsManager.abonamente.pop(
+                        self.settingsManager.abonamente.index(x))
                     break
             model.remove(iter)
 
@@ -2112,16 +2573,17 @@ class TVMaxe:
             return None
 
     def donate(self, obj, event=None):
-        webbrowser.open('https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=DZ52GUL3WXQKN&lc=RO&item_name=TV%2dMAXE&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted')
+        webbrowser.open(
+            'https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=DZ52GUL3WXQKN&lc=RO&item_name=TV%2dMAXE&no_note=1&no_shipping=1&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted')
         self.donated(None)
 
     def donated(self, obj, event=None):
-        ver = self.settingsManager.saveDonate(version)
+        ver = self.settingsManager.saveDonate(VERSION)
         self.gui.get_object('hbox29').hide()
 
     def showDonate(self):
         v = self.settingsManager.getDonate()
-        if float(v) < float(version):
+        if float(v) < float(VERSION):
             self.gui.get_object('hbox29').show()
 
     def hideShowTVMaxe(self, obj, event=None):
@@ -2145,7 +2607,7 @@ class TVMaxe:
                 self.gui.get_object('menuitem30').set_sensitive(True)
             else:
                 self.gui.get_object('menuitem30').set_sensitive(False)
-            self.gui.get_object('menu9').popup(None, None, gtk.status_icon_position_menu, event.button, event.time, self.gui.get_object('statusicon1'))
+            self.trayIcon.pop_up_menu(event)
 
     def hideShowTVMaxe_Menu(self, obj):
         if self.tvmaxevis:
@@ -2163,18 +2625,12 @@ class TVMaxe:
             self.gui.get_object('menuitem29').set_label(_('Hide TV-MAXE'))
             self.tvmaxevis = True
 
-    def statusIconVolume(self, obj, event):
-        if event.direction.value_name == 'GDK_SCROLL_DOWN':
-            gobject.idle_add(self.setVolume, None, None, -0.1)
-        elif event.direction.value_name == 'GDK_SCROLL_UP':
-            gobject.idle_add(self.setVolume, None, None, 0.1)
-
     def createTrayMenus(self):
         # parent menus
         tvs = gtk.Menu()
         radios = gtk.Menu()
-        parents = {'tv' : {}, 'radio' : {}}
-        items = {'tv' : {}, 'radio' : {}}
+        parents = {'tv': {}, 'radio': {}}
+        items = {'tv': {}, 'radio': {}}
         model = self.gui.get_object('chlist_combo')
         iter = model.iter_next(model.get_iter_root())   # skip "All" list
         while iter:
@@ -2199,7 +2655,11 @@ class TVMaxe:
             nume = model.get_value(iter, 2)
             item = gtk.MenuItem(nume)
             channel = self.channels[model.get_value(iter, 0)]
-            item.connect("activate", self.trayplay, self.playRadioChannel, channel)
+            item.connect(
+                "activate",
+                self.trayplay,
+                self.playRadioChannel,
+                channel)
             parents['radio'][channel.source].append(item)
             items['radio'][channel.source].show()
             item.show()
@@ -2212,7 +2672,11 @@ class TVMaxe:
             nume = model.get_value(iter, 2)
             item = gtk.MenuItem(nume)
             channel = self.channels[model.get_value(iter, 0)]
-            item.connect("activate", self.trayplay, self.playRadioChannel, channel)
+            item.connect(
+                "activate",
+                self.trayplay,
+                self.playChannel,
+                channel)
             parents['tv'][channel.source].append(item)
             items['tv'][channel.source].show()
             item.show()
@@ -2292,9 +2756,14 @@ class TVMaxe:
         self.gui.get_object('label78').set_label('')
         self.gui.get_object('window12').show()
         if hasattr(self, 'channelInfo_showGhidTV_handler'):
-            self.gui.get_object('button43').disconnect(self.channelInfo_showGhidTV_handler)
-        self.channelInfo_showGhidTV_handler = self.gui.get_object('button43').connect('clicked', self.channelInfo_showGhidTV, self.channels[id])
-        threading.Thread(target=self.valabilitate, args=(adresa, self.channelInfo_status)).start()
+            self.gui.get_object(
+                'button43').disconnect(
+                    self.channelInfo_showGhidTV_handler)
+        self.channelInfo_showGhidTV_handler = self.gui.get_object('button43')\
+            .connect('clicked', self.channelInfo_showGhidTV, self.channels[id])
+        threading.Thread(
+            target=self.valabilitate,
+            args=(adresa, self.channelInfo_status)).start()
 
     def changeAudioTrack(self, obj, trackid):
         self.mediaPlayer.changeAudio(trackid)
@@ -2302,24 +2771,24 @@ class TVMaxe:
     def blmanager(self, obj):
         self.blacklist.showGUI(self.gui)
 
-    def hideblmanager(self, obj, event = None):
+    def hideblmanager(self, obj, event=None):
         self.blacklist.hideGUI()
         return True
 
-    def removeBlacklisted(self, obj, event = None):
+    def removeBlacklisted(self, obj, event=None):
         id = self.blacklist.remove()
         channelstore = self.gui.get_object('channelstore')
         radiostore = self.gui.get_object('radiostore')
         if not id:
             return
-        if not self.channels.has_key(id):
+        if id not in self.channels:
             return
         if self.channels[id].liststore == channelstore:
             self.addChannel(self.channels[id], channelstore)
         elif self.channels[id].liststore == radiostore:
             self.addChannel(self.channels[id], radiostore)
 
-    def blclear(self, obj, event = None):
+    def blclear(self, obj, event=None):
         channelstore = self.gui.get_object('channelstore')
         radiostore = self.gui.get_object('radiostore')
         ids = self.blacklist.clear()
@@ -2343,11 +2812,14 @@ class TVMaxe:
 
     def valabilitate(self, url, callback):
         try:
-            req = urllib2.Request(basehost + '/report.php?get=' + url)
+            req = urllib2.Request(BASEHOST + '/report.php?get=' + url)
             response = urllib2.urlopen(req)
             data = int(response.read())
             if data > 5:
-                idle = gobject.idle_add(callback, '<span foreground="#FF0000">' + _('appears to be broken') + '</span>')
+                idle = gobject.idle_add(
+                    callback,
+                    '<span foreground="#FF0000">' + _(
+                        'appears to be broken') + '</span>')
             else:
                 idle = gobject.idle_add(callback, 'OK')
         except:
@@ -2356,19 +2828,27 @@ class TVMaxe:
     def channelInfo_raporteaza(self, obj):
         obj.set_label(_('Reported'))
         obj.set_sensitive(False)
-        threading.Thread(target=self.reportChannel, args=(self.gui.get_object('label76').get_label(),)).start()
+        threading.Thread(
+            target=self.reportChannel,
+            args=(self.gui.get_object('label76').get_label(), )).start()
 
     def reportChannel(self, url):
         try:
-            req = urllib2.Request(basehost + '/report.php?set=' + url)
+            req = urllib2.Request(BASEHOST + '/report.php?set=' + url)
             response = urllib2.urlopen(req)
             print response.read()
         except:
             pass
 
     def addChanel_selectIcon(self, obj):
-        chooser = gtk.FileChooserDialog(title=_('Select image file...'),action=gtk.FILE_CHOOSER_ACTION_OPEN,
-                          buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+        chooser = gtk.FileChooserDialog(
+            title=_('Select image file...'),
+            action=gtk.FILE_CHOOSER_ACTION_OPEN,
+            buttons=(gtk.STOCK_CANCEL,
+                     gtk.RESPONSE_CANCEL,
+                     gtk.STOCK_OPEN,
+                     gtk.RESPONSE_OK)
+        )
         chooser.set_default_response(gtk.RESPONSE_OK)
         filter = gtk.FileFilter()
         filter.set_name(_("Images"))
@@ -2394,10 +2874,10 @@ class TVMaxe:
     def getCurrentChannelInfo(self):
         if not self.currentChannel:
             return None
-        info = {'name' : self.currentChannel.name,
-                'status' : self.gui.get_object('label65').get_text(),
-                'chid' : self.currentChannel.guide,
-                'tvguide' :  self.tvguide.getCurrent}
+        info = {'name': self.currentChannel.name,
+                'status': self.gui.get_object('label65').get_text(),
+                'chid': self.currentChannel.guide,
+                'tvguide': self.tvguide.getCurrent}
         return info
 
     def getChannelList(self, t):
@@ -2455,9 +2935,10 @@ class TVMaxe:
 
     def listError(self):
         return
-        #self.gtkMessage(gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, _('Error'), _('Cannot fetch the channel list. Aborting...'))
+        # self.gtkMessage(gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, _('Error'),
+        # _('Cannot fetch the channel list. Aborting...'))
 
-    def countChannels(self, liststore = None):
+    def countChannels(self, liststore=None):
         count = 0
         if liststore:
             iter = liststore.get_iter_root()
@@ -2466,7 +2947,9 @@ class TVMaxe:
                 iter = liststore.iter_next(iter)
             return count
         else:
-            liststores = [self.gui.get_object('channelstore'), self.gui.get_object('radiostore')]
+            liststores = [self.gui.get_object(
+                          'channelstore'),
+     self.gui.get_object('radiostore')]
             count = 0
             for liststore in liststores:
                 iter = liststore.get_iter_root()
@@ -2476,8 +2959,14 @@ class TVMaxe:
             return count
 
     def browseSubscription(self, obj):
-        chooser = gtk.FileChooserDialog(title=_('Select subscription file...'),action=gtk.FILE_CHOOSER_ACTION_OPEN,
-                          buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_OPEN,gtk.RESPONSE_OK))
+        chooser = gtk.FileChooserDialog(
+            title=_('Select subscription file...'),
+            action=gtk.FILE_CHOOSER_ACTION_OPEN,
+            buttons=(gtk.STOCK_CANCEL,
+                     gtk.RESPONSE_CANCEL,
+                     gtk.STOCK_OPEN,
+                     gtk.RESPONSE_OK)
+        )
         chooser.set_default_response(gtk.RESPONSE_OK)
         response = chooser.run()
         if response == gtk.RESPONSE_OK:
@@ -2489,8 +2978,14 @@ class TVMaxe:
         self.gui.get_object('entry8').set_text('file://' + filename)
 
     def saveChannellist(self, obj):
-        chooser = gtk.FileChooserDialog(title=_('Save current channellist...'),action=gtk.FILE_CHOOSER_ACTION_SAVE,
-                          buttons=(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL,gtk.STOCK_SAVE,gtk.RESPONSE_OK))
+        chooser = gtk.FileChooserDialog(
+            title=_('Save current channellist...'),
+            action=gtk.FILE_CHOOSER_ACTION_SAVE,
+            buttons=(gtk.STOCK_CANCEL,
+                     gtk.RESPONSE_CANCEL,
+                     gtk.STOCK_SAVE,
+                     gtk.RESPONSE_OK)
+        )
         chooser.set_default_response(gtk.RESPONSE_OK)
         chooser.set_do_overwrite_confirmation(True)
         response = chooser.run()
@@ -2506,9 +3001,12 @@ class TVMaxe:
         conn.row_factory = sqlite3.Row
         conn.text_factory = str
         data = conn.cursor()
-        data.execute("CREATE TABLE IF NOT EXISTS tv_channels (id, icon, name, streamurls, params, guide, audiochannels)")
-        data.execute("CREATE TABLE IF NOT EXISTS info (name, version, author, url, epgurl)")
-        data.execute("CREATE TABLE IF NOT EXISTS radio_channels (id, icon, name, streamurls, params)")
+        data.execute("""CREATE TABLE IF NOT EXISTS tv_channels
+            (id, icon, name, streamurls, params, guide, audiochannels)""")
+        data.execute("""CREATE TABLE IF NOT EXISTS info
+            (name, version, author, url, epgurl)""")
+        data.execute("""CREATE TABLE IF NOT EXISTS radio_channels
+            (id, icon, name, streamurls, params)""")
         conn.commit()
 
         model = self.gui.get_object('treeview1').get_model()
@@ -2520,7 +3018,15 @@ class TVMaxe:
             buf = StringIO.StringIO()
             icon.save(buf, "PNG")
             imgdata = buf.getvalue()
-            data.execute("INSERT INTO tv_channels VALUES (?,?,?,?,?,?,?)", [id, base64.b64encode(imgdata), channel.name, json.dumps(channel.streamurls), json.dumps(channel.params), channel.guide, json.dumps(channel.audiochannels)])
+            data.execute(
+                "INSERT INTO tv_channels VALUES (?,?,?,?,?,?,?)",
+                [id,
+                 base64.b64encode(imgdata),
+                 channel.name,
+                 json.dumps(channel.streamurls),
+                 json.dumps(channel.params),
+                 channel.guide,
+                 json.dumps(channel.audiochannels)])
             iter = model.iter_next(iter)
         conn.commit()
 
@@ -2533,18 +3039,31 @@ class TVMaxe:
             buf = StringIO.StringIO()
             icon.save(buf, "PNG")
             imgdata = buf.getvalue()
-            data.execute("INSERT INTO radio_channels VALUES (?,?,?,?,?)", [id, base64.b64encode(imgdata), channel.name, json.dumps(channel.streamurls), json.dumps(channel.params)])
+            data.execute(
+                "INSERT INTO radio_channels VALUES (?,?,?,?,?)",
+                [id,
+                 base64.b64encode(imgdata),
+                 channel.name,
+                 json.dumps(channel.streamurls),
+                 json.dumps(channel.params)])
             iter = model.iter_next(iter)
         conn.commit()
         self.statusbar(_('Channellist was successfully saved.'))
 
     def clearChannelCache(self):
-        files = os.listdir(tvmaxedir + 'cache/')
+        files = os.listdir(TVMAXEDIR + 'cache/')
         for file in files:
-            os.remove(tvmaxedir + 'cache/' + file)
+            os.remove(TVMAXEDIR + 'cache/' + file)
 
     def buildComboDays(self):
-        romana =[_('Sunday'), _('Monday'), _('Tuesday'), _('Wednesday'), _('Thursday'), _('Friday'), _('Saturday')]
+        days_names = [
+            _('Sunday'),
+            _('Monday'),
+            _('Tuesday'),
+            _('Wednesday'),
+            _('Thursday'),
+            _('Friday'),
+            _('Saturday')]
         today = datetime.date.today()
         self.gui.get_object('liststore3').clear()
         for x in range(0, 7):
@@ -2557,25 +3076,32 @@ class TVMaxe:
                 zinouaday = '0' + zinouaday
             if len(lunanoua) == 1:
                 lunanoua = '0' + lunanoua
-            datanoua = zinouaday + '.' + lunanoua + '.' +  str(zinoua.year)
-            iter = self.gui.get_object('liststore3').append([romana[nrzi] + ', ' + datanoua, datanoua.replace('.', '-')])
+            datanoua = zinouaday + '.' + lunanoua + '.' + str(zinoua.year)
+            iter = self.gui.get_object('liststore3').append(
+                ['{0}, {1}'.format(days_names[nrzi], datanoua),
+                 datanoua.replace('.', '-')]
+            )
             if x == 0:
                 self.gui.get_object('combobox3').set_active_iter(iter)
 
     def protocolPorts(self):
         if hasattr(self, 'settingsManager'):
             if self.settingsManager.staticports:
-                inport, outport = (self.settingsManager.inport, self.settingsManager.outport)
+                inport, outport = (
+                    self.settingsManager.inport, self.settingsManager.outport)
             else:
-                inport, outport = (random.randint(10025, 65535), random.randint(10025, 65535))
+                inport, outport = (
+                    random.randint(10025, 65535), random.randint(10025, 65535))
         else:
-            inport, outport = (random.randint(10025, 65535), random.randint(10025, 65535))
+            inport, outport = (
+                random.randint(10025, 65535), random.randint(10025, 65535))
         return (inport, outport)
 
     def readTheme(self, obj=None, event=None):
         themedir = self.settingsManager.getTheme()
         themefile = themedir + '/theme'
-        default = os.path.dirname(os.path.realpath(__file__)) + '/themes/default'
+        default = os.path.dirname(
+            os.path.realpath(__file__)) + '/themes/default'
         themedata = self.StatusImage.themedata
         if os.path.exists(themefile):
             fh = open(themefile)
@@ -2606,7 +3132,13 @@ class TVMaxe:
             treeview = self.gui.get_object('treeview2')
             path = treeview.get_path_at_pos(int(event.x), int(event.y))
             if path:
-                self.gui.get_object('guideMenu').popup(None, None, None, event.button, event.time)
+                self.gui.get_object(
+                    'guideMenu').popup(
+                        None,
+                        None,
+                        None,
+                        event.button,
+                        event.time)
 
     def showScheduler(self, obj, event=None):
         treeview = self.gui.get_object('treeview2')
@@ -2652,7 +3184,14 @@ class TVMaxe:
         return False
 
     def saveRecord(self, tip):
-        dialog = gtk.FileChooserDialog("Save recording...", None, gtk.FILE_CHOOSER_ACTION_SAVE, (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+        dialog = gtk.FileChooserDialog(
+            "Save recording...",
+            None,
+            gtk.FILE_CHOOSER_ACTION_SAVE,
+            (gtk.STOCK_CANCEL,
+             gtk.RESPONSE_CANCEL,
+             gtk.STOCK_SAVE,
+             gtk.RESPONSE_OK))
         dialog.set_default_response(gtk.RESPONSE_OK)
         predefname = str(datetime.datetime.now().strftime("%Y_%m_%d-%H_%M_%S"))
         if tip == 'audio':
@@ -2678,7 +3217,7 @@ class TVMaxe:
         return None
 
     def blinkRecord(self):
-        if self.gui.get_object('recordbox').props.visible == True:
+        if self.gui.get_object('recordbox').props.visible:
             self.gui.get_object('recordbox').hide()
         else:
             self.gui.get_object('recordbox').show()
@@ -2726,15 +3265,16 @@ class TVMaxe:
         os._exit(0)
 
     def initHTTPRemote(self):
-        return remoteC.HTTPRemoteControl(self,
-                chchannel = self.playURL,
-                volume = self.setVolume,
-                mute = self.mute,
-                stop = self.stop,
-                channelinfo = self.getCurrentChannelInfo)
+        return remoteC.HTTPRemoteControl(
+            self,
+            chchannel=self.playURL,
+            volume=self.setVolume,
+            mute=self.mute,
+            stop=self.stop,
+            channelinfo=self.getCurrentChannelInfo)
 
     def getVersion(self):
-        return version
+        return VERSION
 
     def main(self):
         gtk.gdk.threads_enter()

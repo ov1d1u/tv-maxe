@@ -25,14 +25,14 @@ def migrateSettings():
     shutil.move(os.getenv('HOME') + '/.tvmaxe', os.getenv('HOME') + '/.tvmaxe_')
     os.mkdir(os.getenv('HOME') + '/.tvmaxe')
     shutil.move(os.getenv('HOME') + '/.tvmaxe_', os.getenv('HOME') + '/.tvmaxe/config')
-    
-    
+
+
 if not os.path.exists(os.getenv('HOME') + '/.tvmaxe'):
     os.mkdir(os.getenv('HOME') + '/.tvmaxe')
 else:
     if not os.path.isdir(os.getenv('HOME') + '/.tvmaxe'):
         migrateSettings()
-    
+
 cfgfile = os.getenv('HOME') + '/.tvmaxe/config'
 config = ConfigParser.ConfigParser()
 
@@ -105,7 +105,7 @@ class settingsManager:
             config.set('Petrodava', 'enable', 'False')
             config.set('Petrodava', 'server', 'petrodava.tv-maxe.org')
             config.set('Petrodava', 'port', '80')
-            
+
             with open(cfgfile, 'wb') as configfile:
                 config.write(configfile)
 
@@ -117,32 +117,32 @@ class settingsManager:
         self.initiallabel53text = self.gui.get_object('label53').get_text()
         self.readSettings()
         self.setAbonamente()
-        
+
     def showGUI(self, obj):
         self.updateWindow()
         self.gui.get_object('window2').show()
-    
+
     def hideGUI(self, obj, event=None):
         self.gui.get_object('window2').hide()
         self.gui.get_object('petrodavaPort').disconnect(self.petrodavaPortChanged_handler)
         self.gui.get_object('petrodavaEnable').disconnect(self.petrodavaEnableChanged_handler)
 
         return True
-        
+
     def toggleInternalPlayer(self, obj, event=None):
         self.gui.get_object('al_internal').set_sensitive(True)
         self.gui.get_object('al_external').set_sensitive(False)
-        
+
     def toggleExternalPlayer(self, obj, event=None):
         self.gui.get_object('al_external').set_sensitive(True)
         self.gui.get_object('al_internal').set_sensitive(False)
-        
+
     def toggleStaticPorts(self, obj, event=None):
         if obj.get_active():
             self.gui.get_object('alignment3').set_sensitive(True)
         else:
             self.gui.get_object('alignment3').set_sensitive(False)
-            
+
     def toggleEnableRemote(self, obj, event=None):
         if obj.get_active():
             self.gui.get_object('alignment4').set_sensitive(True)
@@ -151,20 +151,14 @@ class settingsManager:
         else:
             self.gui.get_object('alignment4').set_sensitive(False)
             self.parent.infrared.stopRemote()
-    
+
     def toggleEnableHTTP(self, obj, event=None):
         if obj.get_active():
             self.gui.get_object('alignment6').set_sensitive(True)
         else:
             self.gui.get_object('alignment6').set_sensitive(False)
             self.parent.HTTPremote.stop()
-            
-    def toggleStatusIcon(self, obj, event=None):
-        if obj.get_active():
-            self.gui.get_object('statusicon1').set_visible(True)
-        else:
-            self.gui.get_object('statusicon1').set_visible(False)
-            
+
     def toggleAbonament(self, obj, path):
         model = self.gui.get_object('liststore1')
         model[path][0] = not model[path][0]
@@ -284,7 +278,7 @@ class settingsManager:
             iter = liststore.append([key, value])
             if key == self.getFormat():
                 self.gui.get_object('format_combobox').set_active_iter(iter)
-        
+
     def setAbonamente(self):
         model = self.gui.get_object('liststore1')
         model.clear()
@@ -293,27 +287,27 @@ class settingsManager:
                 model.append([True, x[1]])
             else:
                 model.append([False, x[1]])
-        
+
     def mapRemote(self, obj):
         self.gui.get_object('label23').set_text('0000000000000000')
         self.gui.get_object('window3').show()
         self.parent.infrared.infrared.callbacks.pop(self.parent.infrared.infrared.callbacks.index(self.parent.infrared.receiveIR))
         self.parent.infrared.infrared.callbacks.append([self.listenIR, [obj]])
-        
+
     def listenIR(self, key, obj=None):
         self.gui.get_object('label23').set_text(key)
         gobject.timeout_add(1000, self.hideIR, None)
         obj.set_label(key)
         self.parent.infrared.infrared.callbacks.pop()
         self.parent.infrared.infrared.callbacks.append(self.parent.infrared.receiveIR)
-        
+
     def hideIR(self, obj, event=None):
         self.gui.get_object('window3').hide()
         if event:
             return True
         else:
             return False
-    
+
     def getFFMPEG(self, what):
         result = {}
         if not which.which('ffmpeg'):
@@ -351,19 +345,19 @@ class settingsManager:
                 if caps[2] == 'E':
                     result[codename] = name.lstrip()
         return result
-            
+
     def guess_shutdown_cmd(self):
         de = tools.guess_de()
         des = { 'xfce' : 'xfce4-session-logout --halt',
                 'gnome' : 'gnome-session-save --shutdown-dialog',
-                'ubuntu' : 'gnome-session-quit --power-off', 
+                'ubuntu' : 'gnome-session-quit --power-off',
                 'mate' : 'mate-session-save --shutdown-dialog',
                 'kde' : 'qdbus org.kde.ksmserver /KSMServer logout 0 2 2'}
         if de and des.has_key(de):
             return des[de]
         else:
             return 'shutdown -h now'
-                
+
     def Save(self, obj):
         if self.gui.get_object('spinbutton1').get_value() == self.gui.get_object('spinbutton2').get_value():
             dialog = gtk.MessageDialog(parent=None, flags=0, type=gtk.MESSAGE_ERROR, buttons=gtk.BUTTONS_CLOSE, message_format=_('Incoming and outgoing ports cannot be the same. Please review your settings.'));
@@ -373,7 +367,7 @@ class settingsManager:
             return
         self.saveSettings()
         self.hideGUI(obj)
-        
+
 
 #####################################################################################
     def readSettings(self):
@@ -398,7 +392,7 @@ class settingsManager:
         self.petrodavaServer = self.getPetrodavaServer()
         self.petrodavaPort = self.getPetrodavaPort()
         self.getRemoteButtons()
-        
+
     def getRemoteButtons(self):
         try:
             self.remote_playpause = config.get('Remote', 'playpause')
@@ -456,21 +450,21 @@ class settingsManager:
             self.remote_sleep = config.get('Remote', 'sleep')
         except:
             self.remote_sleep = '000000000001008e'
-        
+
     def getInport(self):
         try:
             val = int(float(config.get('General', 'inport')))
         except:
             val = random.randint(10025, 65535)
         return val
-        
+
     def getOutport(self):
         try:
             val = int(float(config.get('General', 'outport')))
         except Exception, e:
             val = random.randint(10025, 65535)
         return val
-        
+
     def getStaticPorts(self):
         try:
             val = config.getboolean('General', 'staticports')
@@ -496,7 +490,7 @@ class settingsManager:
         except:
             val['s'] = 0.0
         return val
-    
+
     def getVideoEQ_global(self):
         val = {}
         try:
@@ -512,7 +506,7 @@ class settingsManager:
         except:
             val['s'] = 0.0
         return val
-        
+
     def getPBXuser(self):
         try:
             user = config.get('PBX', 'username')
@@ -534,7 +528,7 @@ class settingsManager:
         except:
             vol = 1.0
         return vol
-        
+
     def getBackend(self):
         try:
             backend = config.get('General', 'backend')
@@ -552,21 +546,21 @@ class settingsManager:
             except:
                 backend = 'vlc'
         return backend
-        
+
     def getInternal(self):
         try:
             internal = config.getboolean('General', 'internal')
         except:
             internal = True
         return internal
-        
+
     def getPlayer(self):
         try:
             player = config.get('General', 'player')
         except:
             player = '/usr/bin/mplayer'
         return player
-        
+
     def getRemote(self):
         try:
             val = config.getboolean('General', 'enableremote')
@@ -576,14 +570,14 @@ class settingsManager:
             return val
         else:
             return False
-            
+
     def getHTTPRemote(self):
         try:
             val = config.getboolean('General', 'enablehttpremote')
         except:
             val = False
         return val
-            
+
     def getRemotePort(self):
         try:
             val = config.get('General', 'remoteport')
@@ -601,70 +595,70 @@ class settingsManager:
             aspect = 'Auto'
         return aspect
 
-            
+
     def getAspect(self):
         try:
             aspect = config.get('General', 'aspect')
         except:
             aspect = 'Auto'
         return aspect
-        
+
     def getDonate(self):
         try:
             donate = config.getfloat('General', 'showDonate')
         except:
             donate = '0.0'
         return donate
-        
+
     def getShutdown(self):
         try:
             shutdown = config.get('General', 'shutdownCMD')
         except:
             shutdown = self.guess_shutdown_cmd()
         return shutdown
-        
+
     def getRecQuality(self):
         try:
             quality = config.getfloat('Recording', 'recordingQuality')
         except Exception, e:
             quality = 5.0
         return quality
-        
+
     def getACodec(self):
         try:
             acodec = config.get('Recording', 'acodec')
         except Exception, e:
             acodec = 'copy'
         return acodec
-        
+
     def getVCodec(self):
         try:
             vcodec = config.get('Recording', 'vcodec')
         except Exception, e:
             vcodec = 'copy'
         return vcodec
-        
+
     def getFormat(self):
         try:
             format = config.get('Recording', 'format')
         except Exception, e:
             format = 'avi'
         return format
-        
+
     def getStatusIcon(self):
         try:
             status = config.getboolean('General', 'statusIcon')
         except:
             status = False
         return status
-        
+
     def getTheme(self):
         try:
             theme = config.get('General', 'theme')
         except:
             theme = os.path.dirname(os.path.realpath(__file__)) + '/themes/default'
         return theme
-    
+
     def getWindowSize(self):
         try:
             wsize = config.get('General', 'windowSize')
@@ -674,7 +668,7 @@ class settingsManager:
         x = int(sizes[0])
         y = int(sizes[1])
         return [x, y]
-        
+
     def getSubscriptions(self):
         try:
             subs = config.get('General', 'subscriptions')
@@ -703,14 +697,14 @@ class settingsManager:
         except:
             port = '80'
         return port
-    
+
     def getHPanedPosition(self):
         try:
             pos = config.get('General', 'HPanedPosition')
         except:
             pos = '210'
         return int(pos)
-        
+
 ##################################################################
 
     def applySettings(self):
@@ -742,7 +736,7 @@ class settingsManager:
                     except:
                         self.backend = 'mplayer'
                 self.parent.mediaPlayer = self.parent.players[self.backend]
-        
+
         if self.internal != self.gui.get_object('radiobutton1').get_active():
             self.internal = self.gui.get_object('radiobutton1').get_active()
             try:
@@ -760,24 +754,24 @@ class settingsManager:
                 self.gui.get_object('checkmenuitem1').set_sensitive(False)
                 self.gui.get_object('vbox2').hide()
             self.gui.get_object('menuitem7').activate()
-            
+
         if self.enableremote != self.gui.get_object('checkbutton2').get_active():
                 if self.gui.get_object('checkbutton2').get_active():
                     pass#self.parent.initRemote()
                 else:
                     self.parent.infrared.quit()
-                    
+
         if self.enablehttpremote != self.gui.get_object('checkbutton5').get_active():
                 if self.gui.get_object('checkbutton5').get_active():
                     self.parent.HTTPremote.stop()
                     self.parent.HTTPremote.start(int(self.gui.get_object('spinbutton3').get_value()))
                 else:
                     self.parent.HTTPremote.stop()
-        
+
         if self.remoteport != self.gui.get_object('spinbutton3').get_value():
             self.parent.HTTPremote.stop()
             self.parent.HTTPremote.start(int(self.gui.get_object('spinbutton3').get_value()))
-            
+
         if not self.internal:
             self.parent.radioWidget.modTV(None)
             self.parent.gui.get_object('modradiomenu').set_sensitive(False)
@@ -835,12 +829,12 @@ class settingsManager:
             self.parent.abonamente = self.abonamente
             self.parent.refreshList(None)
             self.updateList = False
-    
+
     def saveVolume(self):
         if not config.has_section('General'):
             config.add_section('General')
         config.set('General', 'volume', self.gui.get_object('volumebutton1').get_value())
-        
+
         with open(cfgfile, 'wb') as configfile:
             config.write(configfile)
         self.readSettings()
@@ -850,16 +844,16 @@ class settingsManager:
         if not config.has_section(section_name):
             config.add_section(section_name)
         config.set(section_name, 'aspect', aspect)
-        
+
         with open(cfgfile, 'wb') as configfile:
             config.write(configfile)
         self.readSettings()
-        
+
     def saveAspect_global(self, aspect):
         if not config.has_section('General'):
             config.add_section('General')
         config.set('General', 'aspect', aspect)
-        
+
         with open(cfgfile, 'wb') as configfile:
             config.write(configfile)
         self.readSettings()
@@ -871,53 +865,53 @@ class settingsManager:
         config.set(section_name, 'contrast', c)
         config.set(section_name, 'brightness', b)
         config.set(section_name, 'saturation', s)
-        
+
         with open(cfgfile, 'wb') as configfile:
             config.write(configfile)
         self.readSettings()
-        
+
     def saveVideoEQ_global(self, b, c, s):
         if not config.has_section('General'):
             config.add_section('General')
         config.set('General', 'contrast', c)
         config.set('General', 'brightness', b)
         config.set('General', 'saturation', s)
-        
+
         with open(cfgfile, 'wb') as configfile:
             config.write(configfile)
         self.readSettings()
-        
+
     def savePBX(self, rem, user, pasw):
         if not config.has_section('PBX'):
             config.add_section('PBX')
-        
+
         config.set('PBX', 'remember', rem)
         config.set('PBX', 'username', user)
         config.set('PBX', 'password', pasw)
-        
+
         with open(cfgfile, 'wb') as configfile:
             config.write(configfile)
         self.readSettings()
-        
+
     def saveDonate(self, version):
         config.set('General', 'showDonate', version)
-        
+
         with open(cfgfile, 'wb') as configfile:
             config.write(configfile)
         self.readSettings()
-        
+
     def saveWindowSize(self, x, y):
         xsize = str(x)
         ysize = str(y)
         config.set('General', 'windowSize', xsize + 'x' + ysize)
-        
+
         with open(cfgfile, 'wb') as configfile:
             config.write(configfile)
         self.readSettings()
-        
+
     def saveHPanedPosition(self, pos):
         config.set('General', 'HPanedPosition', str(pos))
-        
+
         with open(cfgfile, 'wb') as configfile:
             config.write(configfile)
         self.readSettings()

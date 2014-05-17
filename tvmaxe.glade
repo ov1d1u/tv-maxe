@@ -217,14 +217,6 @@ please make a donation.</property>
       <column type="gchararray"/>
     </columns>
   </object>
-  <object class="GtkListStore" id="format_liststore">
-    <columns>
-      <!-- column-name codename -->
-      <column type="gchararray"/>
-      <!-- column-name name -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
   <object class="GtkWindow" id="diagnostics_w">
     <property name="width_request">650</property>
     <property name="height_request">450</property>
@@ -492,6 +484,14 @@ Click on an item in the list to get informations about it.</property>
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkListStore" id="format_liststore">
+    <columns>
+      <!-- column-name codename -->
+      <column type="gchararray"/>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+    </columns>
   </object>
   <object class="GtkMenu" id="guideMenu">
     <property name="visible">True</property>
@@ -1518,15 +1518,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkStatusIcon" id="statusicon1">
-    <property name="pixbuf">tvmaxe_mini.png</property>
-    <property name="visible">False</property>
-    <property name="has_tooltip">True</property>
-    <property name="tooltip_text" translatable="yes">TV-MAXE</property>
-    <property name="title" translatable="yes">TV-MAXE</property>
-    <signal name="button-press-event" handler="hideShowTVMaxe" swapped="no"/>
-    <signal name="scroll-event" handler="statusIconVolume" swapped="no"/>
   </object>
   <object class="GtkListStore" id="themestore">
     <columns>
