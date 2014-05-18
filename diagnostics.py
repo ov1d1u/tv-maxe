@@ -413,7 +413,7 @@ class Diagnostics:
 
         p = PetrodavaPacket()
         p.command = "OHAI"
-        p.data = ''
+        p.data = 'test' + chr(0x00) + 'test'
         s.sendall(p.encode())
 
         header_check = s.recv(4)
