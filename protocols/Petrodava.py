@@ -12,6 +12,7 @@ from Queue import Queue, Empty
 
 HEADER_LENGTH = 52
 CHUNK_DATA_SIZE = 4096
+ZERO_UID = '00000000-0000-0000-0000-000000000000'
 
 data_queue = Queue()
 
@@ -37,7 +38,7 @@ class PetrodavaPacket(object):
         self._data = ''
         self._length = 0
         self._command = 'NONE'
-        self._uid = '00000000-0000-0000-0000-000000000000'
+        self._uid = ZERO_UID
         self.request = None
 
     @property
@@ -148,15 +149,17 @@ class Server:
 
 
 class SocketConnection:
-    def __init__(self, host, port, callbacks):
+    def __init__(self, host, port, user, passw, callbacks):
         self.callbacks = callbacks
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.q = Queue()
         self.connected = False
         self.listener_running = False
         self.sender_running = False
-        self.uid = '00000000-0000-0000-0000-000000000000'
+        self.uid = ZERO_UID
         self.host = host
+        self.username = user
+        self.password = passw
         self.port = int(port)
         self.stop = False
 
@@ -180,7 +183,7 @@ class SocketConnection:
         # do the initial connection
         p = PetrodavaPacket()
         p.command = "OHAI"
-        p.data = ''
+        p.data = self.username + chr(0x00) + self.password
         self.send_packet(p)
 
         while True:
@@ -203,6 +206,9 @@ class SocketConnection:
 
                 if recvp.command == 'HI00':
                     self.uid = recvp.data
+                    if self.uid == ZERO_UID:
+                        self.callbacks['stop_media']('PETRODAVA LOGIN ERROR')
+                        self.stop = True
                     print 'Setting uid: {0}'.format(self.uid)
                 if recvp.command == 'WAIT':
                     print 'Buffer progress: {0}'.format(recvp.data)
@@ -237,9 +243,9 @@ class SocketConnection:
 
         self.sender_running = True
 
-        while True:
+        while not self.stop:
             p = self.q.get()
-            if p.command != 'OHAI' and self.uid == '00000000-0000-0000-0000-000000000000':
+            if p.command != 'OHAI' and self.uid == ZERO_UID:
                 # UID not set yet, try again
                 self.q.put(p)
             else:
@@ -275,13 +281,20 @@ class Protocol:
         self.conn = None
         self.petrodava_server = ''
         self.petrodava_port = ''
+        self.petrodava_username = ''
+        self.petrodava_password = ''
         self.protocols = ['*']
 
     def play(self, url, params={}):
-        self.conn = SocketConnection(self.petrodava_server, self.petrodava_port, {
-            'update_progress': self.update_progress,
-            'write_data': self.write_data,
-            'stop_media': self.stop_petrodava
+        self.conn = SocketConnection(
+            self.petrodava_server,
+            self.petrodava_port,
+            self.petrodava_username,
+            self.petrodava_password,
+            {
+                'update_progress': self.update_progress,
+                'write_data': self.write_data,
+                'stop_media': self.stop_petrodava
             })
 
         threading.Thread(target=self.startmp, args=(url, params)).start()
@@ -309,7 +322,7 @@ class Protocol:
 
         data_queue.put(data)
 
-    def stop(self, error = None):
+    def stop(self, error=None):
         self.progress = 0
 
         p = PetrodavaPacket()
@@ -325,7 +338,7 @@ class Protocol:
             self.httpsrv.stop()
             self.httpsrv = None
 
-    def stop_petrodava(self, error = None):
+    def stop_petrodava(self, error=None):
         self.progress = 0
 
         if error == '':

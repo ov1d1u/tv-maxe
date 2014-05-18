@@ -34,7 +34,7 @@ class Protocol:
 			self.protocols = []
 		else:
 			self.protocols = ['sop://']
-	
+
 	def play(self, url, params = {}):
 		self.progress = -1
 		if not self.inport:
@@ -53,7 +53,7 @@ class Protocol:
 			pass
 		self.spc = subprocess.Popen([spauth, url, str(self.port1), str(self.port2)], stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 		threading.Thread(target=self.startmp, args=('http://127.0.0.1:' + str(self.port2),)).start()
-		
+
 	def startmp(self, url):
 		playing = False
 		if self.spc:
@@ -81,13 +81,13 @@ class Protocol:
 						if not playing:
 							gobject.idle_add(self.play_media, url)
 							playing = True
-				
+
 				errorlevel = self.spc.poll()
 				if errorlevel:
 					if errorlevel != -9:
-						gobject.idle_add(self.stop_media, "SopCast module has stopped working. This mean that either the stream is no longer available or that 'sp-sc-auth' process cannot be executed.")
+						gobject.idle_add(self.stop_media, "SopCast error.")
 					return
-					
+
 	def stop(self):
 		if hasattr(self, 'spc'):
 			try:
@@ -95,7 +95,7 @@ class Protocol:
 			except:
 				pass
 		self.progress = -1
-			
+
 	def quit(self):
 		if hasattr(self, 'spc'):
 			try:

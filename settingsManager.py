@@ -10,6 +10,7 @@ slist = []
 slist.append([1, 'http://tv-maxe.org/subscriptions/Romania.db'])
 slist.append([1, 'http://tv-maxe.org/subscriptions/International'])
 
+
 def migrateSettings():
     global slist
     print "Migrating settings..."
@@ -105,6 +106,8 @@ class settingsManager:
             config.set('Petrodava', 'enable', 'False')
             config.set('Petrodava', 'server', 'petrodava.tv-maxe.org')
             config.set('Petrodava', 'port', '80')
+            config.set('Petrodava', 'username', 'petrodava')
+            config.set('Petrodava', 'password', 'petrodava')
 
             with open(cfgfile, 'wb') as configfile:
                 config.write(configfile)
@@ -227,6 +230,8 @@ class settingsManager:
         self.gui.get_object('petrodavaEnable').set_active(self.petrodavaEnable)
         self.gui.get_object('petrodavaServer').set_text(self.petrodavaServer)
         self.gui.get_object('petrodavaPort').set_text(self.petrodavaPort)
+        self.gui.get_object('petrodavaUsername').set_text(self.petrodavaUsername)
+        self.gui.get_object('petrodavaPassword').set_text(self.petrodavaPassword)
 
         self.petrodavaEnableChanged()
         self.petrodavaPortChanged()
@@ -391,6 +396,8 @@ class settingsManager:
         self.petrodavaEnable = self.getEnablePetrodava()
         self.petrodavaServer = self.getPetrodavaServer()
         self.petrodavaPort = self.getPetrodavaPort()
+        self.petrodavaUsername = self.getPetrodavaUsername()
+        self.petrodavaPassword = self.getPetrodavaPassword()
         self.getRemoteButtons()
 
     def getRemoteButtons(self):
@@ -698,6 +705,20 @@ class settingsManager:
             port = '80'
         return port
 
+    def getPetrodavaUsername(self):
+        try:
+            username = config.get('Petrodava', 'username')
+        except:
+            username = ''
+        return username
+
+    def getPetrodavaPassword(self):
+        try:
+            password = config.get('Petrodava', 'password')
+        except:
+            password = ''
+        return password
+
     def getHPanedPosition(self):
         try:
             pos = config.get('General', 'HPanedPosition')
@@ -825,6 +846,8 @@ class settingsManager:
         config.set('Petrodava', 'enable', self.gui.get_object('petrodavaEnable').get_active())
         config.set('Petrodava', 'server', self.gui.get_object('petrodavaServer').get_text())
         config.set('Petrodava', 'port', self.gui.get_object('petrodavaPort').get_text())
+        config.set('Petrodava', 'username', self.gui.get_object('petrodavaUsername').get_text())
+        config.set('Petrodava', 'password', self.gui.get_object('petrodavaPassword').get_text())
         with open(cfgfile, 'wb') as configfile:
             config.write(configfile)
         self.readSettings()

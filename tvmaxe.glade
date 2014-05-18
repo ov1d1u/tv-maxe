@@ -12,7 +12,8 @@
     <property name="copyright" translatable="yes">(c) 2010 - 2012 Ovidiu D. Niţan</property>
     <property name="comments" translatable="yes">Watch TV channels for free</property>
     <property name="website">http://code.google.com/p/tv-maxe/</property>
-    <property name="authors">Ovidiu D. Niţan (developer)</property>
+    <property name="authors">Ovidiu D. Niţan (developer)
+Ghiunhan Mamut (packager)</property>
     <property name="logo">tvmaxe.png</property>
     <signal name="close" handler="hideAbout" swapped="no"/>
     <signal name="delete-event" handler="hideAbout" swapped="no"/>
@@ -36,12 +37,39 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="label64">
+          <object class="GtkVBox" id="vbox23">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">If you like this application and if you want to support its development,
+            <child>
+              <object class="GtkLabel" id="label113">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Romanian streams provided by
+&lt;a href="http://streams.magazinmixt.ro"&gt;streams.magazinmixt.ro&lt;/a&gt;</property>
+                <property name="use_markup">True</property>
+                <property name="justify">center</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="padding">5</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="label64">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">If you like this application and if you want to support its development,
 please make a donation.</property>
-            <property name="justify">center</property>
+                <property name="justify">center</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">True</property>
@@ -140,6 +168,14 @@ please make a donation.</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkListStore" id="format_liststore">
+    <columns>
+      <!-- column-name codename -->
+      <column type="gchararray"/>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkListStore" id="aspect_ratios">
     <columns>
       <!-- column-name Aspect -->
@@ -214,14 +250,6 @@ please make a donation.</property>
       <!-- column-name Message -->
       <column type="gchararray"/>
       <!-- column-name Description -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
-  <object class="GtkListStore" id="format_liststore">
-    <columns>
-      <!-- column-name codename -->
-      <column type="gchararray"/>
-      <!-- column-name name -->
       <column type="gchararray"/>
     </columns>
   </object>
@@ -762,13 +790,6 @@ Click on an item in the list to get informations about it.</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
-  <object class="GtkAdjustment" id="recQuality_adjustment">
-    <property name="lower">1</property>
-    <property name="upper">35</property>
-    <property name="value">5</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
-  </object>
   <object class="GtkListStore" id="radiostore">
     <columns>
       <!-- column-name id -->
@@ -778,6 +799,13 @@ Click on an item in the list to get informations about it.</property>
       <!-- column-name nume -->
       <column type="gchararray"/>
     </columns>
+  </object>
+  <object class="GtkAdjustment" id="recQuality_adjustment">
+    <property name="lower">1</property>
+    <property name="upper">35</property>
+    <property name="value">5</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
   <object class="GtkListStore" id="scheduleStore">
     <columns>
@@ -1785,15 +1813,6 @@ is only supported on KDE, MATE, Unity, Gnome (Cinnamon) and XFCE.</property>
                     </child>
                   </object>
                 </child>
-              </object>
-            </child>
-            <child>
-              <object class="GtkMenuItem" id="menuitem21">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Donate!</property>
-                <property name="use_underline">True</property>
-                <signal name="button-press-event" handler="donate" swapped="no"/>
               </object>
             </child>
           </object>
@@ -5251,7 +5270,7 @@ are limited. Thanks!</property>
                       <object class="GtkTable" id="petrodavaSettings">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="n_rows">2</property>
+                        <property name="n_rows">4</property>
                         <property name="n_columns">2</property>
                         <child>
                           <object class="GtkLabel" id="label55">
@@ -5315,6 +5334,79 @@ are limited. Thanks!</property>
                             <property name="right_attach">2</property>
                             <property name="top_attach">1</property>
                             <property name="bottom_attach">2</property>
+                            <property name="x_options">GTK_FILL</property>
+                            <property name="x_padding">5</property>
+                            <property name="y_padding">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label114">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="xalign">1</property>
+                            <property name="label" translatable="yes">Username:</property>
+                          </object>
+                          <packing>
+                            <property name="top_attach">2</property>
+                            <property name="bottom_attach">3</property>
+                            <property name="x_options">GTK_FILL</property>
+                            <property name="x_padding">5</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="label115">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="xalign">1</property>
+                            <property name="label" translatable="yes">Password:</property>
+                          </object>
+                          <packing>
+                            <property name="top_attach">3</property>
+                            <property name="bottom_attach">4</property>
+                            <property name="x_options">GTK_FILL</property>
+                            <property name="x_padding">5</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="petrodavaUsername">
+                            <property name="width_request">249</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="invisible_char">●</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
+                            <property name="top_attach">2</property>
+                            <property name="bottom_attach">3</property>
+                            <property name="x_options">GTK_FILL</property>
+                            <property name="x_padding">5</property>
+                            <property name="y_padding">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="petrodavaPassword">
+                            <property name="width_request">249</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="visibility">False</property>
+                            <property name="invisible_char">●</property>
+                            <property name="invisible_char_set">True</property>
+                            <property name="primary_icon_activatable">False</property>
+                            <property name="secondary_icon_activatable">False</property>
+                            <property name="primary_icon_sensitive">True</property>
+                            <property name="secondary_icon_sensitive">True</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="right_attach">2</property>
+                            <property name="top_attach">3</property>
+                            <property name="bottom_attach">4</property>
                             <property name="x_options">GTK_FILL</property>
                             <property name="x_padding">5</property>
                             <property name="y_padding">3</property>

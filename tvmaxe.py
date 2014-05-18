@@ -73,7 +73,7 @@ import remoteC
 gtk.gdk.threads_init()
 
 pygtk.require('2.0')
-VERSION = 0.09
+VERSION = '0.10'
 BASEHOST = 'http://www.tv-maxe.org/'
 TVMAXEDIR = os.getenv('HOME') + '/.tvmaxe/'
 
@@ -248,7 +248,7 @@ class TVMaxe:
             self.logo = [
                 0, ['Please wait,', 'your channel will be played immediately']]
         else:
-            self.logo = [0, 'TV-MAXE ' + str(VERSION)]
+            self.logo = [0, 'TV-MAXE ' + VERSION]
         if which.which('ffmpeg'):
             self.gui.get_object('button61').show()
             self.gui.get_object('menuitem47').show()
@@ -268,7 +268,7 @@ class TVMaxe:
         self.gui.get_object('liststatuslabel').set_text(
             _("Total: %s channels in %s subscriptions" %
               ('0', str(len(self.settingsManager.getSubscriptions())))))
-        self.gui.get_object('aboutdialog1').set_version(str(VERSION))
+        self.gui.get_object('aboutdialog1').set_version(VERSION)
         self.gui.get_object('recqScale').set_show_fill_level(False)
         self.gui.get_object('recqScale').add_mark(1, gtk.POS_LEFT, 'Very high')
         self.gui.get_object('recqScale').add_mark(8, gtk.POS_LEFT, 'High')
@@ -882,6 +882,10 @@ class TVMaxe:
             protocol.petrodava_server = self.settingsManager.\
                 getPetrodavaServer()
             protocol.petrodava_port = self.settingsManager.getPetrodavaPort()
+            protocol.petrodava_username = self.settingsManager.\
+                getPetrodavaUsername()
+            protocol.petrodava_password = self.settingsManager.\
+                getPetrodavaPassword()
             protocol.play(self.url, channel.params)
             if self.progressbarPulse:
                 gobject.source_remove(self.progressbarPulse)
@@ -920,6 +924,13 @@ class TVMaxe:
                 self.url = ListParser().getData(self.url)
             protocol = self.getProtocol(self.url)
             protocol.inport, protocol.outport = self.protocolPorts()
+            protocol.petrodava_server = self.settingsManager.\
+                getPetrodavaServer()
+            protocol.petrodava_port = self.settingsManager.getPetrodavaPort()
+            protocol.petrodava_username = self.settingsManager.\
+                getPetrodavaUsername()
+            protocol.petrodava_password = self.settingsManager.\
+                getPetrodavaPassword()
             protocol.play(self.url, channel.params)
             if self.progressbarPulse:
                 gobject.source_remove(self.progressbarPulse)
@@ -991,6 +1002,14 @@ class TVMaxe:
                 gobject.idle_add(self.modradiomenuStatus, 'tv')
                 protocol = self.getProtocol(self.url)
                 protocol.inport, protocol.outport = self.protocolPorts()
+                protocol.petrodava_server = self.settingsManager.\
+                    getPetrodavaServer()
+                protocol.petrodava_port = self.settingsManager.\
+                    getPetrodavaPort()
+                protocol.petrodava_username = self.settingsManager.\
+                    getPetrodavaUsername()
+                protocol.petrodava_password = self.settingsManager.\
+                    getPetrodavaPassword()
                 protocol.play(self.url)
                 if self.progressbarPulse:
                     gobject.source_remove(self.progressbarPulse)
@@ -1030,6 +1049,13 @@ class TVMaxe:
             gobject.idle_add(self.modradiomenuStatus, 'tv')
             protocol = self.getProtocol(self.url)
             protocol.inport, protocol.outport = self.protocolPorts()
+            protocol.petrodava_server = self.settingsManager.\
+                getPetrodavaServer()
+            protocol.petrodava_port = self.settingsManager.getPetrodavaPort()
+            protocol.petrodava_username = self.settingsManager.\
+                getPetrodavaUsername()
+            protocol.petrodava_password = self.settingsManager.\
+                getPetrodavaPassword()
             protocol.play(self.url, channel.params)
             if self.progressbarPulse:
                 gobject.source_remove(self.progressbarPulse)
@@ -1111,7 +1137,7 @@ class TVMaxe:
         if isinstance(error, str):
             for x in self.protocols:
                 self.protocols[x].stop()
-            #self.playerError(self.currentChannel)
+            self.playerError(self.currentChannel, error)
             return
         if hasattr(self, 'url'):
             protocol = self.getProtocol(self.url)
@@ -1185,8 +1211,6 @@ class TVMaxe:
         gobject.idle_add(self.do_stopCallback, errorlevel)
 
     def do_stopCallback(self, errorlevel=0):
-        if self.progressbarPulse:
-            gobject.source_remove(self.progressbarPulse)
         self.gui.get_object('progressbar2').hide()
 
         if self.getTime_to:
@@ -1195,7 +1219,7 @@ class TVMaxe:
         if errorlevel != 1:  # errorlevel == 1 means 'retry channel'
             self.mediaPlayer.stop()
             if errorlevel == 0:
-                self.logo = [0, 'TV-MAXE ' + str(VERSION)]
+                self.logo = [0, 'TV-MAXE ' + VERSION]
             if hasattr(self.mediaPlayer, 'recQuality'):
                 recordedTime = self.gui.get_object('label36').get_label()
                 l = recordedTime.split(':')
@@ -1624,84 +1648,20 @@ class TVMaxe:
         self.countdown = 5
         gobject.timeout_add(1000, self.error_countdown)
 
-    def playerError(self, channel):
-        if not channel:
-            self.urlIndex = 0
-            self.logo = [2, [
-                _('NO SIGNAL'),
-                '',
-                '',
-                _('This channel seems to be offline.'),
-                _('Also, it could be unreachable because of'),
-                _('your network settings or restrictions.'),
-                '',
-                _('Please try again later')]]
-            self.stopCallback(2)
-            return
-        urls = channel.streamurls
-        self.urlIndex += 1
-        if self.urlIndex < len(channel.streamurls):
-            # Try to find if the address already exists in list
-            select = None
-            if not select:
-                model = self.gui.get_object('channelstore')
-                iter = model.get_iter_root()
-                while iter:
-                    id = model.get_value(iter, 0)
-                    if id in channel.id:
-                        self.currentChannel = self.channels[id]
-                        chList = self.gui.get_object('treeview1')
-                        treeselection = chList.get_selection()
-                        treeselection.select_iter(iter)
-                        select = 'tv'
-                        break
-                    iter = model.iter_next(iter)
-            if not select:
-                model = self.gui.get_object('radiostore')
-                iter = model.get_iter_root()
-                while iter:
-                    id = model.get_value(iter, 0)
-                    if id in channel.id:
-                        self.currentChannel = self.channels[id]
-                        chList = self.gui.get_object('treeview3')
-                        treeselection = chList.get_selection()
-                        treeselection.select_iter(iter)
-                        select = 'radio'
-                        break
-                    iter = model.iter_next(iter)
-            if select == 'tv':
-                chList = self.gui.get_object('treeview1')
-                channel = self.currentChannel
-                channel.streamurls[self.urlIndex]
-                if self.recordingMode:
-                    gobject.idle_add(self.recordChannel, channel, None, False)
-                else:
-                    gobject.idle_add(self.playChannel, channel)
-            elif select == 'radio':
-                chList = self.gui.get_object('treeview3')
-                channel = self.currentChannel
-                channel.streamurls[self.urlIndex]
-                if self.recordingMode:
-                    gobject.idle_add(
-                        self.recordRadioChannel,
-                        channel,
-                        None,
-                        False)
-                else:
-                    gobject.idle_add(self.playRadioChannel, channel)
-            self.stop(1)
-        else:
-            self.urlIndex = 0
-            self.logo = [2, [
-                _('NO SIGNAL'),
-                '',
-                '',
-                _('This channel seems to be offline.'),
-                _('Also, it could be unreachable because of'),
-                _('your network settings or restrictions.'),
-                '',
-                _('Please try again later')]]
-            self.stopCallback(2)
+    def playerError(self, channel, error=None):
+        self.urlIndex = 0
+        self.logo = [2, [
+            _('NO SIGNAL'),
+            '',
+            '',
+            _('This channel seems to be unavailable.'),
+            _('Please try with another available source (if any)'),
+            _('or try again later.'),
+            '']]
+
+        if error:
+            self.logo[1].append(_('Reported error: ') + error)
+        self.stopCallback(2)
 
     def retryPlay(self, func, channel):             # reincearca redarea
         func(channel)
@@ -2578,7 +2538,7 @@ class TVMaxe:
         self.donated(None)
 
     def donated(self, obj, event=None):
-        ver = self.settingsManager.saveDonate(VERSION)
+        ver = self.settingsManager.saveDonate(float(VERSION))
         self.gui.get_object('hbox29').hide()
 
     def showDonate(self):
