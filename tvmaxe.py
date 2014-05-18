@@ -249,9 +249,9 @@ class TVMaxe:
                 0, ['Please wait,', 'your channel will be played immediately']]
         else:
             self.logo = [0, 'TV-MAXE ' + str(VERSION)]
-        if not which.which('ffmpeg'):
-            self.gui.get_object('button61').hide()
-            self.gui.get_object('menuitem47').hide()
+        if which.which('ffmpeg'):
+            self.gui.get_object('button61').show()
+            self.gui.get_object('menuitem47').show()
 
         self.gui.get_object('window1').show()
         self.channelsort = gtk.TreeModelSort(
@@ -1240,16 +1240,13 @@ class TVMaxe:
                     event.button,
                     event.time)
                 if self.mediaPlayer.isPlaying():
-                    self.gui.get_object(
-                        'menuitem_videoSettings').set_sensitive(
-                            True)
+                    self.gui.get_object('menuitem_videoSettings')\
+                        .set_sensitive(True)
                 else:
-                    self.gui.get_object(
-                        'menuitem_videoSettings').set_sensitive(
-                            False)
+                    self.gui.get_object('menuitem_videoSettings')\
+                        .set_sensitive(False)
             elif event.button == 2:
                 self.remoteOK()
-
         else:
             self.switch_fullscreen(obj)
 
@@ -1279,6 +1276,9 @@ class TVMaxe:
             self.gui.get_object('progressbar2').hide()
             self.gui.get_object('recordbox').hide()
             self.gui.get_object('vbox18').hide()
+            if not which.which('ffmpeg'):
+                self.gui.get_object('button61').hide()
+                self.gui.get_object('menuitem47').hide()
             self.isFullscreen = False
 
     def channelList(self, obj):

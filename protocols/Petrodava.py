@@ -186,7 +186,6 @@ class SocketConnection:
         while True:
             header = self.s.recv(HEADER_LENGTH)
             while len(header) < HEADER_LENGTH:
-                print "reading header"
                 header += self.s.recv(1)
 
             try:
@@ -196,7 +195,6 @@ class SocketConnection:
                 if data_length:
                     recvp.data = self.s.recv(data_length)
                     while len(recvp.data) < data_length:
-                        print "reading data"
                         left = data_length - len(recvp.data)
                         if left > CHUNK_DATA_SIZE:
                             recvp.data += self.s.recv(CHUNK_DATA_SIZE)

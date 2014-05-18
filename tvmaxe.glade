@@ -217,6 +217,14 @@ please make a donation.</property>
       <column type="gchararray"/>
     </columns>
   </object>
+  <object class="GtkListStore" id="format_liststore">
+    <columns>
+      <!-- column-name codename -->
+      <column type="gchararray"/>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <object class="GtkWindow" id="diagnostics_w">
     <property name="width_request">650</property>
     <property name="height_request">450</property>
@@ -485,14 +493,6 @@ Click on an item in the list to get informations about it.</property>
       </object>
     </child>
   </object>
-  <object class="GtkListStore" id="format_liststore">
-    <columns>
-      <!-- column-name codename -->
-      <column type="gchararray"/>
-      <!-- column-name name -->
-      <column type="gchararray"/>
-    </columns>
-  </object>
   <object class="GtkMenu" id="guideMenu">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -599,7 +599,6 @@ Click on an item in the list to get informations about it.</property>
     <child>
       <object class="GtkImageMenuItem" id="menuitem47">
         <property name="label" translatable="yes">Record stream</property>
-        <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="tooltip_text" translatable="yes">Select a stream to record</property>
         <property name="image">image34</property>
@@ -763,6 +762,13 @@ Click on an item in the list to get informations about it.</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
   </object>
+  <object class="GtkAdjustment" id="recQuality_adjustment">
+    <property name="lower">1</property>
+    <property name="upper">35</property>
+    <property name="value">5</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkListStore" id="radiostore">
     <columns>
       <!-- column-name id -->
@@ -772,13 +778,6 @@ Click on an item in the list to get informations about it.</property>
       <!-- column-name nume -->
       <column type="gchararray"/>
     </columns>
-  </object>
-  <object class="GtkAdjustment" id="recQuality_adjustment">
-    <property name="lower">1</property>
-    <property name="upper">35</property>
-    <property name="value">5</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">10</property>
   </object>
   <object class="GtkListStore" id="scheduleStore">
     <columns>
@@ -2452,7 +2451,6 @@ Thank you</property>
                     </child>
                     <child>
                       <object class="GtkButton" id="button61">
-                        <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="relief">none</property>
