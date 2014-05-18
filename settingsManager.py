@@ -797,7 +797,8 @@ class settingsManager:
         config.set('General', 'enablehttpremote', self.gui.get_object('checkbutton5').get_active())
         config.set('General', 'remoteport', self.gui.get_object('spinbutton3').get_value())
         config.set('General', 'statusIcon', self.gui.get_object('checkbutton4').get_active())
-        config.set('General', 'theme', self.gui.get_object('themestore')[self.gui.get_object('combobox_themes').get_active_iter()][1])
+        if self.gui.get_object('combobox_themes').get_active_iter():
+            config.set('General', 'theme', self.gui.get_object('themestore')[self.gui.get_object('combobox_themes').get_active_iter()][1])
         config.set('General', 'shutdownCMD', self.gui.get_object('shutdown_cmd').get_text())
         config.set('General', 'subscriptions', json.dumps(self.abonamente))
         config.set('Remote', 'playpause', self.gui.get_object('button6').get_label())
@@ -815,9 +816,12 @@ class settingsManager:
         config.set('Remote', 'ok', self.gui.get_object('button23').get_label())
         config.set('Remote', 'sleep', self.gui.get_object('button54').get_label())
         config.set('Recording', 'recordingQuality', self.gui.get_object('recQuality_adjustment').get_value())
-        config.set('Recording', 'acodec', self.gui.get_object('acodec_liststore')[self.gui.get_object('acodec_combobox').get_active_iter()][0])
-        config.set('Recording', 'vcodec', self.gui.get_object('vcodec_liststore')[self.gui.get_object('vcodec_combobox').get_active_iter()][0])
-        config.set('Recording', 'format', self.gui.get_object('format_liststore')[self.gui.get_object('format_combobox').get_active_iter()][0])
+        if self.gui.get_object('acodec_combobox').get_active_iter():
+            config.set('Recording', 'acodec', self.gui.get_object('acodec_liststore')[self.gui.get_object('acodec_combobox').get_active_iter()][0])
+        if self.gui.get_object('vcodec_combobox').get_active_iter():
+            config.set('Recording', 'vcodec', self.gui.get_object('vcodec_liststore')[self.gui.get_object('vcodec_combobox').get_active_iter()][0])
+        if self.gui.get_object('format_combobox').get_active_iter():
+            config.set('Recording', 'format', self.gui.get_object('format_liststore')[self.gui.get_object('format_combobox').get_active_iter()][0])
         config.set('Petrodava', 'enable', self.gui.get_object('petrodavaEnable').get_active())
         config.set('Petrodava', 'server', self.gui.get_object('petrodavaServer').get_text())
         config.set('Petrodava', 'port', self.gui.get_object('petrodavaPort').get_text())
