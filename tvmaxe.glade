@@ -13,7 +13,7 @@
     <property name="comments" translatable="yes">Watch TV channels for free</property>
     <property name="website">http://code.google.com/p/tv-maxe/</property>
     <property name="authors">Ovidiu D. Niţan (developer)
-Ghiunhan Mamut (packager)</property>
+Ghiunhan R. Mamut (packager)</property>
     <property name="logo">tvmaxe.png</property>
     <signal name="close" handler="hideAbout" swapped="no"/>
     <signal name="delete-event" handler="hideAbout" swapped="no"/>
@@ -167,14 +167,6 @@ please make a donation.</property>
     <property name="value">8080</property>
     <property name="step_increment">1</property>
     <property name="page_increment">10</property>
-  </object>
-  <object class="GtkListStore" id="format_liststore">
-    <columns>
-      <!-- column-name codename -->
-      <column type="gchararray"/>
-      <!-- column-name name -->
-      <column type="gchararray"/>
-    </columns>
   </object>
   <object class="GtkListStore" id="aspect_ratios">
     <columns>
@@ -520,6 +512,14 @@ Click on an item in the list to get informations about it.</property>
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkListStore" id="format_liststore">
+    <columns>
+      <!-- column-name codename -->
+      <column type="gchararray"/>
+      <!-- column-name name -->
+      <column type="gchararray"/>
+    </columns>
   </object>
   <object class="GtkMenu" id="guideMenu">
     <property name="visible">True</property>
