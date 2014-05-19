@@ -38,3 +38,9 @@ TV-MAXE 0.08 Changelog
 	* Fixed: high CPU usage after stopping a RTSP:// stream
 	* Other random fixes
 	* Highlight current running TV Show in TV-Guide
+TV-MAXE 0.10 Changelog
+        * Stability improvements
+        * Per-channel image settings
+        * Diagnostics tools
+        * Petrodava project, a tool for port restriction evasion
+        * AppIndicator support
