@@ -9,7 +9,7 @@
     <property name="icon">tvmaxe.png</property>
     <property name="type_hint">normal</property>
     <property name="program_name">TV-MAXE</property>
-    <property name="copyright" translatable="yes">(c) 2010 - 2012 Ovidiu D. Niţan</property>
+    <property name="copyright" translatable="yes">(c) 2010 - 2014 Ovidiu D. Niţan</property>
     <property name="comments" translatable="yes">Watch TV channels for free</property>
     <property name="website">http://code.google.com/p/tv-maxe/</property>
     <property name="authors">Ovidiu D. Niţan (developer)
@@ -242,6 +242,14 @@ please make a donation.</property>
       <!-- column-name Message -->
       <column type="gchararray"/>
       <!-- column-name Description -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="format_liststore">
+    <columns>
+      <!-- column-name codename -->
+      <column type="gchararray"/>
+      <!-- column-name name -->
       <column type="gchararray"/>
     </columns>
   </object>
@@ -512,14 +520,6 @@ Click on an item in the list to get informations about it.</property>
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkListStore" id="format_liststore">
-    <columns>
-      <!-- column-name codename -->
-      <column type="gchararray"/>
-      <!-- column-name name -->
-      <column type="gchararray"/>
-    </columns>
   </object>
   <object class="GtkMenu" id="guideMenu">
     <property name="visible">True</property>
