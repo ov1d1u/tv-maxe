@@ -1738,7 +1738,7 @@ class TVMaxe:
             return
         style = self.gui.get_object('treeview2').get_style()
         treeselection = self.gui.get_object('treeview2').get_selection()
-        if data:
+        if data and len(data):
             ore = []
             for x in data:
                 ore.append(x[0])
@@ -1766,7 +1766,7 @@ class TVMaxe:
                 if x[0] == apro:
                     treeselection.select_iter(iter)
                     path = model.get_path(iter)
-        self.gui.get_object('treeview2').scroll_to_cell(path)
+            self.gui.get_object('treeview2').scroll_to_cell(path)
         self.gui.get_object('treeview2').grab_focus()
 
     def pgDetails(self, obj, event=None):
