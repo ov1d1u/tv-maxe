@@ -10,13 +10,18 @@ class Scheduler:
         self.daemon = TDaemon(tvmaxepy)
         self.gui = tvmaxe.gui
         self.channels = tvmaxe.channels
+        self.orar = {}
         if os.path.exists(orar_file):
             print 'Loading schedules file...'
-            fh = open(orar_file, 'rb')
-            self.orar = pickle.load(fh)
-            fh.close()
-        else:
-            self.orar = {}
+            try:
+                fh = open(orar_file, 'rb')
+                self.orar = pickle.load(fh)
+            except TypeError:
+                # we had a bug here with incorrectly saved schedule pickle, so
+                # this exceptions probably means that we're using the wrong file
+                os.remove(orar_file)
+            finally:
+                fh.close()
 
     def show(self, model_iter):
         model, iter = model_iter
