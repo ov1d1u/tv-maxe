@@ -543,7 +543,7 @@ class TVMaxe:
                 audiochannels=audiochs,
                 liststore=channelstore,
                 source=abo)
-            channel.info = db_info
+            channel.info = dict(itertools.izip(db_info.keys(), db_info))
             gobject.idle_add(self.addChannel, channel, channelstore, True)
 
         rows = data.execute("SELECT * FROM radio_channels")
@@ -566,7 +566,7 @@ class TVMaxe:
                 params=params,
                 liststore=radiostore,
                 source=abo)
-            channel.info = db_info
+            channel.info = dict(itertools.izip(db_info.keys(), db_info))
             gobject.idle_add(self.addChannel, channel, radiostore, True)
 
     def parseOldList(self, data, abo):
