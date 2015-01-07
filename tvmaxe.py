@@ -73,7 +73,7 @@ import remoteC
 gtk.gdk.threads_init()
 
 pygtk.require('2.0')
-VERSION = '0.10'
+VERSION = '0.10.1'
 BASEHOST = 'http://www.tv-maxe.org/'
 TVMAXEDIR = os.getenv('HOME') + '/.tvmaxe/'
 
