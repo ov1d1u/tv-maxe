@@ -143,7 +143,7 @@ def getOpenWith(ext):
 def guess_de():
 	import os
 	try:
-		known_de = ['xfce', 'gnome', 'ubuntu', 'mate', 'kde']
+		known_de = ['xfce', 'gnome', 'ubuntu', 'mate', 'kde', 'cinnamon']
 		if os.environ.has_key('DESKTOP_SESSION'):
 			desktop_session = os.environ['DESKTOP_SESSION']
 		else:

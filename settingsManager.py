@@ -357,7 +357,8 @@ class settingsManager:
                 'gnome' : 'gnome-session-save --shutdown-dialog',
                 'ubuntu' : 'gnome-session-quit --power-off',
                 'mate' : 'mate-session-save --shutdown-dialog',
-                'kde' : 'qdbus org.kde.ksmserver /KSMServer logout 0 2 2'}
+                'kde' : 'qdbus org.kde.ksmserver /KSMServer logout 0 2 2',
+                'cinnamon': 'cinnamon-session-quit --power-off --no-prompt'}
         if de and des.has_key(de):
             return des[de]
         else:
