@@ -80,7 +80,7 @@ TVMAXEDIR = os.getenv('HOME') + '/.tvmaxe/'
 
 class TVMaxe:
 
-    def __init__(self, autostart=None):
+    def __init__(self, *args, **kwargs):
         self.gui = gtk.Builder()
         self.gui.add_from_file('tvmaxe.glade')
         self.settingsManager = settingsManager(self)
@@ -231,10 +231,11 @@ class TVMaxe:
         self.tvmaxevis = True
         self.progressbarPulse = None
         self.getTime_to = None
-        self.autostart = autostart
         self.urlIndex = 0
         self.sLock = False
         self.currentChannel = None
+        self.autoplay_channel = None
+        self.autoplay_url = None
         self.recordingMode = False
         self.abonamente = self.settingsManager.getSubscriptions()
         wsize = self.settingsManager.getWindowSize()
@@ -244,7 +245,12 @@ class TVMaxe:
         if (self.settingsManager.getStatusIcon()):
             self.trayIcon.show()
 
-        if autostart:
+        if kwargs.has_key('autoplay_channel'):
+            self.autoplay_channel = kwargs['autoplay_channel']
+        if kwargs.has_key('autoplay_url'):
+            self.autoplay_url = kwargs['autoplay_url']
+
+        if self.autoplay_channel or self.autoplay_url:
             self.logo = [
                 0, ['Please wait,', 'your channel will be played immediately']]
         else:
@@ -995,10 +1001,11 @@ class TVMaxe:
             self.playRadioChannel(channel)
         else:
             if self.url != '':
-                self.logo = [1, _("Loading: %s" % self.currentChannel.name)]
+                print self.url
+                self.logo = [1, _("Loading: %s" % self.url)]
                 gobject.idle_add(
                     self.statusbar,
-                    _('Loading ') + self.currentChannel.name)
+                    _('Loading ') + self.url)
                 gobject.idle_add(self.modradiomenuStatus, 'tv')
                 protocol = self.getProtocol(self.url)
                 protocol.inport, protocol.outport = self.protocolPorts()
@@ -3135,12 +3142,14 @@ class TVMaxe:
         return self.Scheduler.hideManager()
 
     def autoplay(self):
-        if self.autostart:
-            if self.autostart in self.channels:
-                self.playChannel(self.channels[self.autostart])
+        if self.autoplay_channel:
+            if self.autoplay_channel in self.channels:
+                self.playChannel(self.channels[self.autoplay_channel])
             else:
-                tools.msg_error("Sorry, but this channel does not exists.")
+                gobject.idle_add(tools.msg_error, "Sorry, but this channel does not exists.")
                 self.stop()
+        elif self.autoplay_url:
+            gobject.idle_add(self.playURL, self.autoplay_url)
         return False
 
     def saveRecord(self, tip):
@@ -3246,5 +3255,15 @@ if __name__ == "__main__":
     if '--start-channel' in sys.argv:
         channelID = sys.argv[sys.argv.index('--start-channel') + 1]
         print 'Starting TV-Maxe with ' + channelID
-    main = TVMaxe(channelID)
+        main = TVMaxe(autoplay_channel=channelID)
+    elif '--help' in sys.argv:
+        print 'TV-Maxe {0}'.format(VERSION)
+        print 'Usage: tv-maxe [url to play]\n'
+        os._exit(0)
+    elif len(sys.argv) > 1:
+        url = sys.argv[1]
+        print 'Starting TV-Maxe with URL' + url
+        main = TVMaxe(autoplay_url=url)
+    else:
+        main = TVMaxe()
     main.main()
