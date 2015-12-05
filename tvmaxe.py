@@ -11,7 +11,10 @@ try:
         os.path.abspath(__file__)), 'lng')
 except:
     LOCALE_PATH = 'lng'
-locale.setlocale(locale.LC_ALL, '')
+try:
+    locale.setlocale(locale.LC_ALL, '')
+except:
+    locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 for module in gtk.glade, gettext:
     module.bindtextdomain(GETTEXT_DOMAIN, LOCALE_PATH)
     module.textdomain(GETTEXT_DOMAIN)
