@@ -36,6 +36,7 @@ import tempfile
 import pygtk
 import gobject
 import gtk
+import dbus
 import subprocess
 import threading
 import urllib2
@@ -54,7 +55,6 @@ import json
 import base64
 import StringIO
 import tools
-import keysim
 import scheduler
 import socketserver
 import trayIcon
@@ -240,6 +240,7 @@ class TVMaxe:
         self.autoplay_channel = None
         self.autoplay_url = None
         self.recordingMode = False
+        self.inhibition = None
         self.abonamente = self.settingsManager.getSubscriptions()
         wsize = self.settingsManager.getWindowSize()
         self.gui.get_object('window1').resize(wsize[0], wsize[1])
@@ -286,7 +287,6 @@ class TVMaxe:
         self.gui.get_object('recqScale').add_mark(35, gtk.POS_LEFT, 'Very low')
 
         self.tvguide = ProgramTV()
-        self.keysimulator = keysim.KeySim()
         self.pbx = PBX()
         self.showDonate()
         self.setupProtocols()
@@ -296,6 +296,7 @@ class TVMaxe:
         self.Scheduler = Scheduler(os.path.abspath(__file__), self)
         self.readTheme()
         self.buildComboDays()
+        self.powerManager = dbus.SessionBus().get_object("org.freedesktop.PowerManagement", "/org/freedesktop/PowerManagement/Inhibit")
         self.SocketServer = socketserver.SocketServer(self)
         self.infrared = irwatch.Main({
                 "playpause": self.playpause,
@@ -901,6 +902,7 @@ class TVMaxe:
                 self.progressbarPulse = None
             self.progressbarPulse = gobject.timeout_add(
                 400, self.updateProgressbar, protocol)
+            self.inhibition = self.powerManager.Inhibit("TV-Maxe", "Playing {0}".format(self.currentChannel.name))
         gobject.idle_add(self.applyVideoSettings)
 
     def playRadioChannel(self, channel, index=None):
@@ -946,6 +948,7 @@ class TVMaxe:
                 self.progressbarPulse = None
             self.progressbarPulse = gobject.timeout_add(
                 400, self.updateProgressbar, protocol)
+            self.inhibition = self.powerManager.Inhibit("TV-Maxe", "Playing {0}".format(self.currentChannel.name))
 
     def playURL(self, url):
         self.stop(None)
@@ -1121,10 +1124,10 @@ class TVMaxe:
                 400, self.updateProgressbar, protocol)
 
     def play(self, url):
+        """ Wrapper to make sure we do this in main thread """
         gobject.idle_add(self.do_play, url)
 
     def do_play(self, url):
-        """ Wrapper to make sure we do this in main thread """
         if self.recordingMode:
             if not hasattr(self.mediaPlayer, 'recQuality'):
                 self.orig_mediaPlayer = copy.copy(self.mediaPlayer)
@@ -1160,6 +1163,8 @@ class TVMaxe:
         else:
             self.currentChannel = None
             self.stopCallback()
+        if self.inhibition:
+            self.powerManager.UnInhibit(self.inhibition)
 
     def playCallback(self):
         gobject.idle_add(self.do_playCallback)
@@ -1187,8 +1192,6 @@ class TVMaxe:
             'image1').set_from_stock(
                 gtk.STOCK_MEDIA_PAUSE,
                 gtk.ICON_SIZE_BUTTON)
-        self.keysimulator.src = gobject.timeout_add(
-            60000, self.keysimulator.start)
         self.mediaPlayer.volume(
             self.gui.get_object(
                 'volumebutton1').get_value(
@@ -1240,7 +1243,6 @@ class TVMaxe:
                 'image1').set_from_stock(
                     gtk.STOCK_MEDIA_PLAY,
                     gtk.ICON_SIZE_BUTTON)
-            gobject.source_remove(self.keysimulator.src)
             self.gui.get_object('menuitem43').hide()
             self.statusbar(_('Stopped'))
             self.gui.get_object('label36').set_text('00:00:00')
