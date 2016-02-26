@@ -63,13 +63,14 @@ class ProgramTV:
             return
         try:
             req = urllib2.Request(epgurl + '?action=getGuide&channel=' + codename + '&date=' + day)
+            print epgurl + '?action=getGuide&channel=' + codename + '&date=' + day
             response = urllib2.urlopen(req)
             data = response.read()
             array = json.loads(data)
             for row in array:
                 row[0] = self.toLocalTime(row[0])
                 self.guides[chname + '::' + day] = array
-                gobject.idle_add(callback, array, chname, day)
+            gobject.idle_add(callback, array, chname, day)
         except Exception, e:
             gobject.idle_add(callback, None, None, None)
                 
