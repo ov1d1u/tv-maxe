@@ -72,6 +72,7 @@ from blacklist import Blacklist
 from autosleep import Sleep
 from recorder import Recorder
 from diagnostics import Diagnostics
+from chromecast import ChromecastProvider
 import remoteC
 gtk.gdk.threads_init()
 
@@ -185,7 +186,8 @@ class TVMaxe:
             "showDiagnostics": self.showDiagnostics,
             "closeDiagnostics": self.closeDiagnostics,
             "runDiagnostics": self.runDiagnostics,
-            "diagnosticSelect": self.diagnosticSelect
+            "diagnosticSelect": self.diagnosticSelect,
+            "listChromecastDevices": self.listChromecastDevices
         })
 
         drawingarea = self.gui.get_object('drawingarea1')
@@ -241,6 +243,7 @@ class TVMaxe:
         self.autoplay_url = None
         self.recordingMode = False
         self.inhibition = None
+        self.currentPlayingUrl = None
         self.abonamente = self.settingsManager.getSubscriptions()
         wsize = self.settingsManager.getWindowSize()
         self.gui.get_object('window1').resize(wsize[0], wsize[1])
@@ -298,6 +301,7 @@ class TVMaxe:
         self.buildComboDays()
         self.powerManager = dbus.SessionBus().get_object("org.freedesktop.PowerManagement", "/org/freedesktop/PowerManagement/Inhibit")
         self.SocketServer = socketserver.SocketServer(self)
+        self.chromecastProvider = ChromecastProvider(self, self.chomecastAvailable)
         self.infrared = irwatch.Main({
                 "playpause": self.playpause,
                 "fullscreen": self.fullscreen,
@@ -1133,10 +1137,15 @@ class TVMaxe:
                 self.orig_mediaPlayer = copy.copy(self.mediaPlayer)
             del self.mediaPlayer
             self.mediaPlayer = copy.copy(self.Recorder)
+        elif self.chromecastProvider.cast:
+            self.chromecastProvider.play_media(url)
+            self.logo = [0, 'Playing to {0}'.format(self.chromecastProvider.cast.device.friendly_name)]
+            return
         else:
             if hasattr(self, 'orig_mediaPlayer'):
                 self.mediaPlayer = copy.copy(self.orig_mediaPlayer)
                 del self.orig_mediaPlayer
+        self.currentPlayingUrl = url
         self.mediaPlayer.play(url)
 
     def modradiomenuStatus(self, t):
@@ -1147,6 +1156,7 @@ class TVMaxe:
                 self.gui.get_object('modradiomenu').set_sensitive(True)
 
     def stop(self, error=None):
+        self.currentPlayingUrl = None
         if isinstance(error, str):
             for x in self.protocols:
                 self.protocols[x].stop()
@@ -1163,6 +1173,8 @@ class TVMaxe:
         else:
             self.currentChannel = None
             self.stopCallback()
+        if self.chromecastProvider:
+            self.chromecastProvider.stop()
         if self.inhibition:
             self.powerManager.UnInhibit(self.inhibition)
 
@@ -3249,6 +3261,39 @@ class TVMaxe:
 
     def getVersion(self):
         return VERSION
+
+    def chomecastAvailable(self):
+        if len(self.chromecastProvider.devices) > 0:
+            self.gui.get_object('connectbtn').show()
+
+    def listChromecastDevices(self, sender, event):
+        def set_menu_position(menu):
+            button = self.gui.get_object('connectbtn')
+            origin = button.window.get_origin()
+            x = origin[0] + button.allocation.x
+            y = origin[1] + button.allocation.y - menu.allocation.height
+            return (x, y, True)
+
+        def connectToChromecast(sender, dev_name):
+            self.chromecastProvider.connect(dev_name)
+
+            if self.currentChannel:
+                self.mediaPlayer.stop()
+                self.chromecastProvider.play_media(self.currentPlayingUrl, 'video/mp4')
+            else:
+                self.chromecastProvider.play_media("http://pymaxe.com/logo.jpg", 'image/jpeg')
+
+        if event.type == gtk.gdk.BUTTON_PRESS:
+            menu = gtk.Menu()
+            for dev_name in self.chromecastProvider.devices:
+                menu_item = gtk.MenuItem(dev_name)
+                menu_item.show()
+                menu_item.connect("activate", connectToChromecast, dev_name)
+                menu.append(menu_item)
+            menu.popup(None, None, set_menu_position, event.button, event.time)
+            menu.reposition()
+            return True
+        return False
 
     def main(self):
         gtk.gdk.threads_enter()
