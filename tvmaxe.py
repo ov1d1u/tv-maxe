@@ -299,7 +299,6 @@ class TVMaxe:
         self.Scheduler = Scheduler(os.path.abspath(__file__), self)
         self.readTheme()
         self.buildComboDays()
-        self.powerManager = dbus.SessionBus().get_object("org.freedesktop.PowerManagement", "/org/freedesktop/PowerManagement/Inhibit")
         self.SocketServer = socketserver.SocketServer(self)
         self.chromecastProvider = ChromecastProvider(self, self.chomecastAvailable)
         self.infrared = irwatch.Main({
@@ -320,6 +319,12 @@ class TVMaxe:
         threading.Thread(
             target=self.getChannels,
             args=(self.populateList,)).start()
+        # try to use desktop's DBus power management
+        self.powerManager = None
+        try:
+            self.powerManager = dbus.SessionBus().get_object("org.freedesktop.PowerManagement", "/org/freedesktop/PowerManagement/Inhibit")
+        except:
+            print("Power management not available, system may enter in sleep mode while TV-Maxe is playing")
         self.initPlayer()
         gobject.timeout_add(500, self.drawLogo)
 
@@ -906,7 +911,8 @@ class TVMaxe:
                 self.progressbarPulse = None
             self.progressbarPulse = gobject.timeout_add(
                 400, self.updateProgressbar, protocol)
-            self.inhibition = self.powerManager.Inhibit("TV-Maxe", "Playing {0}".format(self.currentChannel.name))
+            if self.powerManager:
+                self.inhibition = self.powerManager.Inhibit("TV-Maxe", "Playing {0}".format(self.currentChannel.name))
         gobject.idle_add(self.applyVideoSettings)
 
     def playRadioChannel(self, channel, index=None):
@@ -952,7 +958,8 @@ class TVMaxe:
                 self.progressbarPulse = None
             self.progressbarPulse = gobject.timeout_add(
                 400, self.updateProgressbar, protocol)
-            self.inhibition = self.powerManager.Inhibit("TV-Maxe", "Playing {0}".format(self.currentChannel.name))
+            if self.powerManager:
+                self.inhibition = self.powerManager.Inhibit("TV-Maxe", "Playing {0}".format(self.currentChannel.name))
 
     def playURL(self, url):
         self.stop(None)
